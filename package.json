@@ -1,0 +1,35 @@
+{
+  "name": "calendar-notifire",
+  "version": "0.0.1",
+  "description": "In future this will be a package to notifi channels like a telegram-bot in case of calendar events",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"To be done\"\"",
+    "build": "rimraf ./build && tsc",
+    "start:dev": "nodemon",
+    "start": "npm run build && node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deeKay93/calendar-notifire.git"
+  },
+  "keywords": [
+    "Calendar",
+    "Notification",
+    "Telegram",
+    "Events"
+  ],
+  "author": "daniel.knecht@live.de",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deeKay93/calendar-notifire/issues"
+  },
+  "homepage": "https://github.com/deeKay93/calendar-notifire#readme",
+  "devDependencies": {
+    "@types/node": "^13.1.6",
+    "nodemon": "^2.0.2",
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.4"
+  }
+}
