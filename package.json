@@ -5,9 +5,11 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"To be done\"\"",
-    "build": "rimraf ./build && tsc",
+    "build": "npm run check && rimraf ./build && tsc",
     "start:dev": "nodemon",
-    "start": "npm run build && node build/index.js"
+    "start": "npm run build && node build/index.js",
+    "check": "./node_modules/.bin/tslint --project \".\"",
+    "precommit": "pretty-quick --staged && npm run check"
   },
   "repository": {
     "type": "git",
@@ -27,9 +29,19 @@
   "homepage": "https://github.com/deeKay93/calendar-notifire#readme",
   "devDependencies": {
     "@types/node": "^13.1.6",
+    "husky": "^4.0.4",
     "nodemon": "^2.0.2",
+    "prettier": "1.19.1",
+    "pretty-quick": "^2.0.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.5.4",
+    "tslint": "^5.20.1",
+    "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.7.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
   }
 }
