@@ -1,5 +1,6 @@
-console.info("Hello World!!");
-const test = {
-    a: 1,
-    b: 2,
+export const helloTest = function(current: boolean = false) {
+    if (current) {
+        return false;
+    }
+    return true;
 };

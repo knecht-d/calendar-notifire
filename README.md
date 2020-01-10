@@ -16,10 +16,13 @@ The goal of this project is to notify users about upcoming calendar events using
 
 Run with `npm run ...`
 
--   `test` Run the tests (to be done)
--   `build` Build the project
+-   `test` Run the tests including coverage
+-   `build` Format the code and build the project
 -   `start:dev` Start the project with a file watcher
 -   `start` Build and start the project
+-   `check` Perform tslint check
+-   `pretty` Format the code
+-   `precommit` Format, check staged files, and run tests (runs automatically before commiting)
 
 ## Naming
 
