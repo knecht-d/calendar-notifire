@@ -8,7 +8,7 @@
     "build": "npm run check && rimraf ./build && tsc",
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
-    "check": "./node_modules/.bin/tslint --project \".\"",
+    "check": "pretty-quick && ./node_modules/.bin/tslint --project \".\"",
     "precommit": "pretty-quick --staged && lint-staged"
   },
   "repository": {

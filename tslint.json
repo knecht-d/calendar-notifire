@@ -1,10 +1,22 @@
 {
-    "defaultSeverity": "error",
-    "extends": ["tslint:recommended", "tslint-eslint-rules"],
-    "jsRules": {},
-    "rules": {
-        "ter-indent": [true, 4],
-        "no-console": [true, "log"]
-    },
-    "rulesDirectory": []
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-eslint-rules"],
+  "jsRules": {},
+  "rules": {
+    "ter-indent": [true, 4],
+    "no-console": [true, "log"],
+    "quotemark": [true, "double", "avoid-escape", "avoid-template"],
+    "trailing-comma": [true, { "multiline": "always", "singleline": "never" }],
+    "member-access": false,
+    "object-literal-sort-keys": false,
+    "forin": false,
+    "ordered-imports": true,
+    "arrow-parens": false,
+    "only-arrow-functions": false,
+    "max-line-length": false,
+    "object-literal-key-quotes": false,
+    "one-variable-per-declaration": true,
+    "no-floating-promises": true
+  },
+  "rulesDirectory": []
 }
