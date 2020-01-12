@@ -16,7 +16,17 @@
     "max-line-length": false,
     "object-literal-key-quotes": false,
     "one-variable-per-declaration": true,
-    "no-floating-promises": true
+    "no-floating-promises": true,
+    "no-unused-expression": false,
+    "no-unused-expression-chai": true
   },
-  "rulesDirectory": []
+  "rulesDirectory": ["tslint-no-unused-expression-chai"],
+  "overrides": [
+    {
+      "files": ["*.spec.ts"],
+      "rules": {
+        "no-unused-expression": false
+      }
+    }
+  ]
 }
