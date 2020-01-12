@@ -4,6 +4,7 @@
   "description": "In future this will be a package to notifi channels like a telegram-bot in case of calendar events",
   "main": "index.ts",
   "scripts": {
+    "test:dev": "nodemon --config nodemon.test.json",
     "test": "nyc mocha",
     "build": "pretty-quick && npm run check && rimraf ./build && tsc -p ./tsconfig.build.json",
     "start:dev": "nodemon",
