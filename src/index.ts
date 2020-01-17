@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { get, post } from "./interfaces/http";
 
 get("https://jsonplaceholder.typicode.com/posts/101")

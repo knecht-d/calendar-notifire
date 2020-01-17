@@ -4,8 +4,8 @@
   "description": "In future this will be a package to notifi channels like a telegram-bot in case of calendar events",
   "main": "index.ts",
   "scripts": {
-    "test:dev": "nodemon --config nodemon.test.json",
-    "test": "nyc mocha",
+    "test:watch": "jest --coverage --watchAll",
+    "test": "jest --coverage",
     "build": "pretty-quick && npm run check && rimraf ./build && tsc -p ./tsconfig.build.json",
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
@@ -30,62 +30,48 @@
   },
   "homepage": "https://github.com/deeKay93/calendar-notifire#readme",
   "devDependencies": {
-    "@types/chai": "^4.2.7",
-    "@types/chai-as-promised": "^7.1.2",
-    "@types/mocha": "^5.2.7",
+    "@types/jest": "^24.9.0",
     "@types/node": "^13.1.6",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
     "husky": "^4.0.4",
+    "jest": "^24.9.0",
     "lint-staged": "^9.5.0",
-    "mocha": "^7.0.0",
     "nock": "^11.7.2",
     "nodemon": "^2.0.2",
-    "nyc": "^15.0.0",
     "prettier": "1.19.1",
     "pretty-quick": "^2.0.1",
     "rimraf": "^3.0.0",
     "source-map-support": "^0.5.16",
+    "ts-jest": "^24.3.0",
     "ts-node": "^8.5.4",
     "tslint": "^5.20.1",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^3.7.4"
   },
-  "mocha": {
-    "require": [
-      "ts-node/register",
-      "source-map-support/register"
+  "jest": {
+    "roots": [
+      "src"
     ],
-    "bail": true,
-    "watch-files": [
-      "src/**/*.ts"
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{ts,js}"
     ],
-    "spec": "src/**/*.spec.ts"
-  },
-  "nyc": {
-    "all": true,
-    "include": [
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "**/*.spec.*",
-      "**/index.ts"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "html",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "coverageReporters": [
+      "json",
+      "lcov",
       "text",
-      "text-summary",
-      "cobertura"
-    ],
-    "sourceMap": true,
-    "instrument": true
+      "clover"
+    ]
   },
   "husky": {
     "hooks": {
