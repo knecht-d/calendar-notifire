@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { get, post } from "./interfaces/http";
 const token = "<TOKEN>"; // TODO: Enter Telegram Bot Token
 
