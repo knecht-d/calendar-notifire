@@ -1,16 +1,25 @@
 /* istanbul ignore file */
-import { get, post } from "./interfaces/http";
+import Telegraf from "telegraf";
 
-get("https://jsonplaceholder.typicode.com/posts/101")
-    .then(console.info)
-    .catch(console.error);
+const chatId = 42;
+const token = "<token>";
+const bot = new Telegraf(token);
 
-const data = {
-    title: "foo",
-    body: "bar",
-    userId: 101,
-};
+// Default commands
+bot.start(ctx => ctx.reply(`Welcome ${ctx.chat?.first_name} (${ctx.chat?.id})`));
+bot.help(ctx => ctx.reply("Send me a sticker"));
 
-post("https://jsonplaceholder.typicode.com/posts", data)
-    .then(console.info)
-    .catch(console.error);
+// Custom commands
+bot.command("test", ({ reply }) => reply("passed"));
+
+// Specific message types
+bot.on("sticker", ctx => ctx.reply("👍"));
+
+// Specific texts
+bot.hears("hi", ctx => ctx.reply("Hey there"));
+
+// Start
+bot.launch().catch(console.error);
+
+// Custom message
+bot.telegram.sendMessage(chatId, "I'm Back!").catch(console.error);
