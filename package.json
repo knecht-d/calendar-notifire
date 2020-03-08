@@ -11,7 +11,8 @@
     "start": "npm run build && node build/index.js",
     "check": "./node_modules/.bin/tslint --project \".\" ",
     "pretty": "pretty-quick",
-    "precommit": "pretty-quick --staged && lint-staged && npm run test"
+    "precommit": "pretty-quick --staged && lint-staged",
+    "prepush": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -75,7 +76,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run precommit"
+      "pre-commit": "npm run precommit",
+      "pre-push": "npm run prepush"
     }
   },
   "lint-staged": {
