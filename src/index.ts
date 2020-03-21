@@ -1,16 +1,17 @@
 /* istanbul ignore file */
-import { get, post } from "./interfaces/http";
+import { CronJob } from "cron";
 
-get("https://jsonplaceholder.typicode.com/posts/101")
-    .then(console.info)
-    .catch(console.error);
+console.info("Before job instantiation");
+const job = new CronJob("*/5 * * * * *", function() {
+    const d = new Date();
+    console.info("First:", d);
+});
 
-const data = {
-    title: "foo",
-    body: "bar",
-    userId: 101,
-};
-
-post("https://jsonplaceholder.typicode.com/posts", data)
-    .then(console.info)
-    .catch(console.error);
+const job2 = new CronJob("*/8 * * * * *", function() {
+    const d = new Date();
+    console.info("Second:", d);
+});
+console.info("After job instantiation");
+console.info("Start", new Date());
+job.start();
+job2.start();
