@@ -27,6 +27,12 @@
       "rules": {
         "no-unused-expression": false
       }
+    },
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        "max-classes-per-file": false
+      }
     }
   ]
 }

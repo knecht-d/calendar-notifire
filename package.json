@@ -9,10 +9,11 @@
     "build": "pretty-quick && npm run check && rimraf ./build && tsc -p ./tsconfig.build.json",
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
-    "check": "./node_modules/.bin/tslint --project \".\" ",
+    "check": "./node_modules/.bin/tslint --project \".\" --exclude '**/*.d.ts' ",
     "pretty": "pretty-quick",
     "precommit": "pretty-quick --staged && lint-staged",
-    "prepush": "npm run test"
+    "prepush": "npm run test",
+    "run": "ts-node --files  ./src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -86,6 +87,7 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.19.1"
+    "axios": "^0.19.1",
+    "ical.js": "^1.3.0"
   }
 }
