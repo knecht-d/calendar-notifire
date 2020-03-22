@@ -9,7 +9,7 @@
     "build": "pretty-quick && npm run check && rimraf ./build && tsc -p ./tsconfig.build.json",
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
-    "check": "./node_modules/.bin/tslint --project \".\" ",
+    "check": "./node_modules/.bin/tslint --project \".\" --exclude '**/*.d.ts' ",
     "pretty": "pretty-quick",
     "precommit": "pretty-quick --staged && lint-staged",
     "prepush": "npm run test"
@@ -86,6 +86,7 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.19.1"
+    "axios": "^0.19.1",
+    "ical-expander": "^2.1.0"
   }
 }
