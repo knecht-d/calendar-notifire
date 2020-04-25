@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { get, post } from "./interfaces/http";
+import { get, post } from "./external/http/http";
 
 get("https://jsonplaceholder.typicode.com/posts/101")
     .then(console.info)
