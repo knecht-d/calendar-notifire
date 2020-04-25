@@ -9,7 +9,7 @@
     "build": "pretty-quick && npm run check && rimraf ./build && tsc -p ./tsconfig.build.json",
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
-    "check": "./node_modules/.bin/tslint --project \".\" ",
+    "check": "eslint -c .eslintrc.js --ext .ts ./src",
     "pretty": "pretty-quick",
     "precommit": "pretty-quick --staged && lint-staged",
     "prepush": "npm run test"
@@ -30,9 +30,16 @@
     "url": "https://github.com/deeKay93/calendar-notifire/issues"
   },
   "homepage": "https://github.com/deeKay93/calendar-notifire#readme",
+  "dependencies": {
+    "axios": "^0.19.1"
+  },
   "devDependencies": {
     "@types/jest": "^24.9.0",
     "@types/node": "^13.1.6",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-prettier": "^3.1.3",
     "husky": "^4.0.4",
     "jest": "^24.9.0",
     "lint-staged": "^9.5.0",
@@ -44,35 +51,7 @@
     "source-map-support": "^0.5.16",
     "ts-jest": "^24.3.0",
     "ts-node": "^8.5.4",
-    "tslint": "^5.20.1",
-    "tslint-eslint-rules": "^5.4.0",
-    "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^3.7.4"
-  },
-  "jest": {
-    "roots": [
-      "src"
-    ],
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "src/**/*.{ts,js}"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": 80
-      }
-    },
-    "coverageReporters": [
-      "json",
-      "lcov",
-      "text",
-      "clover"
-    ]
   },
   "husky": {
     "hooks": {
@@ -84,8 +63,5 @@
     "*.ts": [
       "npm run check"
     ]
-  },
-  "dependencies": {
-    "axios": "^0.19.1"
   }
 }
