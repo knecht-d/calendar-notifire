@@ -14,7 +14,7 @@
     "check": "eslint -c .eslintrc.js --ext .ts ./src",
     "pretty": "pretty-quick",
     "precommit": "pretty-quick --staged && lint-staged",
-    "prepush": "npm run test"
+    "prepush": "npm run cover"
   },
   "repository": {
     "type": "git",
