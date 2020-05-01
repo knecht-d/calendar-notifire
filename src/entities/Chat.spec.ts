@@ -68,13 +68,14 @@ describe("Chat", () => {
         });
         it("should use empty settings as defaults", () => {
             const chat = new Chat("chatId");
+            const tf = new TimeFrame({}, {});
 
             chat.addTimeFrame("tf", {});
 
             const actualTf = chat.getTimeFrame("tf");
             const date = new Date(2020, 8, 13, 18, 45, 17, 30);
-            expect(actualTf?.getStart(date)).toEqual(new Date(2020, 8, 13, 18, 45));
-            expect(actualTf?.getEnd(date)).toEqual(new Date(2020, 8, 13, 18, 45));
+            expect(actualTf?.getStart(date)).toEqual(tf.getStart(date));
+            expect(actualTf?.getEnd(date)).toEqual(tf.getEnd(date));
         });
     });
 });
