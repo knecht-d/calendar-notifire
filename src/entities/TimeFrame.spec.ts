@@ -1,11 +1,12 @@
 import { TimeFrame } from "./TimeFrame";
-import { IRecurrenceRule, ReccurenceType } from "../interfaces";
+import { IRecurrenceRule, RecurrenceType } from "../interfaces";
 
 describe("TimeFrame", () => {
     const baseRecurrence: IRecurrenceRule = {
-        type: ReccurenceType.daily,
+        type: RecurrenceType.daily,
         days: {},
         hour: 17,
+        minute: 42,
     };
     describe("getStart", () => {
         const baseDate = new Date(2020, 0, 1, 12, 20, 12, 42);
@@ -199,15 +200,16 @@ describe("TimeFrame", () => {
                 { hour: { value: -10, fixed: false } },
                 { minute: { value: 0, fixed: true } },
                 {
-                    type: ReccurenceType.daily,
+                    type: RecurrenceType.daily,
                     days: {},
                     hour: 17,
+                    minute: 42,
                 },
             );
             expect(tf.toJSON()).toEqual({
                 begin: { hour: { value: -10, fixed: false } },
                 end: { minute: { value: 0, fixed: true } },
-                reccurence: { type: 1, days: {}, hour: 17 },
+                recurrence: { type: "d", days: {}, hour: 17, minute: 42 },
             });
         });
     });

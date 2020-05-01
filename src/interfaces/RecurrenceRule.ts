@@ -1,16 +1,28 @@
 interface IBaseRecurrenceRule {
-    type: ReccurenceType;
+    type: RecurrenceType;
 }
 
 interface IHourlyRecurrenceRule extends IBaseRecurrenceRule {
-    type: ReccurenceType.hourly;
-    from: number;
-    to: number;
+    type: RecurrenceType.hourly;
+    fromHour: number;
+    fromMinute: number;
+    toHour: number;
+    toMinute: number;
+    days: {
+        monday?: boolean;
+        tuesday?: boolean;
+        wednesday?: boolean;
+        thursday?: boolean;
+        friday?: boolean;
+        saturday?: boolean;
+        sunday?: boolean;
+    };
 }
 
 interface IDailyRecurrenceRule extends IBaseRecurrenceRule {
-    type: ReccurenceType.daily;
+    type: RecurrenceType.daily;
     hour: number;
+    minute: number;
     days: {
         monday?: boolean;
         tuesday?: boolean;
@@ -23,15 +35,16 @@ interface IDailyRecurrenceRule extends IBaseRecurrenceRule {
 }
 
 interface IMonthlyRecurrenceRule extends IBaseRecurrenceRule {
-    type: ReccurenceType.monthly;
+    type: RecurrenceType.monthly;
+    day: number;
     hour: number;
-    days: number;
+    minute: number;
 }
 
 export type IRecurrenceRule = IHourlyRecurrenceRule | IDailyRecurrenceRule | IMonthlyRecurrenceRule;
 
-export enum ReccurenceType {
-    hourly,
-    daily,
-    monthly,
+export enum RecurrenceType {
+    hourly = "h",
+    daily = "d",
+    monthly = "m",
 }
