@@ -2,10 +2,10 @@ import { Chat } from "./Chat";
 
 export class Chats {
     private static INSTANCE: Chats;
-    private chats: Map<string, Chat>;
+    private chats: { [chatId: string]: Chat };
 
     private constructor() {
-        this.chats = new Map();
+        this.chats = {};
     }
 
     public static get instance(): Chats {
@@ -16,11 +16,15 @@ export class Chats {
     }
 
     public getChat(chatId: string) {
-        let chat = this.chats.get(chatId);
-        if (!chat) {
-            chat = new Chat(chatId);
-            this.chats.set(chatId, chat);
+        if (!this.chats[chatId]) {
+            this.chats[chatId] = new Chat();
         }
-        return chat;
+        return this.chats[chatId];
+    }
+
+    public toJSON() {
+        return {
+            chats: this.chats,
+        };
     }
 }

@@ -29,25 +29,7 @@ module.exports = {
         quotes: [2, "double", "avoid-escape"],
         "spaced-comment": ["error", "always"],
         "@typescript-eslint/naming-convention": [
-            "error",
-            {
-                selector: "default",
-                format: ["camelCase"],
-            },
-            {
-                selector: "variable",
-                format: ["camelCase", "UPPER_CASE"],
-            },
-            {
-                selector: "parameter",
-                format: ["camelCase"],
-                leadingUnderscore: "allow",
-            },
-            {
-                selector: "memberLike",
-                modifiers: ["private"],
-                format: ["camelCase"],
-            },
+            "warn",
             {
                 selector: "property",
                 modifiers: ["static"],
