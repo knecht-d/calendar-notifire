@@ -5,7 +5,7 @@ export class TimeFrame {
     constructor(
         private begin: ITimeFrameSettings,
         private end: ITimeFrameSettings,
-        private reccurence: IRecurrenceRule,
+        private recurrence: IRecurrenceRule,
     ) {}
 
     public getStart(baseDate: Date) {
@@ -34,7 +34,7 @@ export class TimeFrame {
         return {
             begin: this.begin,
             end: this.end,
-            reccurence: this.reccurence,
+            recurrence: this.recurrence,
         };
     }
 

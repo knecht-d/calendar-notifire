@@ -1,12 +1,13 @@
 import { Chat } from "./Chat";
 import { TimeFrame } from "./TimeFrame";
-import { IRecurrenceRule, ReccurenceType, ITimeFrameSettings } from "../interfaces";
+import { IRecurrenceRule, RecurrenceType, ITimeFrameSettings } from "../interfaces";
 
 describe("Chat", () => {
     const baseRecurrence: IRecurrenceRule = {
-        type: ReccurenceType.daily,
+        type: RecurrenceType.daily,
         days: {},
         hour: 17,
+        minute: 42,
     };
 
     describe("TimeFrames", () => {
@@ -114,7 +115,7 @@ describe("Chat", () => {
                             month: { value: 8 },
                             year: { value: 2020 },
                         },
-                        reccurence: { type: 1, days: {}, hour: 17 },
+                        recurrence: { type: "d", days: {}, hour: 17, minute: 42 },
                     },
                 },
             });
