@@ -1,20 +1,26 @@
-import { TimeFrame, ITimeFrameSettings } from "./TimeFrame";
+import { TimeFrame } from "./TimeFrame";
+import { ITimeFrameSettings, IRecurrenceRule } from "../interfaces";
 
 export class Chat {
-    private timeFrames: Map<string, TimeFrame>;
-    constructor(private chatId: string) {
-        this.timeFrames = new Map();
+    private timeFrames: { [frameId: string]: TimeFrame | undefined };
+    constructor() {
+        this.timeFrames = {};
     }
 
-    public addTimeFrame(key: string, settings: { begin?: ITimeFrameSettings; end?: ITimeFrameSettings }) {
-        this.timeFrames.set(key, new TimeFrame(settings.begin || {}, settings.end || {}));
+    public addTimeFrame(
+        key: string,
+        settings: { begin?: ITimeFrameSettings; end?: ITimeFrameSettings; recurrence: IRecurrenceRule },
+    ) {
+        this.timeFrames[key] = new TimeFrame(settings.begin || {}, settings.end || {}, settings.recurrence);
     }
 
     public getTimeFrame(key: string) {
-        return this.timeFrames.get(key);
+        return this.timeFrames[key];
     }
 
-    public get id(): string {
-        return this.chatId;
+    public toJSON() {
+        return {
+            timeFrames: this.timeFrames,
+        };
     }
 }

@@ -1,21 +1,14 @@
-export interface ITimeFrameSettings {
-    year?: ITimeCalc;
-    month?: ITimeCalc;
-    day?: ITimeCalc;
-    hour?: ITimeCalc;
-    minute?: ITimeCalc;
-}
-
-interface ITimeCalc {
-    value: number;
-    fixed?: boolean;
-}
+import { ITimeCalc, ITimeFrameSettings, IRecurrenceRule } from "../interfaces";
 
 export class TimeFrame {
     private static DEFAULT_SETTING: ITimeCalc = { value: 0 };
-    constructor(private begin: ITimeFrameSettings, private end: ITimeFrameSettings) {}
+    constructor(
+        private begin: ITimeFrameSettings,
+        private end: ITimeFrameSettings,
+        private reccurence: IRecurrenceRule,
+    ) {}
 
-    getStart(baseDate: Date) {
+    public getStart(baseDate: Date) {
         const start = new Date(baseDate);
         this.truncateSeconds(start);
         this.calculateYear(start, baseDate, this.begin.year);
@@ -26,7 +19,7 @@ export class TimeFrame {
         return start;
     }
 
-    getEnd(baseDate: Date) {
+    public getEnd(baseDate: Date) {
         const end = new Date(baseDate);
         this.truncateSeconds(end);
         this.calculateYear(end, baseDate, this.end.year);
@@ -35,6 +28,14 @@ export class TimeFrame {
         this.calculateHour(end, baseDate, this.end.hour);
         this.calculateMinute(end, baseDate, this.end.minute);
         return end;
+    }
+
+    public toJSON() {
+        return {
+            begin: this.begin,
+            end: this.end,
+            reccurence: this.reccurence,
+        };
     }
 
     private truncateSeconds(newDate: Date) {
