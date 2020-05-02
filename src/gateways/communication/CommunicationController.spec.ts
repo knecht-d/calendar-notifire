@@ -39,9 +39,8 @@ describe("CommunicationController", () => {
                                     sunday: true,
                                 },
                                 fromHour: 7,
-                                fromMinute: 30,
-                                toHour: 20,
-                                toMinute: 15,
+                                toHour: 19,
+                                minute: 30,
                             },
                             frameStart: {},
                             frameEnd: {
