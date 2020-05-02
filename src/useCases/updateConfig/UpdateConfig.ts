@@ -19,7 +19,7 @@ export interface IChatPersistence {
 
 export interface IUpdateCommunication {
     sendUpdateSuccess: (chatId: string, triggerId: string, message?: string) => void;
-    sendUpdateError: (message?: string) => void;
+    sendUpdateError: (chatId: string, triggerId: string, message?: string) => void;
 }
 
 export interface IUpdateTimer {
@@ -32,7 +32,7 @@ export interface IUpdateChatPersistence {
 
 export class UpdateConfig implements IUseCase<IUpdateInput, void> {
     constructor(
-        // private updateCommunication: IUpdateCommunication,
+        private updateCommunication: IUpdateCommunication,
         private timerSettings: IUpdateTimer,
         private persistence: IUpdateChatPersistence,
     ) {}
@@ -42,6 +42,6 @@ export class UpdateConfig implements IUseCase<IUpdateInput, void> {
         chat.setTimeFrame(triggerId, { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence });
         this.timerSettings.update(chatId, triggerId, config.recurrence);
         this.persistence.saveUpdatedConfig(chatId, chat.toJSON());
-        // this.updateCommunication.sendUpdateSuccess(chatId, triggerId);
+        this.updateCommunication.sendUpdateSuccess(chatId, triggerId);
     }
 }

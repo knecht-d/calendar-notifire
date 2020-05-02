@@ -1,10 +1,10 @@
-import { CommunicationError } from "../CommunicationError";
+import { CommunicationError, CommunicationErrorCode } from "../CommunicationError";
 import { Mappings } from "../Mappings";
 
 function validateNumberOfArguments(parts: string[], expected: number, schema: string, example: string) {
     if (parts.length !== expected) {
         throw new CommunicationError(
-            "INVALID_NUMBER_OF_ARGUMENTS",
+            CommunicationErrorCode.INVALID_NUMBER_OF_ARGUMENTS,
             `${parts.length}`,
             `${expected} (${schema})`,
             example,
@@ -16,21 +16,21 @@ function validateDays(daysParameter: string) {
     const dayKeys = Object.values(Mappings.days).join("|");
     const reDays = new RegExp(`^(${dayKeys})(,(${dayKeys}))*$`);
     if (!reDays.exec(daysParameter)) {
-        throw new CommunicationError("INVALID_DAYS", daysParameter, dayKeys, "mo,di,so");
+        throw new CommunicationError(CommunicationErrorCode.INVALID_DAYS, daysParameter, dayKeys, "mo,di,so");
     }
 }
 
 function validateDayOfMonth(dayParameter: string) {
     const reTime = new RegExp("^([0-2]?[0-9]|[3][0-1])$");
     if (!reTime.exec(dayParameter)) {
-        throw new CommunicationError("INVALID_DAY_OF_MONTH", dayParameter, "1-31", "13");
+        throw new CommunicationError(CommunicationErrorCode.INVALID_DAY_OF_MONTH, dayParameter, "1-31", "13");
     }
 }
 
 function validateTime(timeParameter: string) {
     const reTime = new RegExp("^([0-1]?[0-9]|[2][0-3]):([0-5]?[0-9])$");
     if (!reTime.exec(timeParameter)) {
-        throw new CommunicationError("INVALID_TIME", timeParameter, "0:0 - 23:59", "17:23");
+        throw new CommunicationError(CommunicationErrorCode.INVALID_TIME, timeParameter, "0:0 - 23:59", "17:23");
     }
 }
 
@@ -40,7 +40,7 @@ function validateTimeFrame(timeFrameParameter: string) {
     const reFrame = new RegExp(`^(((${timeFramePart})(,(${timeFramePart}))*)|-)$`);
     if (!reFrame.exec(timeFrameParameter)) {
         throw new CommunicationError(
-            "INVALID_FRAME_CONFIG",
+            CommunicationErrorCode.INVALID_FRAME_CONFIG,
             timeFrameParameter,
             `[${timeFrameKeys}](+|-)0-9 -`,
             "t+1,s0,m0",

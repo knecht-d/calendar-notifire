@@ -1,10 +1,21 @@
-import { ICommunicationIn } from "../../gateways";
+import { ICommunicationIn, ICommunicationOut } from "../../gateways";
 
 /* istanbul ignore file */
-export class ConsoleChat {
-    constructor(private communication: ICommunicationIn) {}
+export class ConsoleChat implements ICommunicationOut {
+    private communication?: ICommunicationIn;
+
+    public init(communication: ICommunicationIn) {
+        this.communication = communication;
+    }
+
+    public send(chatId: string, message: string) {
+        console.log(chatId, message);
+    }
 
     public start() {
+        if (!this.communication) {
+            throw Error("Chat must be initialized!");
+        }
         const standardInput = process.stdin;
         standardInput.setEncoding("utf-8");
 
@@ -19,7 +30,7 @@ export class ConsoleChat {
                         console.log("User input complete, program exit.");
                         process.exit();
                     case "/update":
-                        this.communication.update("consoleChat", "consoleUser", payload);
+                        this.communication!.update("consoleChat", "consoleUser", payload);
                         break;
                     default:
                         console.log("User Input Data : " + data);
