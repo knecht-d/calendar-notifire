@@ -26,6 +26,8 @@ module.exports = {
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/ban-ts-ignore": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
         quotes: [2, "double", "avoid-escape"],
         "spaced-comment": ["error", "always"],
         "@typescript-eslint/naming-convention": [
