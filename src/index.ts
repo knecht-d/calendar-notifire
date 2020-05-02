@@ -1,16 +1,17 @@
+import { ConsoleChat } from "./external";
+import { CommunicationController, TriggerGateway, ITriggerConfigure } from "./gateways";
+import { UpdateConfig } from "./useCases";
+
 /* istanbul ignore file */
-import { get, post } from "./external/http/http";
-
-get("https://jsonplaceholder.typicode.com/posts/101")
-    .then(console.info)
-    .catch(console.error);
-
-const data = {
-    title: "foo",
-    body: "bar",
-    userId: 101,
+const mockTriggerConfigure: ITriggerConfigure = {
+    setTrigger: (id, cron) => {
+        console.log(id, cron);
+    },
 };
 
-post("https://jsonplaceholder.typicode.com/posts", data)
-    .then(console.info)
-    .catch(console.error);
+const triggerGW = new TriggerGateway(mockTriggerConfigure);
+const updateConfig = new UpdateConfig(triggerGW);
+
+const communicationController = new CommunicationController({ update: updateConfig });
+const chat = new ConsoleChat(communicationController);
+chat.start();
