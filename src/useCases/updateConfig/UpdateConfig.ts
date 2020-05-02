@@ -28,16 +28,15 @@ export interface IUpdateChatPersistence {
 
 export class UpdateConfig implements IUseCase<IUpdateInput, void> {
     constructor(
-        private updateCommunication: IUpdateCommunication,
-        private timerSettings: IUpdateTimer,
-        private persistance: IUpdateChatPersistence,
+        // private updateCommunication: IUpdateCommunication,
+        private timerSettings: IUpdateTimer, // private persistance: IUpdateChatPersistence,
     ) {}
 
     public execute({ chatId, triggerId, config }: IUpdateInput) {
         const chat = Chats.instance.getChat(chatId);
         chat.addTimeFrame(triggerId, { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence });
         this.timerSettings.update(chatId, triggerId, config.recurrence);
-        this.persistance.saveUpdatedConfig(Chats.instance.toJSON());
-        this.updateCommunication.sendUpdateSuccess(chatId, triggerId);
+        // this.persistance.saveUpdatedConfig(Chats.instance.toJSON());
+        // this.updateCommunication.sendUpdateSuccess(chatId, triggerId);
     }
 }
