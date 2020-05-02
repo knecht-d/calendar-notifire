@@ -34,7 +34,7 @@ export class UpdateConfig implements IUseCase<IUpdateInput, void> {
 
     public execute({ chatId, triggerId, config }: IUpdateInput) {
         const chat = Chats.instance.getChat(chatId);
-        chat.addTimeFrame(triggerId, { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence });
+        chat.setTimeFrame(triggerId, { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence });
         this.timerSettings.update(chatId, triggerId, config.recurrence);
         // this.persistance.saveUpdatedConfig(Chats.instance.toJSON());
         // this.updateCommunication.sendUpdateSuccess(chatId, triggerId);

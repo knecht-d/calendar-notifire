@@ -13,13 +13,13 @@ describe("Chat", () => {
     describe("TimeFrames", () => {
         it("should set and return the time frame", () => {
             const chat = new Chat();
-            chat.addTimeFrame("tf", { recurrence: baseRecurrence });
+            chat.setTimeFrame("tf", { recurrence: baseRecurrence });
             const tf = chat.getTimeFrame("tf");
             expect(tf).toBeDefined();
         });
         it("should return undefined for not exisiting timeframes", () => {
             const chat = new Chat();
-            chat.addTimeFrame("tf", { recurrence: baseRecurrence });
+            chat.setTimeFrame("tf", { recurrence: baseRecurrence });
             const tf = chat.getTimeFrame("notDefined");
             expect(tf).not.toBeDefined();
         });
@@ -56,8 +56,8 @@ describe("Chat", () => {
             const tf = new TimeFrame(tfBegin, tfEnd, baseRecurrence);
             const tf2 = new TimeFrame(tf2Begin, tf2End, baseRecurrence);
 
-            chat.addTimeFrame("tf", { begin: tfBegin, end: tfEnd, recurrence: baseRecurrence });
-            chat.addTimeFrame("tf2", { begin: tf2Begin, end: tf2End, recurrence: baseRecurrence });
+            chat.setTimeFrame("tf", { begin: tfBegin, end: tfEnd, recurrence: baseRecurrence });
+            chat.setTimeFrame("tf2", { begin: tf2Begin, end: tf2End, recurrence: baseRecurrence });
 
             const actualTf = chat.getTimeFrame("tf");
             const actualTf2 = chat.getTimeFrame("tf2");
@@ -71,7 +71,7 @@ describe("Chat", () => {
             const chat = new Chat();
             const tf = new TimeFrame({}, {}, baseRecurrence);
 
-            chat.addTimeFrame("tf", { recurrence: baseRecurrence });
+            chat.setTimeFrame("tf", { recurrence: baseRecurrence });
 
             const actualTf = chat.getTimeFrame("tf");
             const date = new Date(2020, 8, 13, 18, 45, 17, 30);
@@ -97,7 +97,7 @@ describe("Chat", () => {
                 year: { value: 2020 },
             };
             const chat = new Chat();
-            chat.addTimeFrame("tf", { begin: tfBegin, end: tfEnd, recurrence: baseRecurrence });
+            chat.setTimeFrame("tf", { begin: tfBegin, end: tfEnd, recurrence: baseRecurrence });
             expect(chat.toJSON()).toEqual({
                 timeFrames: {
                     tf: {

@@ -7,7 +7,7 @@ export class Chat {
         this.timeFrames = {};
     }
 
-    public addTimeFrame(
+    public setTimeFrame(
         key: string,
         settings: { begin?: ITimeFrameSettings; end?: ITimeFrameSettings; recurrence: IRecurrenceRule },
     ) {
