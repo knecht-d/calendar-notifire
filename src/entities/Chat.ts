@@ -1,5 +1,5 @@
 import { TimeFrame } from "./TimeFrame";
-import { ITimeFrameSettings, IRecurrenceRule } from "../interfaces";
+import { ITimeFrameSettings, IRecurrenceRule, ITimeFrameJSON } from "../interfaces";
 
 export class Chat {
     private timeFrames: { [frameId: string]: TimeFrame | undefined };
@@ -19,8 +19,15 @@ export class Chat {
     }
 
     public toJSON() {
+        const timeFrames = Object.entries(this.timeFrames)
+            .filter(([_, value]) => !!value)
+            .map(([key, value]) => ({ key, value: value!.toJSON() }))
+            .reduce((map, { key, value }) => {
+                map[key] = value;
+                return map;
+            }, {} as { [frameId: string]: ITimeFrameJSON });
         return {
-            timeFrames: this.timeFrames,
+            timeFrames,
         };
     }
 }

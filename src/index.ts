@@ -1,16 +1,19 @@
-import { ConsoleChat } from "./external";
+import { ConsoleChat, SimpleFileStorage } from "./external";
 import { CommunicationController, TriggerGateway, ITriggerConfigure } from "./gateways";
 import { UpdateConfig } from "./useCases";
+import { PeristenceGateway } from "./gateways/persistence";
 
-/* istanbul ignore file */
 const mockTriggerConfigure: ITriggerConfigure = {
     setTrigger: (id, cron) => {
-        console.log(id, cron);
+        console.log("updateTrigger", id, cron);
     },
 };
 
+const storage = new SimpleFileStorage("data/chats.json");
 const triggerGW = new TriggerGateway(mockTriggerConfigure);
-const updateConfig = new UpdateConfig(triggerGW);
+const persitenceGW = new PeristenceGateway(storage);
+
+const updateConfig = new UpdateConfig(triggerGW, persitenceGW);
 
 const communicationController = new CommunicationController({ update: updateConfig });
 const chat = new ConsoleChat(communicationController);
