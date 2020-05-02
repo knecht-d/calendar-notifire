@@ -1,43 +1,15 @@
 import { IUpdateInput } from "../../useCases";
 import { IUseCase } from "../../useCases/UseCase";
 import { RecurrenceType, ITimeFrameSettings } from "../../interfaces";
+import { CommunicationError } from "./CommunicationError";
+import { Mappings } from "./Mappings";
+import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from "./validation";
 
 export interface ICommunicationIn {
     update: (chatId: string, userId: string, payload: string) => void;
 }
 
-type Days = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
-interface IMappings {
-    recurrence: { [key: string]: RecurrenceType | undefined };
-    timeFrames: { [key: string]: keyof ITimeFrameSettings };
-    days: { [key in Days]: string };
-}
-
 export class CommunicationController implements ICommunicationIn {
-    private readonly mappings: IMappings = {
-        recurrence: {
-            s: RecurrenceType.hourly,
-            t: RecurrenceType.daily,
-            m: RecurrenceType.monthly,
-        },
-        timeFrames: {
-            j: "year",
-            M: "month",
-            t: "day",
-            s: "hour",
-            m: "minute",
-        },
-        days: {
-            monday: "mo",
-            tuesday: "di",
-            wednesday: "mi",
-            thursday: "do",
-            friday: "fr",
-            saturday: "sa",
-            sunday: "so",
-        },
-    };
-
     private readonly configExtractors = {
         [RecurrenceType.hourly]: this.extractHourlyConfig.bind(this),
         [RecurrenceType.daily]: this.extractDailyConfig.bind(this),
@@ -51,12 +23,15 @@ export class CommunicationController implements ICommunicationIn {
     ) {}
 
     update(chatId: string, userId: string, payload: string) {
-        const payloadParts = payload.trim().split(" ");
+        const payloadParts = payload
+            .trim()
+            .replace(/\s+/gm, " ")
+            .split(" ");
         const triggerId = payloadParts.shift()!;
         const recurrenceIdentifier = payloadParts.shift()!;
-        const reccurenceType = this.mappings.recurrence[recurrenceIdentifier];
+        const reccurenceType = Mappings.recurrence[recurrenceIdentifier];
         if (!reccurenceType) {
-            return;
+            throw new CommunicationError("INVALID_RECURRENCE_TYPE", recurrenceIdentifier, "m,t,s");
         }
         const configExtractors = this.configExtractors;
         this.useCases.update.execute({
@@ -68,6 +43,7 @@ export class CommunicationController implements ICommunicationIn {
     }
 
     private extractMonthlyConfig(parts: string[]): IUpdateInput["config"] {
+        validateMonthlyConfig(parts);
         const time = parts[1].split(":");
         const startConfig = parts[2];
         const endConfig = parts[3];
@@ -84,6 +60,7 @@ export class CommunicationController implements ICommunicationIn {
     }
 
     private extractDailyConfig(parts: string[]): IUpdateInput["config"] {
+        validateDailyConfig(parts);
         const days = parts[0].split(",");
         const time = parts[1].split(":");
         const startConfig = parts[2];
@@ -92,13 +69,13 @@ export class CommunicationController implements ICommunicationIn {
             recurrence: {
                 type: RecurrenceType.daily,
                 days: {
-                    monday: days.includes(this.mappings.days.monday),
-                    tuesday: days.includes(this.mappings.days.tuesday),
-                    wednesday: days.includes(this.mappings.days.wednesday),
-                    thursday: days.includes(this.mappings.days.thursday),
-                    friday: days.includes(this.mappings.days.friday),
-                    saturday: days.includes(this.mappings.days.saturday),
-                    sunday: days.includes(this.mappings.days.sunday),
+                    monday: days.includes(Mappings.days.monday),
+                    tuesday: days.includes(Mappings.days.tuesday),
+                    wednesday: days.includes(Mappings.days.wednesday),
+                    thursday: days.includes(Mappings.days.thursday),
+                    friday: days.includes(Mappings.days.friday),
+                    saturday: days.includes(Mappings.days.saturday),
+                    sunday: days.includes(Mappings.days.sunday),
                 },
                 hour: Number.parseInt(time[0]),
                 minute: Number.parseInt(time[1]),
@@ -109,6 +86,7 @@ export class CommunicationController implements ICommunicationIn {
     }
 
     private extractHourlyConfig(parts: string[]): IUpdateInput["config"] {
+        validateHourlyConfig(parts);
         const days = parts[0].toLowerCase().split(",");
         const timeFrom = parts[1].split(":");
         const timeTo = parts[2].split(":");
@@ -122,13 +100,13 @@ export class CommunicationController implements ICommunicationIn {
             recurrence: {
                 type: RecurrenceType.hourly,
                 days: {
-                    monday: days.includes(this.mappings.days.monday),
-                    tuesday: days.includes(this.mappings.days.tuesday),
-                    wednesday: days.includes(this.mappings.days.wednesday),
-                    thursday: days.includes(this.mappings.days.thursday),
-                    friday: days.includes(this.mappings.days.friday),
-                    saturday: days.includes(this.mappings.days.saturday),
-                    sunday: days.includes(this.mappings.days.sunday),
+                    monday: days.includes(Mappings.days.monday),
+                    tuesday: days.includes(Mappings.days.tuesday),
+                    wednesday: days.includes(Mappings.days.wednesday),
+                    thursday: days.includes(Mappings.days.thursday),
+                    friday: days.includes(Mappings.days.friday),
+                    saturday: days.includes(Mappings.days.saturday),
+                    sunday: days.includes(Mappings.days.sunday),
                 },
                 fromHour,
                 toHour,
@@ -146,7 +124,7 @@ export class CommunicationController implements ICommunicationIn {
         const configParts = frameConfig.split(",");
         const result = configParts.reduce((config, current) => {
             const isFixed = !(current.includes("+") || current.includes("-"));
-            config[this.mappings.timeFrames[current[0]]] = {
+            config[Mappings.timeFrames[current[0]]] = {
                 value: Number.parseInt(current.slice(1)),
                 fixed: isFixed,
             };

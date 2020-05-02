@@ -1,5 +1,6 @@
 import { CommunicationController } from "./CommunicationController";
 import { RecurrenceType } from "../../interfaces";
+import { CommunicationError } from "./CommunicationError";
 
 describe("CommunicationController", () => {
     const updateMock = {
@@ -164,6 +165,263 @@ describe("CommunicationController", () => {
                         },
                     }),
                 );
+            });
+        });
+
+        describe("validation", () => {
+            const testExeption = (
+                fn: () => void,
+                expected: {
+                    key: string;
+                    given?: string;
+                    expected?: string;
+                    example?: string;
+                },
+            ) => {
+                try {
+                    fn();
+                    fail("No exception thrown");
+                } catch (error) {
+                    if (error instanceof CommunicationError) {
+                        expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${expected.key}`)));
+                        expect(error.key).toEqual(expected.key);
+                        expect(error.given).toEqual(expected.given);
+                        expect(error.expected).toEqual(expected.expected);
+                        expect(error.example).toEqual(expected.example);
+                    } else {
+                        fail(`Unexpected Error ${error}`);
+                    }
+                }
+            };
+
+            it("invalid recurrence", () => {
+                testExeption(
+                    () => {
+                        controller.update("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+                    },
+                    {
+                        key: "INVALID_RECURRENCE_TYPE",
+                        given: "d",
+                        expected: "m,t,s",
+                    },
+                );
+            });
+
+            describe("hourly", () => {
+                it("mising argument", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger s mo,di 07:00 t+1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_NUMBER_OF_ARGUMENTS",
+                            given: "4",
+                            expected: "5 (s [days] [start time] [end time] [start] [end])",
+                            example: "s mo,di,so 07:30 19:30 t+1,s0,m0 t+2,s0,m0",
+                        },
+                    );
+                });
+                it("invalid days", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger s mo,di, 07:00 17:00 t+1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_DAYS",
+                            given: "mo,di,",
+                            expected: "mo|di|mi|do|fr|sa|so",
+                            example: "mo,di,so",
+                        },
+                    );
+                });
+                it("invalid start time", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger s mo,di 07:60 19:00 t+1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_TIME",
+                            given: "07:60",
+                            expected: "0:0 - 23:59",
+                            example: "17:23",
+                        },
+                    );
+                });
+                it("invalid end time", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger s mo,di 07:00 24:00 t+1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_TIME",
+                            given: "24:00",
+                            expected: "0:0 - 23:59",
+                            example: "17:23",
+                        },
+                    );
+                });
+                it("invalid start frame", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger s mo,di 07:00 20:00 t*1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_FRAME_CONFIG",
+                            given: "t*1,s0,m0",
+                            expected: "[j|M|t|s|m](+|-)0-9 -",
+                            example: "t+1,s0,m0",
+                        },
+                    );
+                });
+                it("invalid end frame", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger s mo,di 07:00 20:00 t+1,s0,m0 *");
+                        },
+                        {
+                            key: "INVALID_FRAME_CONFIG",
+                            given: "*",
+                            expected: "[j|M|t|s|m](+|-)0-9 -",
+                            example: "t+1,s0,m0",
+                        },
+                    );
+                });
+            });
+
+            describe("daily", () => {
+                it("mising argument", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger t mo,di t+1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_NUMBER_OF_ARGUMENTS",
+                            given: "3",
+                            expected: "4 (t [days] [time] [start] [end])",
+                            example: "t mo,di,so 17:30 t+1,s0,m0 t+2,s0,m0",
+                        },
+                    );
+                });
+                it("invalid days", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger t mo,di, 17:00 t+1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_DAYS",
+                            given: "mo,di,",
+                            expected: "mo|di|mi|do|fr|sa|so",
+                            example: "mo,di,so",
+                        },
+                    );
+                });
+                it("invalid time", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger t mo,di 24:00 t+1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_TIME",
+                            given: "24:00",
+                            expected: "0:0 - 23:59",
+                            example: "17:23",
+                        },
+                    );
+                });
+                it("invalid start frame", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger t mo,di 17:00 t*1,s0,m0 t+2,s0,m0");
+                        },
+                        {
+                            key: "INVALID_FRAME_CONFIG",
+                            given: "t*1,s0,m0",
+                            expected: "[j|M|t|s|m](+|-)0-9 -",
+                            example: "t+1,s0,m0",
+                        },
+                    );
+                });
+                it("invalid end frame", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 *");
+                        },
+                        {
+                            key: "INVALID_FRAME_CONFIG",
+                            given: "*",
+                            expected: "[j|M|t|s|m](+|-)0-9 -",
+                            example: "t+1,s0,m0",
+                        },
+                    );
+                });
+            });
+
+            describe("monthly", () => {
+                it("mising argument", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger m 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
+                        },
+                        {
+                            key: "INVALID_NUMBER_OF_ARGUMENTS",
+                            given: "3",
+                            expected: "4 (m [day of month] [time] [start] [end])",
+                            example: "m 15 17:30 M+1,t1,s0,m0 M+2,t1,s0,m0",
+                        },
+                    );
+                });
+                it("invalid day", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger m 40 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
+                        },
+                        {
+                            key: "INVALID_DAY_OF_MONTH",
+                            given: "40",
+                            expected: "1-31",
+                            example: "13",
+                        },
+                    );
+                });
+                it("invalid time", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger m 15 17:60 M+1,t1,s0,m0 M+2,t1,s0,m0");
+                        },
+                        {
+                            key: "INVALID_TIME",
+                            given: "17:60",
+                            expected: "0:0 - 23:59",
+                            example: "17:23",
+                        },
+                    );
+                });
+                it("invalid start frame", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger m 15 17:00 M+1,T1,s0,m0 M+2,t1,s0,m0");
+                        },
+                        {
+                            key: "INVALID_FRAME_CONFIG",
+                            given: "M+1,T1,s0,m0",
+                            expected: "[j|M|t|s|m](+|-)0-9 -",
+                            example: "t+1,s0,m0",
+                        },
+                    );
+                });
+                it("invalid end frame", () => {
+                    testExeption(
+                        () => {
+                            controller.update("chat", "user", "trigger m 15 17:00 M+1,t1,s0,m0 M+2,t/1,s0,m0");
+                        },
+                        {
+                            key: "INVALID_FRAME_CONFIG",
+                            given: "M+2,t/1,s0,m0",
+                            expected: "[j|M|t|s|m](+|-)0-9 -",
+                            example: "t+1,s0,m0",
+                        },
+                    );
+                });
             });
         });
     });
