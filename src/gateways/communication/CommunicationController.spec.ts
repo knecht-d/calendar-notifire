@@ -1,14 +1,19 @@
 import { CommunicationController } from "./CommunicationController";
 import { RecurrenceType } from "../../interfaces";
-import { CommunicationError } from "./CommunicationError";
 
 describe("CommunicationController", () => {
     const updateMock = {
         execute: jest.fn(),
     };
-    const controller = new CommunicationController({ update: updateMock });
+    const errrorReporterMock = {
+        sendCommunicationError: jest.fn(),
+        sendError: jest.fn(),
+    };
+    const controller = new CommunicationController({ update: updateMock }, errrorReporterMock);
     beforeEach(() => {
         updateMock.execute.mockReset();
+        errrorReporterMock.sendCommunicationError.mockReset();
+        errrorReporterMock.sendError.mockReset();
     });
     describe("update", () => {
         it("should send the basic information", () => {
@@ -178,20 +183,14 @@ describe("CommunicationController", () => {
                     example?: string;
                 },
             ) => {
-                try {
-                    fn();
-                    fail("No exception thrown");
-                } catch (error) {
-                    if (error instanceof CommunicationError) {
-                        expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${expected.key}`)));
-                        expect(error.key).toEqual(expected.key);
-                        expect(error.given).toEqual(expected.given);
-                        expect(error.expected).toEqual(expected.expected);
-                        expect(error.example).toEqual(expected.example);
-                    } else {
-                        fail(`Unexpected Error ${error}`);
-                    }
-                }
+                fn();
+                expect(errrorReporterMock.sendCommunicationError.mock.calls).toHaveLength(1);
+                const error = errrorReporterMock.sendCommunicationError.mock.calls[0][1];
+                expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${expected.key}`)));
+                expect(error.key).toEqual(expected.key);
+                expect(error.given).toEqual(expected.given);
+                expect(error.expected).toEqual(expected.expected);
+                expect(error.example).toEqual(expected.example);
             };
 
             it("invalid recurrence", () => {

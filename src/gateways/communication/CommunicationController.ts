@@ -1,9 +1,10 @@
 import { IUpdateInput } from "../../useCases";
 import { IUseCase } from "../../useCases/UseCase";
 import { RecurrenceType, ITimeFrameSettings } from "../../interfaces";
-import { CommunicationError } from "./CommunicationError";
+import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { Mappings } from "./Mappings";
 import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from "./validation";
+import { IErrorReporter } from "./CommunicationPresenter";
 
 export interface ICommunicationIn {
     update: (chatId: string, userId: string, payload: string) => void;
@@ -20,26 +21,39 @@ export class CommunicationController implements ICommunicationIn {
         private useCases: {
             update: IUseCase<IUpdateInput, void>;
         },
+        private presenter: IErrorReporter,
     ) {}
 
     update(chatId: string, userId: string, payload: string) {
-        const payloadParts = payload
-            .trim()
-            .replace(/\s+/gm, " ")
-            .split(" ");
-        const triggerId = payloadParts.shift()!;
-        const recurrenceIdentifier = payloadParts.shift()!;
-        const reccurenceType = Mappings.recurrence[recurrenceIdentifier];
-        if (!reccurenceType) {
-            throw new CommunicationError("INVALID_RECURRENCE_TYPE", recurrenceIdentifier, "m,t,s");
+        try {
+            const payloadParts = payload
+                .trim()
+                .replace(/\s+/gm, " ")
+                .split(" ");
+            const triggerId = payloadParts.shift()!;
+            const recurrenceIdentifier = payloadParts.shift()!;
+            const reccurenceType = Mappings.recurrence[recurrenceIdentifier];
+            if (!reccurenceType) {
+                throw new CommunicationError(
+                    CommunicationErrorCode.INVALID_RECURRENCE_TYPE,
+                    recurrenceIdentifier,
+                    "m,t,s",
+                );
+            }
+            const configExtractors = this.configExtractors;
+            this.useCases.update.execute({
+                chatId,
+                userId,
+                triggerId,
+                config: configExtractors[reccurenceType](payloadParts),
+            });
+        } catch (error) {
+            if (error instanceof CommunicationError) {
+                this.presenter.sendCommunicationError(chatId, error);
+            } else {
+                this.presenter.sendError(chatId, `${error}`);
+            }
         }
-        const configExtractors = this.configExtractors;
-        this.useCases.update.execute({
-            chatId,
-            userId,
-            triggerId,
-            config: configExtractors[reccurenceType](payloadParts),
-        });
     }
 
     private extractMonthlyConfig(parts: string[]): IUpdateInput["config"] {
