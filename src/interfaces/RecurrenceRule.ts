@@ -5,9 +5,8 @@ interface IBaseRecurrenceRule {
 interface IHourlyRecurrenceRule extends IBaseRecurrenceRule {
     type: RecurrenceType.hourly;
     fromHour: number;
-    fromMinute: number;
     toHour: number;
-    toMinute: number;
+    minute: number;
     days: {
         monday?: boolean;
         tuesday?: boolean;

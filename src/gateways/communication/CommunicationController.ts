@@ -1,5 +1,5 @@
 import { IUpdateInput } from "../../useCases";
-import { UseCase } from "../../useCases/UseCase";
+import { IUseCase } from "../../useCases/UseCase";
 import { RecurrenceType, ITimeFrameSettings } from "../../interfaces";
 
 export interface ICommunicationIn {
@@ -46,7 +46,7 @@ export class CommunicationController implements ICommunicationIn {
 
     constructor(
         private useCases: {
-            update: UseCase<IUpdateInput, void>;
+            update: IUseCase<IUpdateInput, void>;
         },
     ) {}
 
@@ -112,6 +112,10 @@ export class CommunicationController implements ICommunicationIn {
         const days = parts[0].toLowerCase().split(",");
         const timeFrom = parts[1].split(":");
         const timeTo = parts[2].split(":");
+        const fromMinute = Number.parseInt(timeFrom[1]);
+        const toMinute = Number.parseInt(timeTo[1]);
+        const fromHour = Number.parseInt(timeFrom[0]);
+        const toHour = Number.parseInt(timeTo[0]) - (toMinute >= fromMinute ? 0 : 1);
         const startConfig = parts[3];
         const endConfig = parts[4];
         return {
@@ -126,10 +130,9 @@ export class CommunicationController implements ICommunicationIn {
                     saturday: days.includes(this.mappings.days.saturday),
                     sunday: days.includes(this.mappings.days.sunday),
                 },
-                fromHour: Number.parseInt(timeFrom[0]),
-                fromMinute: Number.parseInt(timeFrom[1]),
-                toHour: Number.parseInt(timeTo[0]),
-                toMinute: Number.parseInt(timeTo[1]),
+                fromHour,
+                toHour,
+                minute: fromMinute,
             },
             frameStart: this.extractFrame(startConfig),
             frameEnd: this.extractFrame(endConfig),
