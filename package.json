@@ -9,12 +9,13 @@
     "cover:watch": "jest --coverage --watchAll",
     "cover": "jest --coverage",
     "build": "pretty-quick && npm run check && rimraf ./build && tsc -p ./tsconfig.build.json",
+    "build:check": "pretty-quick && npm run check && tsc -p ./tsconfig.json --noEmit",
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
     "check": "eslint -c .eslintrc.js --ext .ts ./src",
     "pretty": "pretty-quick",
     "precommit": "pretty-quick --staged && lint-staged",
-    "prepush": "npm run cover"
+    "prepush": "npm run build:check && npm run cover"
   },
   "repository": {
     "type": "git",
