@@ -1,5 +1,4 @@
-import { IUpdateInput } from "../../useCases";
-import { IUseCase } from "../../useCases/UseCase";
+import { IUpdateInput, IUseCase } from "../../useCases";
 import { RecurrenceType, ITimeFrameSettings } from "../../interfaces";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { Mappings } from "./Mappings";

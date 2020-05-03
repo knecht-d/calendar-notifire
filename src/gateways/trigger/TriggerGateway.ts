@@ -1,12 +1,29 @@
-import { IUpdateTimer } from "../../useCases";
+import { IUpdateTimer, IUseCase, IReminderIn } from "../../useCases";
 import { IRecurrenceRule, RecurrenceType } from "../../interfaces";
 
 export interface ITriggerConfigure {
     setTrigger: (id: string, cron: string) => void;
 }
 
-export class TriggerGateway implements IUpdateTimer {
+export interface ITriggerReceiver {
+    trigger: (id: string) => void;
+}
+
+export class TriggerGateway implements IUpdateTimer, ITriggerReceiver {
+    private reminder?: IUseCase<IReminderIn, void>;
     constructor(private triggerConfig: ITriggerConfigure) {}
+
+    init(reminder: IUseCase<IReminderIn, void>) {
+        this.reminder = reminder;
+    }
+
+    trigger(id: string) {
+        if (!this.reminder) {
+            throw Error("TriggerGateway must be initialized!");
+        }
+        const { chatId, triggerId } = this.decodeId(id);
+        this.reminder.execute({ chatId, triggerId });
+    }
 
     public update(chatId: string, triggerId: string, recurrence: IRecurrenceRule) {
         const id = this.encodeId(chatId, triggerId);
@@ -60,11 +77,11 @@ export class TriggerGateway implements IUpdateTimer {
     private encodeId(chatId: string, triggerId: string) {
         return `${encodeURI(chatId)}|${encodeURI(triggerId)}`;
     }
-    // private decodeId(id: string) {
-    //     const parts = id.split("|");
-    //     return {
-    //         chatId: decodeURI(parts[0]),
-    //         triggerId: decodeURI(parts[1]),
-    //     }
-    // }
+    private decodeId(id: string) {
+        const parts = id.split("|");
+        return {
+            chatId: decodeURI(parts[0]),
+            triggerId: decodeURI(parts[1]),
+        };
+    }
 }

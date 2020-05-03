@@ -41,4 +41,21 @@ describe("TriggerGateway", () => {
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), "45 7-19 * * 1,3,5");
         });
     });
+    describe("trigger", () => {
+        it("should fail if it was not initialized", () => {
+            const triggerGW = new TriggerGateway(mockTriggerConfigure);
+            expect(() => {
+                triggerGW.trigger("someID");
+            }).toThrow("TriggerGateway must be initialized!");
+        });
+        it("should execute the reminder with the decoded id", () => {
+            const triggerGW = new TriggerGateway(mockTriggerConfigure);
+            const mockReminder = {
+                execute: jest.fn(),
+            };
+            triggerGW.init(mockReminder);
+            triggerGW.trigger("chat%7CId|trigger%7CId");
+            expect(mockReminder.execute).toHaveBeenLastCalledWith({ chatId: "chat|Id", triggerId: "trigger|Id" });
+        });
+    });
 });
