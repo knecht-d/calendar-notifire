@@ -108,4 +108,17 @@ describe("CommunicationPresenter", () => {
             );
         });
     });
+    describe("sendEvents", () => {
+        it("should send the events", () => {
+            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            presenter.sendEvents("someChat", [
+                {
+                    start: new Date(2020, 4, 1, 12, 0),
+                    end: new Date(2020, 4, 1, 12, 0),
+                    title: "Event",
+                },
+            ]);
+            expect(mockCommunicationOut.send).toMatchSnapshot();
+        });
+    });
 });
