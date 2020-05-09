@@ -178,7 +178,7 @@ describe("CommunicationController", () => {
         });
 
         describe("validation", () => {
-            const testExeption = (
+            const testException = (
                 fn: () => void,
                 expected: {
                     key: string;
@@ -188,7 +188,7 @@ describe("CommunicationController", () => {
                 },
             ) => {
                 fn();
-                expect(errrorReporterMock.sendCommunicationError.mock.calls).toHaveLength(1);
+                expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(1);
                 const error = errrorReporterMock.sendCommunicationError.mock.calls[0][1];
                 expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${expected.key}`)));
                 expect(error.key).toEqual(expected.key);
@@ -198,7 +198,7 @@ describe("CommunicationController", () => {
             };
 
             it("invalid recurrence", () => {
-                testExeption(
+                testException(
                     () => {
                         controller.update("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
                     },
@@ -210,9 +210,17 @@ describe("CommunicationController", () => {
                 );
             });
 
+            it("other error", () => {
+                controller.update("chat", "user", undefined as any);
+                expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
+                expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
+                const error = errrorReporterMock.sendError.mock.calls[0][1];
+                expect(error).toEqual(expect.stringContaining("of undefined"));
+            });
+
             describe("hourly", () => {
                 it("mising argument", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger s mo,di 07:00 t+1,s0,m0 t+2,s0,m0");
                         },
@@ -225,7 +233,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid days", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger s mo,di, 07:00 17:00 t+1,s0,m0 t+2,s0,m0");
                         },
@@ -238,7 +246,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid start time", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger s mo,di 07:60 19:00 t+1,s0,m0 t+2,s0,m0");
                         },
@@ -251,7 +259,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid end time", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger s mo,di 07:00 24:00 t+1,s0,m0 t+2,s0,m0");
                         },
@@ -264,7 +272,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid start frame", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger s mo,di 07:00 20:00 t*1,s0,m0 t+2,s0,m0");
                         },
@@ -277,7 +285,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid end frame", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger s mo,di 07:00 20:00 t+1,s0,m0 *");
                         },
@@ -293,7 +301,7 @@ describe("CommunicationController", () => {
 
             describe("daily", () => {
                 it("mising argument", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger t mo,di t+1,s0,m0 t+2,s0,m0");
                         },
@@ -306,7 +314,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid days", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger t mo,di, 17:00 t+1,s0,m0 t+2,s0,m0");
                         },
@@ -319,7 +327,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid time", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger t mo,di 24:00 t+1,s0,m0 t+2,s0,m0");
                         },
@@ -332,7 +340,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid start frame", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger t mo,di 17:00 t*1,s0,m0 t+2,s0,m0");
                         },
@@ -345,7 +353,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid end frame", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 *");
                         },
@@ -361,7 +369,7 @@ describe("CommunicationController", () => {
 
             describe("monthly", () => {
                 it("mising argument", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger m 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
                         },
@@ -374,7 +382,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid day", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger m 40 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
                         },
@@ -387,7 +395,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid time", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger m 15 17:60 M+1,t1,s0,m0 M+2,t1,s0,m0");
                         },
@@ -400,7 +408,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid start frame", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger m 15 17:00 M+1,T1,s0,m0 M+2,t1,s0,m0");
                         },
@@ -413,7 +421,7 @@ describe("CommunicationController", () => {
                     );
                 });
                 it("invalid end frame", () => {
-                    testExeption(
+                    testException(
                         () => {
                             controller.update("chat", "user", "trigger m 15 17:00 M+1,t1,s0,m0 M+2,t/1,s0,m0");
                         },
