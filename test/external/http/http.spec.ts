@@ -1,5 +1,5 @@
 import nock from "nock";
-import { get, post } from "./http";
+import { get, post } from "../../../src/external/http/http";
 
 describe("http", () => {
     describe("get", () => {

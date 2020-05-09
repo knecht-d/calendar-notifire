@@ -1,4 +1,4 @@
-import { CalendarGateway } from "./CalendarGateway";
+import { CalendarGateway } from "../../../src/gateways";
 
 describe("CalendarGateway", () => {
     const mockEvents = [

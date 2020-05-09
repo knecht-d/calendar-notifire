@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { SimpleFileStorage } from "./SimpleFileStorage";
+import { SimpleFileStorage } from "../../../src/external";
 
 jest.mock("fs");
 describe("SimpleFileStorage", () => {
@@ -15,7 +15,12 @@ describe("SimpleFileStorage", () => {
             (readFileSync as jest.Mock).mockReturnValue('{"data": "someData"}');
             const storage = new SimpleFileStorage({ file: "data/test.json" });
             storage.readAll();
-            expect(readFileSync).toHaveBeenCalledWith(`${__dirname}/../../../data/test.json`, { encoding: "utf8" });
+            expect(readFileSync).toHaveBeenCalledWith(
+                expect.stringMatching(new RegExp(".*/\\.\\./\\.\\./\\.\\./data/test\\.json$")),
+                {
+                    encoding: "utf8",
+                },
+            );
             expect(storage.get("data")).toEqual("someData");
         });
     });
@@ -50,7 +55,7 @@ describe("SimpleFileStorage", () => {
             const storage = new SimpleFileStorage({ file: "data/test.json" });
             storage.save("newKey", "newData");
             expect(writeFileSync).toHaveBeenLastCalledWith(
-                `${__dirname}/../../../data/test.json`,
+                expect.stringMatching(new RegExp(".*/\\.\\./\\.\\./\\.\\./data/test\\.json$")),
                 '{"newKey":"newData"}',
                 {
                     encoding: "utf8",
@@ -63,7 +68,7 @@ describe("SimpleFileStorage", () => {
             const storage = new SimpleFileStorage({ file: "data/test.json" });
             storage.save("newKey", "newData");
             expect(writeFileSync).toHaveBeenLastCalledWith(
-                `${__dirname}/../../../data/test.json`,
+                expect.stringMatching(new RegExp(".*/\\.\\./\\.\\./\\.\\./data/test\\.json$")),
                 '{"data":"someData","newKey":"newData"}',
                 {
                     encoding: "utf8",

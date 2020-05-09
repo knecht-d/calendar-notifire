@@ -1,5 +1,5 @@
-import { TriggerGateway } from "./TriggerGateway";
-import { RecurrenceType } from "../../interfaces";
+import { TriggerGateway } from "../../../src/gateways";
+import { RecurrenceType } from "../../../src/interfaces";
 
 describe("TriggerGateway", () => {
     const mockTriggerConfigure = {

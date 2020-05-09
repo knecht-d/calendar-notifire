@@ -1,7 +1,7 @@
-import { Chat } from "./Chat";
-import { TimeFrame } from "./TimeFrame";
-import { IRecurrenceRule, RecurrenceType, ITimeFrameSettings } from "../interfaces";
-import { EntityErrorCode, EntityError } from "./EntityError";
+import { Chat } from "../../src/entities/Chat";
+import { TimeFrame } from "../../src/entities/TimeFrame";
+import { IRecurrenceRule, RecurrenceType, ITimeFrameSettings } from "../../src/interfaces";
+import { EntityErrorCode, EntityError } from "../../src/entities/EntityError";
 
 describe("Chat", () => {
     const baseRecurrence: IRecurrenceRule = {

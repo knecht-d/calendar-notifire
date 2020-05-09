@@ -1,8 +1,8 @@
-import { Chats } from "./Chats";
-import { Chat } from "./Chat";
-import { EntityError, EntityErrorCode } from "./EntityError";
+import { Chats } from "../../src/entities/";
+import { Chat } from "../../src/entities/Chat";
+import { EntityError, EntityErrorCode } from "../../src/entities/EntityError";
 
-jest.mock("./Chat", () => {
+jest.mock("../../src/entities/Chat", () => {
     // Works and lets you check for constructor calls:
     return {
         Chat: jest.fn().mockImplementation(() => {
