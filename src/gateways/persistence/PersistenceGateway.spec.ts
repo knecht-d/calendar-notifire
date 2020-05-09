@@ -9,7 +9,8 @@ describe("PersistenceGateway", () => {
     });
     describe("saveUpdatedCosaveChatConfignfig", () => {
         it("should save the updated config as a string", () => {
-            const gateway = new PeristenceGateway(mockPersistence);
+            const gateway = new PeristenceGateway();
+            gateway.init({ persistence: mockPersistence });
             gateway.saveChatConfig("chat", {
                 timeFrames: {
                     some: {

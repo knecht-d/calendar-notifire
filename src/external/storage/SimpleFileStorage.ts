@@ -1,12 +1,14 @@
-import { IPerrsistence } from "../../gateways";
 import { readFileSync, existsSync, writeFileSync } from "fs";
+import { AbstractStorage } from "./AbstractStorage";
 
-export class SimpleFileStorage implements IPerrsistence {
+export class SimpleFileStorage extends AbstractStorage<{ file: string }> {
     private file: string;
     private data: { [key: string]: string } = {};
-    constructor(file: string) {
+
+    constructor(setupData: { file: string }) {
+        super(setupData);
         const root = `${__dirname}/../../..`;
-        this.file = `${root}/${file}`;
+        this.file = `${root}/${this.setupData.file}`;
     }
 
     readAll() {

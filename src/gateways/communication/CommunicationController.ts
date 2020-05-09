@@ -1,42 +1,45 @@
-import { IUpdateInput, IUseCase, IInitInput } from "../../useCases";
-import { RecurrenceType, ITimeFrameSettings } from "../../interfaces";
+import { ITimeFrameSettings, RecurrenceType } from "../../interfaces";
+import { InitializeChat, IUpdateInput, UpdateConfig } from "../../useCases";
+import { GateWay } from "../GateWay";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
+import { IErrorReporter } from "./CommunicationPresenter";
 import { Mappings } from "./Mappings";
 import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from "./validation";
-import { IErrorReporter } from "./CommunicationPresenter";
 
 export interface ICommunicationIn {
     update: (chatId: string, userId: string, payload: string) => void;
-    init: (chatId: string, userId: string) => void;
+    initChat: (chatId: string, userId: string) => void;
 }
 
-export class CommunicationController implements ICommunicationIn {
+interface IDependencies {
+    presenter: IErrorReporter;
+    useCases: {
+        update: UpdateConfig;
+        init: InitializeChat;
+    };
+}
+
+export class CommunicationController extends GateWay<IDependencies> implements ICommunicationIn {
     private readonly configExtractors = {
         [RecurrenceType.hourly]: this.extractHourlyConfig.bind(this),
         [RecurrenceType.daily]: this.extractDailyConfig.bind(this),
         [RecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
     };
 
-    constructor(
-        private useCases: {
-            update: IUseCase<IUpdateInput, void>;
-            init: IUseCase<IInitInput, void>;
-        },
-        private presenter: IErrorReporter,
-    ) {}
-
-    init(chatId: string, userId: string) {
+    initChat(chatId: string, userId: string) {
+        this.checkInitialized();
         try {
-            this.useCases.init.execute({
+            this.dependencies!.useCases.init.execute({
                 chatId,
                 userId,
             });
         } catch (error) {
-            this.presenter.sendError(chatId, `${error}`);
+            this.dependencies!.presenter.sendError(chatId, `${error}`);
         }
     }
 
     update(chatId: string, userId: string, payload: string) {
+        this.checkInitialized();
         try {
             const payloadParts = payload
                 .trim()
@@ -53,7 +56,7 @@ export class CommunicationController implements ICommunicationIn {
                 );
             }
             const configExtractors = this.configExtractors;
-            this.useCases.update.execute({
+            this.dependencies!.useCases.update.execute({
                 chatId,
                 userId,
                 triggerId,
@@ -61,9 +64,9 @@ export class CommunicationController implements ICommunicationIn {
             });
         } catch (error) {
             if (error instanceof CommunicationError) {
-                this.presenter.sendCommunicationError(chatId, error);
+                this.dependencies!.presenter.sendCommunicationError(chatId, error);
             } else {
-                this.presenter.sendError(chatId, `${error}`);
+                this.dependencies!.presenter.sendError(chatId, `${error}`);
             }
         }
     }

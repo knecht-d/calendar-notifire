@@ -1,4 +1,4 @@
-import { IUseCase } from "../UseCase";
+import { UseCase } from "../UseCase";
 import { Chats } from "../../entities";
 import { UseCaseError, UseCaseErrorCode } from "../UseCaseError";
 
@@ -22,9 +22,11 @@ export interface IEventProvider {
 export interface IEventCommunication {
     sendEvents: (chatId: string, events: IEvent[]) => void;
 }
-
-export class Reminder implements IUseCase<IReminderIn, void> {
-    constructor(private eventProvider: IEventProvider, private communication: IEventCommunication) {}
+export abstract class Reminder extends UseCase<IReminderIn> {}
+export class ReminderImpl extends Reminder {
+    constructor(private eventProvider: IEventProvider, private communication: IEventCommunication) {
+        super();
+    }
     execute({ chatId, triggerId }: IReminderIn) {
         const chat = Chats.instance.getChat(chatId);
         const timeFrame = chat.getTimeFrame(triggerId);
