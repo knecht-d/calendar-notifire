@@ -24,12 +24,14 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendUpdateSuccess", () => {
         it("should send a plain success message to the chat", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendUpdateSuccess("someChat", "someTrigger");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Update someTrigger erfolgreich.");
         });
         it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendUpdateSuccess("someChat", "someTrigger", "Details");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
@@ -39,7 +41,8 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendUpdateError", () => {
         it("should send a plain error message to the chat", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendUpdateError("someChat", "someTrigger");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
@@ -47,7 +50,8 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendUpdateError("someChat", "someTrigger", "Details");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
@@ -57,12 +61,14 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendInitSuccess", () => {
         it("should send a plain success message to the chat", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendInitSuccess("someChat");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Erzeugen des Chats erfolgreich.");
         });
         it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendInitSuccess("someChat", "Details");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
@@ -72,7 +78,8 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendInitError", () => {
         it("should send a plain error message to the chat", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendInitError("someChat");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
@@ -80,7 +87,8 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendInitError("someChat", "Details");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
@@ -90,14 +98,16 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendError", () => {
         it("should send error with 'Fehler:'", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendError("someChat", "reason");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Fehler: reason");
         });
     });
     describe("sendCommunicationError", () => {
         it("should replace all properties", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
                 new CommunicationError("GIVEN_EXPECTED_EXAMPLE" as any, "-given-", "-expected-", "-example-"),
@@ -108,7 +118,8 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should replace only given and expected", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
                 new CommunicationError("NO_EXAMPLE" as any, "-given-", "-expected-"),
@@ -119,7 +130,8 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should only replace the placeholders", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
                 new CommunicationError("NO_EXPECTED" as any, "-given-", "-expected-", "-example-"),
@@ -130,7 +142,8 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should only replace all duplicated placeholders", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
                 new CommunicationError("DUPLICATE_GIVEN" as any, "-given-", "-expected-", "-example-"),
@@ -143,7 +156,8 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendEvents", () => {
         it("should send the events", () => {
-            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
             presenter.sendEvents("someChat", [
                 {
                     start: new Date(2020, 4, 1, 12, 0),

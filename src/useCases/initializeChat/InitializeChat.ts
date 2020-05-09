@@ -1,5 +1,5 @@
 import { Chats } from "../../entities";
-import { IUseCase } from "../UseCase";
+import { UseCase } from "../UseCase";
 import { IChatPersistence } from "../updateConfig";
 
 export interface IInitInput {
@@ -15,8 +15,12 @@ export interface IInitCommunication {
     sendInitError: (chatId: string, message?: string) => void;
 }
 
-export class InitializeChat implements IUseCase<IInitInput, void> {
-    constructor(private communication: IInitCommunication, private persistence: IInitChatPersistence) {}
+export abstract class InitializeChat extends UseCase<IInitInput> {}
+
+export class InitializeChatImlp extends InitializeChat {
+    constructor(private communication: IInitCommunication, private persistence: IInitChatPersistence) {
+        super();
+    }
 
     public execute({ chatId, userId }: IInitInput) {
         const chat = Chats.instance.createChat(chatId, userId);

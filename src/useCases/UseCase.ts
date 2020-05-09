@@ -1,3 +1,3 @@
-export interface IUseCase<In, Out> {
-    execute: (input: In) => Out;
+export abstract class UseCase<In> {
+    abstract execute(input: In): void;
 }

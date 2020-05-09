@@ -1,11 +1,14 @@
-import { ICommunicationIn, ICommunicationOut } from "../../gateways";
+import { AbstractChat } from "./AbstractChat";
 
 /* istanbul ignore file */
-export class ConsoleChat implements ICommunicationOut {
-    private communication?: ICommunicationIn;
+export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }> {
+    private chatId: string;
+    private userId: string;
 
-    public init(communication: ICommunicationIn) {
-        this.communication = communication;
+    constructor(setupData: { chatId: string; userId: string }) {
+        super(setupData);
+        this.chatId = setupData.chatId;
+        this.userId = setupData.userId;
     }
 
     public send(chatId: string, message: string) {
@@ -30,10 +33,10 @@ export class ConsoleChat implements ICommunicationOut {
                         console.log("User input complete, program exit.");
                         process.exit();
                     case "/update":
-                        this.communication!.update("consoleChat", "consoleUser", payload);
+                        this.communication!.update(this.chatId, this.userId, payload);
                         break;
                     case "/start":
-                        this.communication!.init("consoleChat", "consoleUser");
+                        this.communication!.initChat(this.chatId, this.userId);
                         break;
                     default:
                         console.log("User Input Data : " + data);

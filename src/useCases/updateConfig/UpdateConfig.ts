@@ -1,6 +1,6 @@
 import { IRecurrenceRule, ITimeFrameSettings, ITimeFrameJSON } from "../../interfaces";
 import { Chats } from "../../entities";
-import { IUseCase } from "../UseCase";
+import { UseCase } from "../UseCase";
 
 export interface IUpdateInput {
     userId: string;
@@ -31,12 +31,15 @@ export interface IUpdateChatPersistence {
     saveChatConfig: (chatId: string, chat: IChatPersistence) => void;
 }
 
-export class UpdateConfig implements IUseCase<IUpdateInput, void> {
+export abstract class UpdateConfig extends UseCase<IUpdateInput> {}
+export class UpdateConfigImpl extends UpdateConfig {
     constructor(
         private updateCommunication: IUpdateCommunication,
         private timerSettings: IUpdateTimer,
         private persistence: IUpdateChatPersistence,
-    ) {}
+    ) {
+        super();
+    }
 
     public execute({ chatId, userId, triggerId, config }: IUpdateInput) {
         const chat = Chats.instance.getChat(chatId);

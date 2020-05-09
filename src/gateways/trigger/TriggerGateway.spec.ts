@@ -5,22 +5,29 @@ describe("TriggerGateway", () => {
     const mockTriggerConfigure = {
         setTrigger: jest.fn(),
     };
+    const mockReminder = {
+        execute: jest.fn(),
+    };
     beforeEach(() => {
         mockTriggerConfigure.setTrigger.mockClear();
+        mockReminder.execute.mockClear();
     });
     describe("update", () => {
         it("should encode the id", () => {
-            const triggerGW = new TriggerGateway(mockTriggerConfigure);
+            const triggerGW = new TriggerGateway();
+            triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.update("chat|Id", "trigger|Id", { type: RecurrenceType.monthly, day: 15, hour: 12, minute: 32 });
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith("chat%7CId|trigger%7CId", expect.any(String));
         });
         it("should create a cron for monthly recurrence", () => {
-            const triggerGW = new TriggerGateway(mockTriggerConfigure);
+            const triggerGW = new TriggerGateway();
+            triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.update("chat|Id", "trigger|Id", { type: RecurrenceType.monthly, day: 15, hour: 12, minute: 32 });
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), "32 12 15 * *");
         });
         it("should create a cron for daily recurrence", () => {
-            const triggerGW = new TriggerGateway(mockTriggerConfigure);
+            const triggerGW = new TriggerGateway();
+            triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.update("chat|Id", "trigger|Id", {
                 type: RecurrenceType.daily,
                 hour: 17,
@@ -30,7 +37,8 @@ describe("TriggerGateway", () => {
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), "15 17 * * 1,5");
         });
         it("should create a cron for hourly recurrence", () => {
-            const triggerGW = new TriggerGateway(mockTriggerConfigure);
+            const triggerGW = new TriggerGateway();
+            triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.update("chat|Id", "trigger|Id", {
                 type: RecurrenceType.hourly,
                 fromHour: 7,
@@ -43,17 +51,14 @@ describe("TriggerGateway", () => {
     });
     describe("trigger", () => {
         it("should fail if it was not initialized", () => {
-            const triggerGW = new TriggerGateway(mockTriggerConfigure);
+            const triggerGW = new TriggerGateway();
             expect(() => {
                 triggerGW.trigger("someID");
-            }).toThrow("TriggerGateway must be initialized!");
+            }).toThrow("Not Initialized");
         });
         it("should execute the reminder with the decoded id", () => {
-            const triggerGW = new TriggerGateway(mockTriggerConfigure);
-            const mockReminder = {
-                execute: jest.fn(),
-            };
-            triggerGW.init(mockReminder);
+            const triggerGW = new TriggerGateway();
+            triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.trigger("chat%7CId|trigger%7CId");
             expect(mockReminder.execute).toHaveBeenLastCalledWith({ chatId: "chat|Id", triggerId: "trigger|Id" });
         });
