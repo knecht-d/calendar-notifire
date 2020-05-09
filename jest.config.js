@@ -1,4 +1,13 @@
+/** @typedef {import('ts-jest')} */
+/** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
+    preset: "ts-jest",
+    testEnvironment: "node",
+    globals: {
+        "ts-jest": {
+            tsConfig: "./tsconfig.json",
+        },
+    },
     transform: {
         "^.+\\.tsx?$": "ts-jest",
     },
@@ -13,3 +22,4 @@ module.exports = {
     },
     coverageReporters: ["json", "lcov", "text", "clover"],
 };
+0;
