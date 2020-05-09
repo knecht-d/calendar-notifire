@@ -1,12 +1,12 @@
-import { GenericFactory } from "./GenericFactory";
-import { UpdateConfigImpl, ReminderImpl, InitializeChatImlp } from "../useCases";
 import {
-    CommunicationController,
-    TriggerGateway,
-    PeristenceGateway,
-    CommunicationPresenter,
     CalendarGateway,
+    CommunicationController,
+    CommunicationPresenter,
+    PeristenceGateway,
+    TriggerGateway,
 } from "../gateways";
+import { InitializeChatImpl, ReminderImpl, UpdateConfigImpl } from "../useCases";
+import { GenericFactory } from "./GenericFactory";
 
 export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
     constructor(private factory: GenericFactory<CalendarSetup, StorageSetup, ChatSetup>) {}
@@ -19,25 +19,25 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         const timer = this.factory.createTimer();
 
         // Create Gateways
-        const communicationPresenter = new CommunicationPresenter();
-        const communicationController = new CommunicationController();
-        const persitenceGW = new PeristenceGateway();
         const calendarGW = new CalendarGateway();
+        const communicationController = new CommunicationController();
+        const communicationPresenter = new CommunicationPresenter();
+        const persitenceGW = new PeristenceGateway();
         const triggerGW = new TriggerGateway();
 
         // Create Use Cases
-        const updateConfig = new UpdateConfigImpl(communicationPresenter, triggerGW, persitenceGW);
+        const initChat = new InitializeChatImpl(communicationPresenter, persitenceGW);
         const reminder = new ReminderImpl(calendarGW, communicationPresenter);
-        const initChat = new InitializeChatImlp(communicationPresenter, persitenceGW);
+        const updateConfig = new UpdateConfigImpl(communicationPresenter, triggerGW, persitenceGW);
 
         // Initialize Gateways
-        communicationPresenter.init({ communication: chat });
+        calendarGW.init({ calendarConnector: calendar });
         communicationController.init({
             useCases: { update: updateConfig, init: initChat },
             presenter: communicationPresenter,
         });
+        communicationPresenter.init({ communication: chat });
         persitenceGW.init({ persistence: storage });
-        calendarGW.init({ calendarConnector: calendar });
         triggerGW.init({ triggerConfig: timer, reminder: reminder });
 
         // Initialize External
@@ -45,8 +45,10 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         timer.init(triggerGW);
 
         return {
+            calendar,
             chat,
             storage,
+            timer,
         };
     }
 }

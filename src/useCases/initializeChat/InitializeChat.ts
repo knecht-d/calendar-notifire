@@ -17,7 +17,7 @@ export interface IInitCommunication {
 
 export abstract class InitializeChat extends UseCase<IInitInput> {}
 
-export class InitializeChatImlp extends InitializeChat {
+export class InitializeChatImpl extends InitializeChat {
     constructor(private communication: IInitCommunication, private persistence: IInitChatPersistence) {
         super();
     }
