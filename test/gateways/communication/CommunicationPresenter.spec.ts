@@ -1,8 +1,9 @@
-import { CommunicationPresenter } from "./CommunicationPresenter";
-import { CommunicationError } from "./CommunicationError";
 // import { Mappings } from "./Mappings";
 
-jest.mock("./Mappings", () => {
+import { CommunicationPresenter } from "../../../src/gateways";
+import { CommunicationError } from "../../../src/gateways/communication/CommunicationError";
+
+jest.mock("../../../src/gateways/communication/Mappings", () => {
     // Works and lets you check for constructor calls:
     return {
         Mappings: {

@@ -1,5 +1,5 @@
-import { CommunicationController } from "./CommunicationController";
-import { RecurrenceType } from "../../interfaces";
+import { CommunicationController } from "../../../src/gateways";
+import { RecurrenceType } from "../../../src/interfaces";
 
 describe("CommunicationController", () => {
     const updateMock = {

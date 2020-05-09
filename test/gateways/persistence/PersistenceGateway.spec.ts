@@ -1,4 +1,4 @@
-import { PeristenceGateway } from "./PersistenceGateway";
+import { PeristenceGateway } from "../../../src/gateways";
 
 describe("PersistenceGateway", () => {
     const mockPersistence = {

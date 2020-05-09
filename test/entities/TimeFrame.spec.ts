@@ -1,5 +1,5 @@
-import { TimeFrame } from "./TimeFrame";
-import { IRecurrenceRule, RecurrenceType } from "../interfaces";
+import { TimeFrame } from "../../src/entities/";
+import { IRecurrenceRule, RecurrenceType } from "../../src/interfaces";
 
 describe("TimeFrame", () => {
     const baseRecurrence: IRecurrenceRule = {
