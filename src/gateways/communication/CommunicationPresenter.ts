@@ -1,4 +1,4 @@
-import { IUpdateCommunication } from "../../useCases";
+import { IUpdateCommunication, IInitCommunication } from "../../useCases";
 import { CommunicationError } from "./CommunicationError";
 import { Mappings } from "./Mappings";
 import { IEventCommunication, IEvent } from "../../useCases/reminder/Reminder";
@@ -12,17 +12,27 @@ export interface IErrorReporter {
     sendCommunicationError: (chatId: string, error: CommunicationError) => void;
 }
 
-export class CommunicationPresenter implements IUpdateCommunication, IEventCommunication, IErrorReporter {
+export class CommunicationPresenter
+    implements IUpdateCommunication, IInitCommunication, IEventCommunication, IErrorReporter {
     constructor(private communication: ICommunicationOut) {}
     sendEvents(chatId: string, events: IEvent[]) {
         this.communication.send(chatId, `Events: ${JSON.stringify(events, null, "  ")}`);
     }
+
     sendUpdateSuccess(chatId: string, triggerId: string, message?: string) {
         this.communication.send(chatId, `Update ${triggerId} erfolgreich.${message ? ` ${message}` : ""}`);
     }
     sendUpdateError(chatId: string, triggerId: string, message?: string) {
         this.sendError(chatId, `Update ${triggerId} fehlgeschlagen${message ? ` - ${message}` : "."}`);
     }
+
+    sendInitSuccess(chatId: string, message?: string) {
+        this.communication.send(chatId, `Erzeugen des Chats erfolgreich.${message ? ` ${message}` : ""}`);
+    }
+    sendInitError(chatId: string, message?: string) {
+        this.sendError(chatId, `Erzeugen des Chats fehlgeschlagen${message ? ` - ${message}` : "."}`);
+    }
+
     sendCommunicationError(chatId: string, error: CommunicationError) {
         const message = Mappings.errorCodes[error.key]
             .replace(/{given}/gm, error.given)

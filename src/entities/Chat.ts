@@ -1,16 +1,23 @@
 import { TimeFrame } from "./TimeFrame";
 import { ITimeFrameSettings, IRecurrenceRule, ITimeFrameJSON } from "../interfaces";
+import { EntityError, EntityErrorCode } from "./EntityError";
 
 export class Chat {
     private timeFrames: { [frameId: string]: TimeFrame | undefined };
-    constructor() {
+    private administrators: string[];
+    constructor(adminId: string) {
         this.timeFrames = {};
+        this.administrators = [adminId];
     }
 
     public setTimeFrame(
         key: string,
         settings: { begin?: ITimeFrameSettings; end?: ITimeFrameSettings; recurrence: IRecurrenceRule },
+        userId: string,
     ) {
+        if (!this.administrators.includes(userId)) {
+            throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
+        }
         this.timeFrames[key] = new TimeFrame(settings.begin || {}, settings.end || {}, settings.recurrence);
     }
 
@@ -28,6 +35,7 @@ export class Chat {
             }, {} as { [frameId: string]: ITimeFrameJSON });
         return {
             timeFrames,
+            administrators: this.administrators,
         };
     }
 }

@@ -15,6 +15,7 @@ export interface IUpdateInput {
 
 export interface IChatPersistence {
     timeFrames: { [frameKey: string]: ITimeFrameJSON };
+    administrators: string[];
 }
 
 export interface IUpdateCommunication {
@@ -27,7 +28,7 @@ export interface IUpdateTimer {
 }
 
 export interface IUpdateChatPersistence {
-    saveUpdatedConfig: (chatId: string, chat: IChatPersistence) => void;
+    saveChatConfig: (chatId: string, chat: IChatPersistence) => void;
 }
 
 export class UpdateConfig implements IUseCase<IUpdateInput, void> {
@@ -37,11 +38,15 @@ export class UpdateConfig implements IUseCase<IUpdateInput, void> {
         private persistence: IUpdateChatPersistence,
     ) {}
 
-    public execute({ chatId, triggerId, config }: IUpdateInput) {
+    public execute({ chatId, userId, triggerId, config }: IUpdateInput) {
         const chat = Chats.instance.getChat(chatId);
-        chat.setTimeFrame(triggerId, { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence });
+        chat.setTimeFrame(
+            triggerId,
+            { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence },
+            userId,
+        );
         this.timerSettings.update(chatId, triggerId, config.recurrence);
-        this.persistence.saveUpdatedConfig(chatId, chat.toJSON());
+        this.persistence.saveChatConfig(chatId, chat.toJSON());
         this.updateCommunication.sendUpdateSuccess(chatId, triggerId);
     }
 }
