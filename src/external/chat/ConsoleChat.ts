@@ -32,6 +32,9 @@ export class ConsoleChat implements ICommunicationOut {
                     case "/update":
                         this.communication!.update("consoleChat", "consoleUser", payload);
                         break;
+                    case "/start":
+                        this.communication!.init("consoleChat", "consoleUser");
+                        break;
                     default:
                         console.log("User Input Data : " + data);
                         break;

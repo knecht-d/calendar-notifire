@@ -7,10 +7,10 @@ describe("PersistenceGateway", () => {
     beforeEach(() => {
         mockPersistence.save.mockClear();
     });
-    describe("saveUpdatedConfig", () => {
+    describe("saveUpdatedCosaveChatConfignfig", () => {
         it("should save the updated config as a string", () => {
             const gateway = new PeristenceGateway(mockPersistence);
-            gateway.saveUpdatedConfig("chat", {
+            gateway.saveChatConfig("chat", {
                 timeFrames: {
                     some: {
                         begin: {

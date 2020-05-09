@@ -1,4 +1,4 @@
-import { IUpdateInput, IUseCase } from "../../useCases";
+import { IUpdateInput, IUseCase, IInitInput } from "../../useCases";
 import { RecurrenceType, ITimeFrameSettings } from "../../interfaces";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { Mappings } from "./Mappings";
@@ -7,6 +7,7 @@ import { IErrorReporter } from "./CommunicationPresenter";
 
 export interface ICommunicationIn {
     update: (chatId: string, userId: string, payload: string) => void;
+    init: (chatId: string, userId: string) => void;
 }
 
 export class CommunicationController implements ICommunicationIn {
@@ -19,9 +20,21 @@ export class CommunicationController implements ICommunicationIn {
     constructor(
         private useCases: {
             update: IUseCase<IUpdateInput, void>;
+            init: IUseCase<IInitInput, void>;
         },
         private presenter: IErrorReporter,
     ) {}
+
+    init(chatId: string, userId: string) {
+        try {
+            this.useCases.init.execute({
+                chatId,
+                userId,
+            });
+        } catch (error) {
+            this.presenter.sendError(chatId, `${error}`);
+        }
+    }
 
     update(chatId: string, userId: string, payload: string) {
         try {

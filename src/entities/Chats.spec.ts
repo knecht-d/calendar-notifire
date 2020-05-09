@@ -1,5 +1,6 @@
 import { Chats } from "./Chats";
 import { Chat } from "./Chat";
+import { EntityError, EntityErrorCode } from "./EntityError";
 
 jest.mock("./Chat", () => {
     // Works and lets you check for constructor calls:
@@ -20,12 +21,22 @@ describe("Chats", () => {
         const chats2 = Chats.instance;
         expect(chats1).toBe(chats2);
     });
-    it("should create a new chat", () => {
+    it("should fail if chat is not created", () => {
         const chats = Chats.instance;
-        expect(chats.getChat("test")).toBeDefined();
+        expect(() => {
+            chats.getChat("test");
+        }).toThrow(new EntityError(EntityErrorCode.CHAT_NOT_EXISTING));
+    });
+    it("should fail if chat created twice", () => {
+        const chats = Chats.instance;
+        expect(() => {
+            chats.createChat("test", "admin");
+            chats.createChat("test", "another admin");
+        }).toThrow(new EntityError(EntityErrorCode.CHAT_ALREADY_EXISTING));
     });
     it("should always return the same chat", () => {
         const chats = Chats.instance;
+        chats.createChat("test2", "admin");
         const chat1 = chats.getChat("test2");
         const chat2 = chats.getChat("test2");
         expect(chat1).toBe(chat2);
@@ -33,8 +44,16 @@ describe("Chats", () => {
     });
     it("should return the chats as JSON", () => {
         const chats = Chats.instance;
-        chats.getChat("test");
-        chats.getChat("test2");
+        try {
+            chats.createChat("test", "admin");
+        } catch (error) {
+            // Chat was already existing
+        }
+        try {
+            chats.createChat("test2", "admin");
+        } catch (error) {
+            // Chat was already existing
+        }
         expect(chats.toJSON()).toEqual({ chats: { test: { chat: "mock" }, test2: { chat: "mock" } } });
     });
 });

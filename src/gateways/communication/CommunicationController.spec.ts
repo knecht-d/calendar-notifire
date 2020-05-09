@@ -5,11 +5,14 @@ describe("CommunicationController", () => {
     const updateMock = {
         execute: jest.fn(),
     };
+    const initMock = {
+        execute: jest.fn(),
+    };
     const errrorReporterMock = {
         sendCommunicationError: jest.fn(),
         sendError: jest.fn(),
     };
-    const controller = new CommunicationController({ update: updateMock }, errrorReporterMock);
+    const controller = new CommunicationController({ update: updateMock, init: initMock }, errrorReporterMock);
     beforeEach(() => {
         updateMock.execute.mockReset();
         errrorReporterMock.sendCommunicationError.mockReset();
@@ -422,6 +425,19 @@ describe("CommunicationController", () => {
                     );
                 });
             });
+        });
+    });
+    describe("init", () => {
+        it("should pass the data to the use case", () => {
+            controller.init("chatId", "userId");
+            expect(initMock.execute).toHaveBeenCalledWith({ chatId: "chatId", userId: "userId" });
+        });
+        it("should send an error if the init fails", () => {
+            initMock.execute.mockImplementation(() => {
+                throw new Error("Failed");
+            });
+            controller.init("chatId", "userId");
+            expect(errrorReporterMock.sendError).toHaveBeenCalledWith("chatId", "Error: Failed");
         });
     });
 });

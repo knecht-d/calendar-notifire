@@ -55,6 +55,39 @@ describe("CommunicationPresenter", () => {
             );
         });
     });
+    describe("sendInitSuccess", () => {
+        it("should send a plain success message to the chat", () => {
+            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            presenter.sendInitSuccess("someChat");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Erzeugen des Chats erfolgreich.");
+        });
+        it("should add the additional message", () => {
+            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            presenter.sendInitSuccess("someChat", "Details");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                "someChat",
+                "Erzeugen des Chats erfolgreich. Details",
+            );
+        });
+    });
+    describe("sendInitError", () => {
+        it("should send a plain error message to the chat", () => {
+            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            presenter.sendInitError("someChat");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                "someChat",
+                "Fehler: Erzeugen des Chats fehlgeschlagen.",
+            );
+        });
+        it("should add the additional message", () => {
+            const presenter = new CommunicationPresenter(mockCommunicationOut);
+            presenter.sendInitError("someChat", "Details");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                "someChat",
+                "Fehler: Erzeugen des Chats fehlgeschlagen - Details",
+            );
+        });
+    });
     describe("sendError", () => {
         it("should send error with 'Fehler:'", () => {
             const presenter = new CommunicationPresenter(mockCommunicationOut);

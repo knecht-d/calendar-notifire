@@ -7,7 +7,7 @@ import {
     CalendarGateway,
     ICalendarConnector,
 } from "./gateways";
-import { UpdateConfig, Reminder } from "./useCases";
+import { UpdateConfig, Reminder, InitializeChat } from "./useCases";
 import { PeristenceGateway } from "./gateways/persistence";
 
 let triggerGW: TriggerGateway | null = null;
@@ -47,9 +47,13 @@ const calendarGW = new CalendarGateway(mockEventProvider);
 // Create Use Cases
 const updateConfig = new UpdateConfig(communicationPresenter, triggerGW, persitenceGW);
 const reminder = new Reminder(calendarGW, communicationPresenter);
+const initChat = new InitializeChat(communicationPresenter, persitenceGW);
 
 // Create Incoming Gateways
-const communicationController = new CommunicationController({ update: updateConfig }, communicationPresenter);
+const communicationController = new CommunicationController(
+    { update: updateConfig, init: initChat },
+    communicationPresenter,
+);
 
 // Initialize Gateways
 triggerGW.init(reminder);
