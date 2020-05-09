@@ -36,6 +36,37 @@ describe("TriggerGateway", () => {
             });
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), "15 17 * * 1,5");
         });
+
+        describe("days", () => {
+            const createTestData = () => {
+                const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+                const data = days.map((day, index) => {
+                    const flags = {
+                        monday: day === "monday",
+                        tuesday: day === "tuesday",
+                        wednesday: day === "wednesday",
+                        thursday: day === "thursday",
+                        friday: day === "friday",
+                        saturday: day === "saturday",
+                        sunday: day === "sunday",
+                    };
+                    return [day, flags, index];
+                });
+                return data;
+            };
+            const testData = createTestData();
+            it.each(testData)("daily recurrence: %s", (_day, flags, index) => {
+                const triggerGW = new TriggerGateway();
+                triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
+                triggerGW.update("chat|Id", "trigger|Id", {
+                    type: RecurrenceType.daily,
+                    hour: 17,
+                    minute: 15,
+                    days: flags as any,
+                });
+                expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), `15 17 * * ${index}`);
+            });
+        });
         it("should create a cron for hourly recurrence", () => {
             const triggerGW = new TriggerGateway();
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
