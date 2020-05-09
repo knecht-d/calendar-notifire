@@ -32,7 +32,7 @@ describe("CommunicationController", () => {
         });
 
         describe("hourly", () => {
-            it("should work", () => {
+            it("should reduce the end hours, the minutes are less then the minutes of start", () => {
                 controller.update("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:15 - s+1,m0");
                 expect(updateMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
@@ -50,6 +50,76 @@ describe("CommunicationController", () => {
                                 },
                                 fromHour: 7,
                                 toHour: 19,
+                                minute: 30,
+                            },
+                            frameStart: {},
+                            frameEnd: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
+                                minute: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                            },
+                        },
+                    }),
+                );
+            });
+            it("should keep the end hours, the minutes are more then the minutes of start", () => {
+                controller.update("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:45 - s+1,m0");
+                expect(updateMock.execute).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        config: {
+                            recurrence: {
+                                type: RecurrenceType.hourly,
+                                days: {
+                                    monday: true,
+                                    tuesday: true,
+                                    wednesday: true,
+                                    thursday: true,
+                                    friday: true,
+                                    saturday: true,
+                                    sunday: true,
+                                },
+                                fromHour: 7,
+                                toHour: 20,
+                                minute: 30,
+                            },
+                            frameStart: {},
+                            frameEnd: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
+                                minute: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                            },
+                        },
+                    }),
+                );
+            });
+            it("should keep the end hours, the minutes are eqial to the minutes of start", () => {
+                controller.update("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:30 - s+1,m0");
+                expect(updateMock.execute).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        config: {
+                            recurrence: {
+                                type: RecurrenceType.hourly,
+                                days: {
+                                    monday: true,
+                                    tuesday: true,
+                                    wednesday: true,
+                                    thursday: true,
+                                    friday: true,
+                                    saturday: true,
+                                    sunday: true,
+                                },
+                                fromHour: 7,
+                                toHour: 20,
                                 minute: 30,
                             },
                             frameStart: {},
