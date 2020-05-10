@@ -6,6 +6,7 @@ export const MockTimeFrame = {
 export const MockChatEntity = {
     getTimeFrame: jest.fn().mockReturnValue(MockTimeFrame),
     setTimeFrame: jest.fn(),
+    removeTimeFrame: jest.fn(),
     toJSON: jest.fn().mockReturnValue({ mock: "newChat" }),
 };
 

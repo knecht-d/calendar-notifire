@@ -4,6 +4,7 @@ import { RecurrenceType } from "../../../src/interfaces";
 describe("TriggerGateway", () => {
     const mockTriggerConfigure = {
         setTrigger: jest.fn(),
+        stopTrigger: jest.fn(),
     };
     const mockReminder = {
         execute: jest.fn(),
@@ -96,6 +97,16 @@ describe("TriggerGateway", () => {
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), "45 7-19 * * 1,3,5");
         });
     });
+
+    describe("stop", () => {
+        it("should stop using the encoded id", () => {
+            const triggerGW = new TriggerGateway();
+            triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
+            triggerGW.stop("chat|Id", "trigger|Id");
+            expect(mockTriggerConfigure.stopTrigger).toHaveBeenCalledWith("chat%7CId|trigger%7CId");
+        });
+    });
+
     describe("trigger", () => {
         it("should fail if it was not initialized", () => {
             const triggerGW = new TriggerGateway();

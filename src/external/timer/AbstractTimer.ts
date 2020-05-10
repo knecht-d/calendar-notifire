@@ -6,4 +6,5 @@ export abstract class AbstractTimer implements ITriggerConfigure {
         this.triggerReceiver = triggerReceiver;
     }
     abstract setTrigger(id: string, cron: string): void;
+    abstract stopTrigger(id: string): void;
 }

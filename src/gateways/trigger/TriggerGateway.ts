@@ -1,9 +1,10 @@
 import { IRecurrenceRule, RecurrenceType } from "../../interfaces";
-import { IUpdateTimer, Reminder, IStartAssistantTimer } from "../../useCases";
+import { IUpdateTimer, Reminder, IStartAssistantTimer, IDeleteConfigTimer } from "../../useCases";
 import { GateWay } from "../GateWay";
 
 export interface ITriggerConfigure {
     setTrigger: (id: string, cron: string) => void;
+    stopTrigger: (id: string) => void;
 }
 
 export interface ITriggerReceiver {
@@ -16,11 +17,16 @@ interface IDependencies {
 }
 
 export class TriggerGateway extends GateWay<IDependencies>
-    implements IUpdateTimer, ITriggerReceiver, IStartAssistantTimer {
+    implements IUpdateTimer, IDeleteConfigTimer, ITriggerReceiver, IStartAssistantTimer {
     trigger(id: string) {
         this.checkInitialized();
         const { chatId, triggerId } = this.decodeId(id);
         this.dependencies!.reminder.execute({ chatId, triggerId });
+    }
+
+    public stop(chatId: string, triggerId: string) {
+        const id = this.encodeId(chatId, triggerId);
+        this.dependencies!.triggerConfig.stopTrigger(id);
     }
 
     public set(chatId: string, triggerId: string, recurrence: IRecurrenceRule) {

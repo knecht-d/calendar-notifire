@@ -8,12 +8,18 @@ describe("CommunicationController", () => {
     const initMock = {
         execute: jest.fn(),
     };
+    const deleteMock = {
+        execute: jest.fn(),
+    };
     const errrorReporterMock = {
         sendCommunicationError: jest.fn(),
         sendError: jest.fn(),
     };
     const controller = new CommunicationController();
-    controller.init({ useCases: { update: updateMock, init: initMock }, presenter: errrorReporterMock });
+    controller.init({
+        useCases: { update: updateMock, init: initMock, delete: deleteMock },
+        presenter: errrorReporterMock,
+    });
     beforeEach(() => {
         updateMock.execute.mockReset();
         errrorReporterMock.sendCommunicationError.mockReset();
@@ -517,6 +523,32 @@ describe("CommunicationController", () => {
             });
             controller.initChat("chatId", "userId");
             expect(errrorReporterMock.sendError).toHaveBeenCalledWith("chatId", "Error: Failed");
+        });
+    });
+    describe("delete", () => {
+        it("should pass the data to the use case", () => {
+            controller.delete("chat", "user", "trigger");
+            expect(deleteMock.execute).toHaveBeenCalledWith({
+                chatId: "chat",
+                userId: "user",
+                triggerId: "trigger",
+            });
+        });
+
+        it("should handle missing triggers", () => {
+            controller.delete("chat", "user", "");
+            expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(1);
+            const error = errrorReporterMock.sendCommunicationError.mock.calls[0][1];
+            expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${"MISSING_TRIGGER_ID"}`)));
+            expect(error.key).toEqual("MISSING_TRIGGER_ID");
+        });
+
+        it("should handle generic errors", () => {
+            controller.delete("chat", "user", undefined as any);
+            expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
+            expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
+            const error = errrorReporterMock.sendError.mock.calls[0][1];
+            expect(error).toEqual(expect.stringContaining("of undefined"));
         });
     });
 });

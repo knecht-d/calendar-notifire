@@ -32,6 +32,22 @@ describe("Chat", () => {
             const tf = chat.getTimeFrame("notDefined");
             expect(tf).not.toBeDefined();
         });
+        it("should remove a time frame", () => {
+            const chat = new Chat(["admin"]);
+            chat.setTimeFrame("tf", { recurrence: baseRecurrence }, "admin");
+            chat.removeTimeFrame("tf", "admin");
+            const tf = chat.getTimeFrame("tf");
+            expect(tf).not.toBeDefined();
+        });
+        it("should not remove a time frame if user has no privileges", () => {
+            const chat = new Chat(["admin"]);
+            chat.setTimeFrame("tf", { recurrence: baseRecurrence }, "admin");
+            expect(() => {
+                chat.removeTimeFrame("tf", "no admin");
+            }).toThrow(new EntityError(EntityErrorCode.MISSING_PRIVILEGES));
+            const tf = chat.getTimeFrame("tf");
+            expect(tf).toBeDefined();
+        });
         it("should create the correct TimeFrame", () => {
             const chat = new Chat(["admin"]);
             const tfBegin: ITimeFrameSettings = {

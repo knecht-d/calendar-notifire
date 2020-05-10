@@ -23,6 +23,43 @@ describe("CommunicationPresenter", () => {
     beforeEach(() => {
         mockCommunicationOut.send.mockClear();
     });
+    describe("sendDeleteConfigSuccess", () => {
+        it("should send a plain success message to the chat", () => {
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
+            presenter.sendDeleteConfigSuccess("someChat", "someTrigger");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Löschen von someTrigger erfolgreich.");
+        });
+        it("should add the additional message", () => {
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
+            presenter.sendDeleteConfigSuccess("someChat", "someTrigger", "Details");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                "someChat",
+                "Löschen von someTrigger erfolgreich. Details",
+            );
+        });
+    });
+    describe("sendDeleteConfigError", () => {
+        it("should send a plain error message to the chat", () => {
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
+            presenter.sendDeleteConfigError("someChat", "someTrigger");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                "someChat",
+                "Fehler: Löschen von someTrigger fehlgeschlagen.",
+            );
+        });
+        it("should add the additional message", () => {
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
+            presenter.sendDeleteConfigError("someChat", "someTrigger", "Details");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                "someChat",
+                "Fehler: Löschen von someTrigger fehlgeschlagen - Details",
+            );
+        });
+    });
     describe("sendUpdateSuccess", () => {
         it("should send a plain success message to the chat", () => {
             const presenter = new CommunicationPresenter();
