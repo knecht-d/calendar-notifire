@@ -23,6 +23,20 @@ describe("CommunicationPresenter", () => {
     beforeEach(() => {
         mockCommunicationOut.send.mockClear();
     });
+
+    describe("sendReadConfig", () => {
+        it("should send the triggers", () => {
+            const presenter = new CommunicationPresenter();
+            presenter.init({ communication: mockCommunicationOut });
+            const mockTriggers = { trigger: { mock: "trigger" }, trigger2: { mock: "trigger2" } };
+            presenter.sendReadConfig("someChat", mockTriggers as any);
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                "someChat",
+                JSON.stringify(mockTriggers, null, "  "),
+            );
+        });
+    });
+
     describe("sendDeleteConfigSuccess", () => {
         it("should send a plain success message to the chat", () => {
             const presenter = new CommunicationPresenter();

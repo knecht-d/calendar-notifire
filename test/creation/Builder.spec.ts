@@ -6,6 +6,7 @@ import {
     ReminderImpl,
     InitializeChatImpl,
     StartAssistantImpl,
+    ReadConfigImpl,
 } from "../../src/useCases";
 import {
     CommunicationController,
@@ -72,6 +73,7 @@ describe("Builder", () => {
                 expect(data.useCases?.update).toBeInstanceOf(UpdateConfigImpl);
                 expect(data.useCases?.init).toBeInstanceOf(InitializeChatImpl);
                 expect(data.useCases?.delete).toBeInstanceOf(DeleteConfigImpl);
+                expect(data.useCases?.read).toBeInstanceOf(ReadConfigImpl);
                 expect(data.presenter).toBeInstanceOf(CommunicationPresenter);
             });
             it("should initialize the CommunicationPresenter", () => {
@@ -104,6 +106,11 @@ describe("Builder", () => {
                 const params = (InitializeChatImpl as jest.Mock).mock.calls[0];
                 expect(params[0]).toBeInstanceOf(CommunicationPresenter);
                 expect(params[1]).toBeInstanceOf(PeristenceGateway);
+            });
+            it("should create the read use case", () => {
+                expect(ReadConfigImpl).toHaveBeenCalledTimes(1);
+                const params = (ReadConfigImpl as jest.Mock).mock.calls[0];
+                expect(params[0]).toBeInstanceOf(CommunicationPresenter);
             });
             it("should create the reminder use case", () => {
                 expect(ReminderImpl).toHaveBeenCalledTimes(1);

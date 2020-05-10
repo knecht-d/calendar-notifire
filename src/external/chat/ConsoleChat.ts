@@ -38,6 +38,9 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
                     case "/delete":
                         this.communication!.delete(this.chatId, this.userId, payload);
                         break;
+                    case "/read":
+                        this.communication!.read(this.chatId);
+                        break;
                     case "/start":
                         this.communication!.initChat(this.chatId, this.userId);
                         break;

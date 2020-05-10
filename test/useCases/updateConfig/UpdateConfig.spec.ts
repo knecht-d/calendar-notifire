@@ -7,7 +7,7 @@ jest.mock("../../../src/entities/Chats", () => {
         Chats: MockChats,
     };
 });
-describe("InitializeChat", () => {
+describe("UpdateConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
     let mockTrigger: MockTriggerGateway;
     let mockPersistence: MockPersistence;
@@ -19,7 +19,7 @@ describe("InitializeChat", () => {
         useCase = new UpdateConfigImpl(mockCommunication, mockTrigger, mockPersistence);
     });
     describe("execute", () => {
-        it("should create a new chat", () => {
+        it("should set a new time frame", () => {
             useCase.execute({
                 chatId: "chat",
                 userId: "user",

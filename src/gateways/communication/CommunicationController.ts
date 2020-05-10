@@ -1,5 +1,5 @@
 import { ITimeFrameSettings, RecurrenceType } from "../../interfaces";
-import { InitializeChat, IUpdateInput, UpdateConfig, DeleteConfig } from "../../useCases";
+import { InitializeChat, IUpdateInput, UpdateConfig, DeleteConfig, ReadConfig } from "../../useCases";
 import { GateWay } from "../GateWay";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { IErrorReporter } from "./CommunicationPresenter";
@@ -10,6 +10,7 @@ export interface ICommunicationIn {
     update: (chatId: string, userId: string, payload: string) => void;
     delete: (chatId: string, userId: string, payload: string) => void;
     initChat: (chatId: string, userId: string) => void;
+    read: (chatId: string) => void;
 }
 
 interface IDependencies {
@@ -18,6 +19,7 @@ interface IDependencies {
         update: UpdateConfig;
         init: InitializeChat;
         delete: DeleteConfig;
+        read: ReadConfig;
     };
 }
 
@@ -27,6 +29,11 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         [RecurrenceType.daily]: this.extractDailyConfig.bind(this),
         [RecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
     };
+
+    read(chatId: string) {
+        this.checkInitialized();
+        this.dependencies!.useCases.read.execute({ chatId });
+    }
 
     initChat(chatId: string, userId: string) {
         this.checkInitialized();

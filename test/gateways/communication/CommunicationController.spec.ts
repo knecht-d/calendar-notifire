@@ -11,13 +11,16 @@ describe("CommunicationController", () => {
     const deleteMock = {
         execute: jest.fn(),
     };
+    const readMock = {
+        execute: jest.fn(),
+    };
     const errrorReporterMock = {
         sendCommunicationError: jest.fn(),
         sendError: jest.fn(),
     };
     const controller = new CommunicationController();
     controller.init({
-        useCases: { update: updateMock, init: initMock, delete: deleteMock },
+        useCases: { update: updateMock, init: initMock, delete: deleteMock, read: readMock },
         presenter: errrorReporterMock,
     });
     beforeEach(() => {
@@ -549,6 +552,12 @@ describe("CommunicationController", () => {
             expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
             const error = errrorReporterMock.sendError.mock.calls[0][1];
             expect(error).toEqual(expect.stringContaining("of undefined"));
+        });
+    });
+    describe("read", () => {
+        it("should pass the data to the use case", () => {
+            controller.read("chat");
+            expect(readMock.execute).toHaveBeenCalledWith({ chatId: "chat" });
         });
     });
 });

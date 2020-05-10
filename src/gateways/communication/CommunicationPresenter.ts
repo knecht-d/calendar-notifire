@@ -1,4 +1,10 @@
-import { IUpdateCommunication, IInitCommunication, IDeleteConfigCommunication } from "../../useCases";
+import {
+    IUpdateCommunication,
+    IInitCommunication,
+    IDeleteConfigCommunication,
+    IReadConfigCommunication,
+    ITriggers,
+} from "../../useCases";
 import { CommunicationError } from "./CommunicationError";
 import { Mappings } from "./Mappings";
 import { IEventCommunication, IEvent } from "../../useCases/reminder/Reminder";
@@ -23,9 +29,13 @@ export class CommunicationPresenter extends GateWay<IDependencies>
         IInitCommunication,
         IEventCommunication,
         IErrorReporter,
-        IDeleteConfigCommunication {
+        IDeleteConfigCommunication,
+        IReadConfigCommunication {
     sendEvents(chatId: string, events: IEvent[]) {
         this.send(chatId, `Events: ${JSON.stringify(events, null, "  ")}`);
+    }
+    sendReadConfig(chatId: string, triggers: ITriggers) {
+        this.send(chatId, JSON.stringify(triggers, null, "  "));
     }
 
     sendDeleteConfigSuccess(chatId: string, triggerId: string, message?: string) {
