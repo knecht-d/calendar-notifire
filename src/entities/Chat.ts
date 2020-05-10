@@ -5,9 +5,9 @@ import { EntityError, EntityErrorCode } from "./EntityError";
 export class Chat {
     private timeFrames: { [frameId: string]: TimeFrame | undefined };
     private administrators: string[];
-    constructor(adminId: string) {
+    constructor(adminIds: string[]) {
         this.timeFrames = {};
-        this.administrators = [adminId];
+        this.administrators = adminIds;
     }
 
     public setTimeFrame(

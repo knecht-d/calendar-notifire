@@ -5,7 +5,7 @@ import {
     PeristenceGateway,
     TriggerGateway,
 } from "../gateways";
-import { InitializeChatImpl, ReminderImpl, UpdateConfigImpl } from "../useCases";
+import { InitializeChatImpl, ReminderImpl, UpdateConfigImpl, StartAssistantImpl } from "../useCases";
 import { GenericFactory } from "./GenericFactory";
 
 export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
@@ -28,6 +28,7 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         // Create Use Cases
         const initChat = new InitializeChatImpl(communicationPresenter, persitenceGW);
         const reminder = new ReminderImpl(calendarGW, communicationPresenter);
+        const start = new StartAssistantImpl(triggerGW, persitenceGW);
         const updateConfig = new UpdateConfigImpl(communicationPresenter, triggerGW, persitenceGW);
 
         // Initialize Gateways
@@ -44,11 +45,15 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         chat.init(communicationController);
         timer.init(triggerGW);
 
+        // Load persisted chats.
+        start.execute();
+
         return {
             calendar,
             chat,
             storage,
             timer,
+            start,
         };
     }
 }

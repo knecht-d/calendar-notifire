@@ -3,11 +3,12 @@ import { PeristenceGateway } from "../../../src/gateways";
 describe("PersistenceGateway", () => {
     const mockPersistence = {
         save: jest.fn(),
+        readAll: jest.fn(),
     };
     beforeEach(() => {
         mockPersistence.save.mockClear();
     });
-    describe("saveUpdatedCosaveChatConfignfig", () => {
+    describe("saveChatConfig", () => {
         it("should save the updated config as a string", () => {
             const gateway = new PeristenceGateway();
             gateway.init({ persistence: mockPersistence });
@@ -39,6 +40,71 @@ describe("PersistenceGateway", () => {
                 "chat",
                 '{"timeFrames":{"some":{"begin":{"day":{"value":-1},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}},"recurrence":{"type":"Mocked"}}}}',
             );
+        });
+    });
+    describe("readAllChats", () => {
+        it("should read and parse the saved config", () => {
+            const gateway = new PeristenceGateway();
+
+            mockPersistence.readAll.mockReturnValue({
+                chat:
+                    '{"timeFrames":{"some":{"begin":{"day":{"value":-1},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}},"recurrence":{"type":"Mocked"}}}}',
+                chat2:
+                    '{"timeFrames":{"some":{"begin":{"day":{"value":-2},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}},"recurrence":{"type":"Mocked2"}}}}',
+            });
+
+            gateway.init({ persistence: mockPersistence });
+            const data = gateway.readAllChats();
+            expect(data).toEqual({
+                chat: {
+                    timeFrames: {
+                        some: {
+                            begin: {
+                                day: {
+                                    value: -1,
+                                },
+                                hour: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                            },
+                            end: {
+                                year: {
+                                    value: 1,
+                                    fixed: false,
+                                },
+                            },
+                            recurrence: {
+                                type: "Mocked",
+                            },
+                        },
+                    },
+                },
+                chat2: {
+                    timeFrames: {
+                        some: {
+                            begin: {
+                                day: {
+                                    value: -2,
+                                },
+                                hour: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                            },
+                            end: {
+                                year: {
+                                    value: 1,
+                                    fixed: false,
+                                },
+                            },
+                            recurrence: {
+                                type: "Mocked2",
+                            },
+                        },
+                    },
+                },
+            });
         });
     });
 });

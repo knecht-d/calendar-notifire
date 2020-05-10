@@ -23,7 +23,7 @@ export class InitializeChatImpl extends InitializeChat {
     }
 
     public execute({ chatId, userId }: IInitInput) {
-        const chat = Chats.instance.createChat(chatId, userId);
+        const chat = Chats.instance.createChat(chatId, [userId]);
         this.persistence.saveChatConfig(chatId, chat.toJSON());
         this.communication.sendInitSuccess(chatId);
     }

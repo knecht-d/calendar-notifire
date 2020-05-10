@@ -1,5 +1,5 @@
 import { IRecurrenceRule, RecurrenceType } from "../../interfaces";
-import { IUpdateTimer, Reminder } from "../../useCases";
+import { IUpdateTimer, Reminder, IStartAssistantTimer } from "../../useCases";
 import { GateWay } from "../GateWay";
 
 export interface ITriggerConfigure {
@@ -15,19 +15,24 @@ interface IDependencies {
     reminder: Reminder;
 }
 
-export class TriggerGateway extends GateWay<IDependencies> implements IUpdateTimer, ITriggerReceiver {
+export class TriggerGateway extends GateWay<IDependencies>
+    implements IUpdateTimer, ITriggerReceiver, IStartAssistantTimer {
     trigger(id: string) {
         this.checkInitialized();
         const { chatId, triggerId } = this.decodeId(id);
         this.dependencies!.reminder.execute({ chatId, triggerId });
     }
 
-    public update(chatId: string, triggerId: string, recurrence: IRecurrenceRule) {
-        this.checkInitialized();
+    public set(chatId: string, triggerId: string, recurrence: IRecurrenceRule) {
         const id = this.encodeId(chatId, triggerId);
         const cron = this.buildCron(recurrence);
         this.dependencies!.triggerConfig.setTrigger(id, cron);
     }
+
+    public update(chatId: string, triggerId: string, recurrence: IRecurrenceRule) {
+        this.set(chatId, triggerId, recurrence);
+    }
+
     private buildCron(recurrence: IRecurrenceRule) {
         const minute = `${recurrence.minute}`;
         const hour = (rec => {
