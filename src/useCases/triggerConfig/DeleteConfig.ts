@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
 import { UseCase } from "../UseCase";
-import { IChatPersistence } from "../updateConfig";
+import { IChatPersistence } from "./SetConfig";
 
 export interface IDeleteConfigInput {
     userId: string;
@@ -24,7 +24,7 @@ export interface IDeleteConfigChatPersistence {
 export abstract class DeleteConfig extends UseCase<IDeleteConfigInput> {}
 export class DeleteConfigImpl extends DeleteConfig {
     constructor(
-        private updateCommunication: IDeleteConfigCommunication,
+        private communication: IDeleteConfigCommunication,
         private timerSettings: IDeleteConfigTimer,
         private persistence: IDeleteConfigChatPersistence,
     ) {
@@ -36,6 +36,6 @@ export class DeleteConfigImpl extends DeleteConfig {
         chat.removeTimeFrame(triggerId, userId);
         this.timerSettings.stop(chatId, triggerId);
         this.persistence.saveChatConfig(chatId, chat.toJSON());
-        this.updateCommunication.sendDeleteConfigSuccess(chatId, triggerId);
+        this.communication.sendDeleteConfigSuccess(chatId, triggerId);
     }
 }

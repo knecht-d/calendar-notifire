@@ -1,5 +1,5 @@
 import {
-    IUpdateCommunication,
+    ISetConfigCommunication,
     IInitCommunication,
     IDeleteConfigCommunication,
     IReadConfigCommunication,
@@ -25,7 +25,7 @@ interface IDependencies {
 
 export class CommunicationPresenter extends GateWay<IDependencies>
     implements
-        IUpdateCommunication,
+        ISetConfigCommunication,
         IInitCommunication,
         IEventCommunication,
         IErrorReporter,
@@ -45,11 +45,11 @@ export class CommunicationPresenter extends GateWay<IDependencies>
         this.sendError(chatId, `Löschen von ${triggerId} fehlgeschlagen${message ? ` - ${message}` : "."}`);
     }
 
-    sendUpdateSuccess(chatId: string, triggerId: string, message?: string) {
-        this.send(chatId, `Update ${triggerId} erfolgreich.${message ? ` ${message}` : ""}`);
+    sendSetConfigSuccess(chatId: string, triggerId: string, message?: string) {
+        this.send(chatId, `Setzen von ${triggerId} erfolgreich.${message ? ` ${message}` : ""}`);
     }
-    sendUpdateError(chatId: string, triggerId: string, message?: string) {
-        this.sendError(chatId, `Update ${triggerId} fehlgeschlagen${message ? ` - ${message}` : "."}`);
+    sendSetConfigError(chatId: string, triggerId: string, message?: string) {
+        this.sendError(chatId, `Setzen von ${triggerId} fehlgeschlagen${message ? ` - ${message}` : "."}`);
     }
 
     sendInitSuccess(chatId: string, message?: string) {

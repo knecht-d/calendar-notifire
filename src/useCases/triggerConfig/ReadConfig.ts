@@ -16,13 +16,13 @@ export interface IReadConfigCommunication {
 
 export abstract class ReadConfig extends UseCase<IReadConfigInput> {}
 export class ReadConfigImpl extends ReadConfig {
-    constructor(private updateCommunication: IReadConfigCommunication) {
+    constructor(private communication: IReadConfigCommunication) {
         super();
     }
 
     public execute({ chatId }: IReadConfigInput) {
         const chat = Chats.instance.getChat(chatId);
         const chatData = chat.toJSON();
-        this.updateCommunication.sendReadConfig(chatId, chatData.timeFrames);
+        this.communication.sendReadConfig(chatId, chatData.timeFrames);
     }
 }

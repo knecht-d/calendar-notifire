@@ -8,7 +8,7 @@ import {
 import {
     InitializeChatImpl,
     ReminderImpl,
-    UpdateConfigImpl,
+    SetConfigImpl,
     StartAssistantImpl,
     DeleteConfigImpl,
     ReadConfigImpl,
@@ -38,12 +38,19 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         const read = new ReadConfigImpl(communicationPresenter);
         const reminder = new ReminderImpl(calendarGW, communicationPresenter);
         const start = new StartAssistantImpl(triggerGW, persitenceGW);
-        const updateConfig = new UpdateConfigImpl(communicationPresenter, triggerGW, persitenceGW);
+        const setConfig = new SetConfigImpl(communicationPresenter, triggerGW, persitenceGW);
 
         // Initialize Gateways
         calendarGW.init({ calendarConnector: calendar });
         communicationController.init({
-            useCases: { read: read, update: updateConfig, init: initChat, delete: deleteConfig },
+            useCases: {
+                config: {
+                    delete: deleteConfig,
+                    read: read,
+                    set: setConfig,
+                },
+                initChat: initChat,
+            },
             presenter: communicationPresenter,
         });
         communicationPresenter.init({ communication: chat });

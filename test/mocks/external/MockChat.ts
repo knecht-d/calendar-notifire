@@ -9,8 +9,8 @@ export class MockChat extends AbstractChat<{}> {
         super(setupData);
     }
 
-    public fireUpdate(chatId: string, userId: string, payload: string) {
-        this.communication!.update(chatId, userId, payload);
+    public fireSet(chatId: string, userId: string, payload: string) {
+        this.communication!.set(chatId, userId, payload);
     }
     public fireInitChat(chatId: string, userId: string) {
         this.communication!.initChat(chatId, userId);

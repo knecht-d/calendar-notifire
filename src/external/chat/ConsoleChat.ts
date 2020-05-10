@@ -32,8 +32,8 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
                     case "/exit":
                         console.log("User input complete, program exit.");
                         process.exit();
-                    case "/update":
-                        this.communication!.update(this.chatId, this.userId, payload);
+                    case "/set":
+                        this.communication!.set(this.chatId, this.userId, payload);
                         break;
                     case "/delete":
                         this.communication!.delete(this.chatId, this.userId, payload);

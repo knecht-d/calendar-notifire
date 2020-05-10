@@ -2,7 +2,7 @@ import { CommunicationController } from "../../../src/gateways";
 import { RecurrenceType } from "../../../src/interfaces";
 
 describe("CommunicationController", () => {
-    const updateMock = {
+    const setMock = {
         execute: jest.fn(),
     };
     const initMock = {
@@ -20,18 +20,25 @@ describe("CommunicationController", () => {
     };
     const controller = new CommunicationController();
     controller.init({
-        useCases: { update: updateMock, init: initMock, delete: deleteMock, read: readMock },
+        useCases: {
+            config: {
+                delete: deleteMock,
+                read: readMock,
+                set: setMock,
+            },
+            initChat: initMock,
+        },
         presenter: errrorReporterMock,
     });
     beforeEach(() => {
-        updateMock.execute.mockReset();
+        setMock.execute.mockReset();
         errrorReporterMock.sendCommunicationError.mockReset();
         errrorReporterMock.sendError.mockReset();
     });
-    describe("update", () => {
+    describe("set", () => {
         it("should send the basic information", () => {
-            controller.update("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
-            expect(updateMock.execute).toHaveBeenCalledWith(
+            controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+            expect(setMock.execute).toHaveBeenCalledWith(
                 expect.objectContaining({
                     chatId: "chat",
                     userId: "user",
@@ -42,8 +49,8 @@ describe("CommunicationController", () => {
 
         describe("hourly", () => {
             it("should reduce the end hours, the minutes are less then the minutes of start", () => {
-                controller.update("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:15 - s+1,m0");
-                expect(updateMock.execute).toHaveBeenCalledWith(
+                controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:15 - s+1,m0");
+                expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
                             recurrence: {
@@ -77,8 +84,8 @@ describe("CommunicationController", () => {
                 );
             });
             it("should keep the end hours, the minutes are more then the minutes of start", () => {
-                controller.update("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:45 - s+1,m0");
-                expect(updateMock.execute).toHaveBeenCalledWith(
+                controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:45 - s+1,m0");
+                expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
                             recurrence: {
@@ -112,8 +119,8 @@ describe("CommunicationController", () => {
                 );
             });
             it("should keep the end hours, the minutes are eqial to the minutes of start", () => {
-                controller.update("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:30 - s+1,m0");
-                expect(updateMock.execute).toHaveBeenCalledWith(
+                controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:30 - s+1,m0");
+                expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
                             recurrence: {
@@ -150,8 +157,8 @@ describe("CommunicationController", () => {
 
         describe("daily", () => {
             it("should work", () => {
-                controller.update("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
-                expect(updateMock.execute).toHaveBeenCalledWith(
+                controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+                expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
                             recurrence: {
@@ -204,8 +211,8 @@ describe("CommunicationController", () => {
 
         describe("monthly", () => {
             it("should work", () => {
-                controller.update("chat", "user", "trigger m 25 14:05 M+1,t0,s0,m0 M+2,t0,s0,m0");
-                expect(updateMock.execute).toHaveBeenCalledWith(
+                controller.set("chat", "user", "trigger m 25 14:05 M+1,t0,s0,m0 M+2,t0,s0,m0");
+                expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
                             recurrence: {
@@ -279,7 +286,7 @@ describe("CommunicationController", () => {
             it("invalid recurrence", () => {
                 testException(
                     () => {
-                        controller.update("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+                        controller.set("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
                     },
                     {
                         key: "INVALID_RECURRENCE_TYPE",
@@ -290,7 +297,7 @@ describe("CommunicationController", () => {
             });
 
             it("other error", () => {
-                controller.update("chat", "user", undefined as any);
+                controller.set("chat", "user", undefined as any);
                 expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
                 expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
                 const error = errrorReporterMock.sendError.mock.calls[0][1];
@@ -301,7 +308,7 @@ describe("CommunicationController", () => {
                 it("mising argument", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger s mo,di 07:00 t+1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger s mo,di 07:00 t+1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_NUMBER_OF_ARGUMENTS",
@@ -314,7 +321,7 @@ describe("CommunicationController", () => {
                 it("invalid days", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger s mo,di, 07:00 17:00 t+1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger s mo,di, 07:00 17:00 t+1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_DAYS",
@@ -327,7 +334,7 @@ describe("CommunicationController", () => {
                 it("invalid start time", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger s mo,di 07:60 19:00 t+1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger s mo,di 07:60 19:00 t+1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_TIME",
@@ -340,7 +347,7 @@ describe("CommunicationController", () => {
                 it("invalid end time", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger s mo,di 07:00 24:00 t+1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger s mo,di 07:00 24:00 t+1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_TIME",
@@ -353,7 +360,7 @@ describe("CommunicationController", () => {
                 it("invalid start frame", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger s mo,di 07:00 20:00 t*1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t*1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_FRAME_CONFIG",
@@ -366,7 +373,7 @@ describe("CommunicationController", () => {
                 it("invalid end frame", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger s mo,di 07:00 20:00 t+1,s0,m0 *");
+                            controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t+1,s0,m0 *");
                         },
                         {
                             key: "INVALID_FRAME_CONFIG",
@@ -382,7 +389,7 @@ describe("CommunicationController", () => {
                 it("mising argument", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger t mo,di t+1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger t mo,di t+1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_NUMBER_OF_ARGUMENTS",
@@ -395,7 +402,7 @@ describe("CommunicationController", () => {
                 it("invalid days", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger t mo,di, 17:00 t+1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger t mo,di, 17:00 t+1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_DAYS",
@@ -408,7 +415,7 @@ describe("CommunicationController", () => {
                 it("invalid time", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger t mo,di 24:00 t+1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger t mo,di 24:00 t+1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_TIME",
@@ -421,7 +428,7 @@ describe("CommunicationController", () => {
                 it("invalid start frame", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger t mo,di 17:00 t*1,s0,m0 t+2,s0,m0");
+                            controller.set("chat", "user", "trigger t mo,di 17:00 t*1,s0,m0 t+2,s0,m0");
                         },
                         {
                             key: "INVALID_FRAME_CONFIG",
@@ -434,7 +441,7 @@ describe("CommunicationController", () => {
                 it("invalid end frame", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 *");
+                            controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 *");
                         },
                         {
                             key: "INVALID_FRAME_CONFIG",
@@ -450,7 +457,7 @@ describe("CommunicationController", () => {
                 it("mising argument", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger m 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
+                            controller.set("chat", "user", "trigger m 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
                         },
                         {
                             key: "INVALID_NUMBER_OF_ARGUMENTS",
@@ -463,7 +470,7 @@ describe("CommunicationController", () => {
                 it("invalid day", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger m 40 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
+                            controller.set("chat", "user", "trigger m 40 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
                         },
                         {
                             key: "INVALID_DAY_OF_MONTH",
@@ -476,7 +483,7 @@ describe("CommunicationController", () => {
                 it("invalid time", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger m 15 17:60 M+1,t1,s0,m0 M+2,t1,s0,m0");
+                            controller.set("chat", "user", "trigger m 15 17:60 M+1,t1,s0,m0 M+2,t1,s0,m0");
                         },
                         {
                             key: "INVALID_TIME",
@@ -489,7 +496,7 @@ describe("CommunicationController", () => {
                 it("invalid start frame", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger m 15 17:00 M+1,T1,s0,m0 M+2,t1,s0,m0");
+                            controller.set("chat", "user", "trigger m 15 17:00 M+1,T1,s0,m0 M+2,t1,s0,m0");
                         },
                         {
                             key: "INVALID_FRAME_CONFIG",
@@ -502,7 +509,7 @@ describe("CommunicationController", () => {
                 it("invalid end frame", () => {
                     testException(
                         () => {
-                            controller.update("chat", "user", "trigger m 15 17:00 M+1,t1,s0,m0 M+2,t/1,s0,m0");
+                            controller.set("chat", "user", "trigger m 15 17:00 M+1,t1,s0,m0 M+2,t/1,s0,m0");
                         },
                         {
                             key: "INVALID_FRAME_CONFIG",
