@@ -1,5 +1,5 @@
 import { ITimeFrameSettings, RecurrenceType } from "../../interfaces";
-import { InitializeChat, IUpdateInput, UpdateConfig, DeleteConfig, ReadConfig } from "../../useCases";
+import { InitializeChat, ISetConfigInput, SetConfig, DeleteConfig, ReadConfig } from "../../useCases";
 import { GateWay } from "../GateWay";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { IErrorReporter } from "./CommunicationPresenter";
@@ -7,7 +7,7 @@ import { Mappings } from "./Mappings";
 import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from "./validation";
 
 export interface ICommunicationIn {
-    update: (chatId: string, userId: string, payload: string) => void;
+    set: (chatId: string, userId: string, payload: string) => void;
     delete: (chatId: string, userId: string, payload: string) => void;
     initChat: (chatId: string, userId: string) => void;
     read: (chatId: string) => void;
@@ -16,10 +16,12 @@ export interface ICommunicationIn {
 interface IDependencies {
     presenter: IErrorReporter;
     useCases: {
-        update: UpdateConfig;
-        init: InitializeChat;
-        delete: DeleteConfig;
-        read: ReadConfig;
+        config: {
+            delete: DeleteConfig;
+            read: ReadConfig;
+            set: SetConfig;
+        };
+        initChat: InitializeChat;
     };
 }
 
@@ -32,13 +34,13 @@ export class CommunicationController extends GateWay<IDependencies> implements I
 
     read(chatId: string) {
         this.checkInitialized();
-        this.dependencies!.useCases.read.execute({ chatId });
+        this.dependencies!.useCases.config.read.execute({ chatId });
     }
 
     initChat(chatId: string, userId: string) {
         this.checkInitialized();
         try {
-            this.dependencies!.useCases.init.execute({
+            this.dependencies!.useCases.initChat.execute({
                 chatId,
                 userId,
             });
@@ -57,7 +59,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
             if (!triggerId) {
                 throw new CommunicationError(CommunicationErrorCode.MISSING_TRIGGER_ID);
             }
-            this.dependencies!.useCases.delete.execute({ chatId, userId, triggerId });
+            this.dependencies!.useCases.config.delete.execute({ chatId, userId, triggerId });
         } catch (error) {
             if (error instanceof CommunicationError) {
                 this.dependencies!.presenter.sendCommunicationError(chatId, error);
@@ -67,7 +69,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
-    update(chatId: string, userId: string, payload: string) {
+    set(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         try {
             const payloadParts = payload
@@ -85,7 +87,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
                 );
             }
             const configExtractors = this.configExtractors;
-            this.dependencies!.useCases.update.execute({
+            this.dependencies!.useCases.config.set.execute({
                 chatId,
                 userId,
                 triggerId,
@@ -100,7 +102,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
-    private extractMonthlyConfig(parts: string[]): IUpdateInput["config"] {
+    private extractMonthlyConfig(parts: string[]): ISetConfigInput["config"] {
         validateMonthlyConfig(parts);
         const time = parts[1].split(":");
         const startConfig = parts[2];
@@ -117,7 +119,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         };
     }
 
-    private extractDailyConfig(parts: string[]): IUpdateInput["config"] {
+    private extractDailyConfig(parts: string[]): ISetConfigInput["config"] {
         validateDailyConfig(parts);
         const days = parts[0].split(",");
         const time = parts[1].split(":");
@@ -143,7 +145,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         };
     }
 
-    private extractHourlyConfig(parts: string[]): IUpdateInput["config"] {
+    private extractHourlyConfig(parts: string[]): ISetConfigInput["config"] {
         validateHourlyConfig(parts);
         const days = parts[0].toLowerCase().split(",");
         const timeFrom = parts[1].split(":");

@@ -4,13 +4,13 @@ import {
     IDeleteConfigCommunication,
     IEventCommunication,
     IInitCommunication,
-    IUpdateCommunication,
+    ISetConfigCommunication,
     IReadConfigCommunication,
 } from "../../../src/useCases";
 
 export class MockCommunicationPresenter extends GateWay<{}>
     implements
-        IUpdateCommunication,
+        ISetConfigCommunication,
         IReadConfigCommunication,
         IDeleteConfigCommunication,
         IInitCommunication,
@@ -19,8 +19,8 @@ export class MockCommunicationPresenter extends GateWay<{}>
     sendReadConfig = jest.fn();
     sendDeleteConfigSuccess = jest.fn();
     sendDeleteConfigError = jest.fn();
-    sendUpdateSuccess = jest.fn();
-    sendUpdateError = jest.fn();
+    sendSetConfigSuccess = jest.fn();
+    sendSetConfigError = jest.fn();
     sendInitSuccess = jest.fn();
     sendInitError = jest.fn();
     sendEvents = jest.fn();

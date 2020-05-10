@@ -1,7 +1,7 @@
 import { IRecurrenceRule } from "../../interfaces";
 import { Chats } from "../../entities";
 import { UseCase } from "../UseCase";
-import { IChatPersistence } from "../updateConfig";
+import { IChatPersistence } from "../triggerConfig";
 
 export interface IStartAssistantTimer {
     set: (chatId: string, triggerId: string, recurrence: IRecurrenceRule) => void;

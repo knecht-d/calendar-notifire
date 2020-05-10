@@ -2,7 +2,7 @@ import { IRecurrenceRule, ITimeFrameSettings, ITimeFrameJSON } from "../../inter
 import { Chats } from "../../entities";
 import { UseCase } from "../UseCase";
 
-export interface IUpdateInput {
+export interface ISetConfigInput {
     userId: string;
     chatId: string;
     triggerId: string;
@@ -18,38 +18,38 @@ export interface IChatPersistence {
     administrators: string[];
 }
 
-export interface IUpdateCommunication {
-    sendUpdateSuccess: (chatId: string, triggerId: string, message?: string) => void;
-    sendUpdateError: (chatId: string, triggerId: string, message?: string) => void;
+export interface ISetConfigCommunication {
+    sendSetConfigSuccess: (chatId: string, triggerId: string, message?: string) => void;
+    sendSetConfigError: (chatId: string, triggerId: string, message?: string) => void;
 }
 
-export interface IUpdateTimer {
-    update: (chatId: string, triggerId: string, recurrence: IRecurrenceRule) => void;
+export interface ISetTimer {
+    set: (chatId: string, triggerId: string, recurrence: IRecurrenceRule) => void;
 }
 
 export interface IUpdateChatPersistence {
     saveChatConfig: (chatId: string, chat: IChatPersistence) => void;
 }
 
-export abstract class UpdateConfig extends UseCase<IUpdateInput> {}
-export class UpdateConfigImpl extends UpdateConfig {
+export abstract class SetConfig extends UseCase<ISetConfigInput> {}
+export class SetConfigImpl extends SetConfig {
     constructor(
-        private updateCommunication: IUpdateCommunication,
-        private timerSettings: IUpdateTimer,
+        private communication: ISetConfigCommunication,
+        private timerSettings: ISetTimer,
         private persistence: IUpdateChatPersistence,
     ) {
         super();
     }
 
-    public execute({ chatId, userId, triggerId, config }: IUpdateInput) {
+    public execute({ chatId, userId, triggerId, config }: ISetConfigInput) {
         const chat = Chats.instance.getChat(chatId);
         chat.setTimeFrame(
             triggerId,
             { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence },
             userId,
         );
-        this.timerSettings.update(chatId, triggerId, config.recurrence);
+        this.timerSettings.set(chatId, triggerId, config.recurrence);
         this.persistence.saveChatConfig(chatId, chat.toJSON());
-        this.updateCommunication.sendUpdateSuccess(chatId, triggerId);
+        this.communication.sendSetConfigSuccess(chatId, triggerId);
     }
 }

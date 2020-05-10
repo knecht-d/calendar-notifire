@@ -74,40 +74,40 @@ describe("CommunicationPresenter", () => {
             );
         });
     });
-    describe("sendUpdateSuccess", () => {
+    describe("sendSetConfigSuccess", () => {
         it("should send a plain success message to the chat", () => {
             const presenter = new CommunicationPresenter();
             presenter.init({ communication: mockCommunicationOut });
-            presenter.sendUpdateSuccess("someChat", "someTrigger");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Update someTrigger erfolgreich.");
+            presenter.sendSetConfigSuccess("someChat", "someTrigger");
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Setzen von someTrigger erfolgreich.");
         });
         it("should add the additional message", () => {
             const presenter = new CommunicationPresenter();
             presenter.init({ communication: mockCommunicationOut });
-            presenter.sendUpdateSuccess("someChat", "someTrigger", "Details");
+            presenter.sendSetConfigSuccess("someChat", "someTrigger", "Details");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
-                "Update someTrigger erfolgreich. Details",
+                "Setzen von someTrigger erfolgreich. Details",
             );
         });
     });
-    describe("sendUpdateError", () => {
+    describe("sendSetConfigError", () => {
         it("should send a plain error message to the chat", () => {
             const presenter = new CommunicationPresenter();
             presenter.init({ communication: mockCommunicationOut });
-            presenter.sendUpdateError("someChat", "someTrigger");
+            presenter.sendSetConfigError("someChat", "someTrigger");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
-                "Fehler: Update someTrigger fehlgeschlagen.",
+                "Fehler: Setzen von someTrigger fehlgeschlagen.",
             );
         });
         it("should add the additional message", () => {
             const presenter = new CommunicationPresenter();
             presenter.init({ communication: mockCommunicationOut });
-            presenter.sendUpdateError("someChat", "someTrigger", "Details");
+            presenter.sendSetConfigError("someChat", "someTrigger", "Details");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                 "someChat",
-                "Fehler: Update someTrigger fehlgeschlagen - Details",
+                "Fehler: Setzen von someTrigger fehlgeschlagen - Details",
             );
         });
     });

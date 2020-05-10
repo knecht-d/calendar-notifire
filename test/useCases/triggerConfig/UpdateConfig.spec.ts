@@ -1,4 +1,4 @@
-import { UpdateConfig, UpdateConfigImpl } from "../../../src/useCases";
+import { SetConfig, SetConfigImpl } from "../../../src/useCases";
 import { MockCommunicationPresenter, MockPersistence, MockTriggerGateway, MockChatEntity } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
@@ -7,16 +7,16 @@ jest.mock("../../../src/entities/Chats", () => {
         Chats: MockChats,
     };
 });
-describe("UpdateConfig", () => {
+describe("SetConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
     let mockTrigger: MockTriggerGateway;
     let mockPersistence: MockPersistence;
-    let useCase: UpdateConfig;
+    let useCase: SetConfig;
     beforeAll(() => {
         mockCommunication = new MockCommunicationPresenter();
         mockTrigger = new MockTriggerGateway();
         mockPersistence = new MockPersistence();
-        useCase = new UpdateConfigImpl(mockCommunication, mockTrigger, mockPersistence);
+        useCase = new SetConfigImpl(mockCommunication, mockTrigger, mockPersistence);
     });
     describe("execute", () => {
         it("should set a new time frame", () => {
@@ -40,9 +40,9 @@ describe("UpdateConfig", () => {
                 },
                 "user",
             );
-            expect(mockTrigger.update).toHaveBeenCalledWith("chat", "trigger", { mock: "recurrence" });
+            expect(mockTrigger.set).toHaveBeenCalledWith("chat", "trigger", { mock: "recurrence" });
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", { mock: "newChat" });
-            expect(mockCommunication.sendUpdateSuccess).toHaveBeenCalledWith("chat", "trigger");
+            expect(mockCommunication.sendSetConfigSuccess).toHaveBeenCalledWith("chat", "trigger");
         });
     });
 });

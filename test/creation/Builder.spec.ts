@@ -2,7 +2,7 @@ import { Builder } from "../../src/creation";
 import { MockFactory, EmptyCalendar, MockChat, MockStorage, MockTimer } from "../mocks";
 import {
     DeleteConfigImpl,
-    UpdateConfigImpl,
+    SetConfigImpl,
     ReminderImpl,
     InitializeChatImpl,
     StartAssistantImpl,
@@ -70,10 +70,10 @@ describe("Builder", () => {
             it("should initialize the CommunicationController", () => {
                 expect((CommunicationController as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
                 const data = (CommunicationController.prototype.init as jest.Mock).mock.calls[0][0];
-                expect(data.useCases?.update).toBeInstanceOf(UpdateConfigImpl);
-                expect(data.useCases?.init).toBeInstanceOf(InitializeChatImpl);
-                expect(data.useCases?.delete).toBeInstanceOf(DeleteConfigImpl);
-                expect(data.useCases?.read).toBeInstanceOf(ReadConfigImpl);
+                expect(data.useCases?.config.delete).toBeInstanceOf(DeleteConfigImpl);
+                expect(data.useCases?.config.read).toBeInstanceOf(ReadConfigImpl);
+                expect(data.useCases?.config.set).toBeInstanceOf(SetConfigImpl);
+                expect(data.useCases?.initChat).toBeInstanceOf(InitializeChatImpl);
                 expect(data.presenter).toBeInstanceOf(CommunicationPresenter);
             });
             it("should initialize the CommunicationPresenter", () => {
@@ -124,9 +124,9 @@ describe("Builder", () => {
                 expect(params[0]).toBeInstanceOf(TriggerGateway);
                 expect(params[1]).toBeInstanceOf(PeristenceGateway);
             });
-            it("should create the update config use case", () => {
-                expect(UpdateConfigImpl).toHaveBeenCalledTimes(1);
-                const params = (UpdateConfigImpl as jest.Mock).mock.calls[0];
+            it("should create the set config use case", () => {
+                expect(SetConfigImpl).toHaveBeenCalledTimes(1);
+                const params = (SetConfigImpl as jest.Mock).mock.calls[0];
                 expect(params[0]).toBeInstanceOf(CommunicationPresenter);
                 expect(params[1]).toBeInstanceOf(TriggerGateway);
                 expect(params[2]).toBeInstanceOf(PeristenceGateway);

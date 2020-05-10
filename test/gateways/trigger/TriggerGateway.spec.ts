@@ -14,21 +14,6 @@ describe("TriggerGateway", () => {
         mockReminder.execute.mockClear();
     });
 
-    describe("update", () => {
-        it("should call set", () => {
-            const triggerGW = new TriggerGateway();
-            jest.spyOn(triggerGW, "set").mockReturnValue();
-            triggerGW.update("chat|Id", "trigger|Id", { type: RecurrenceType.monthly, day: 15, hour: 12, minute: 32 });
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(triggerGW.set).toHaveBeenCalledWith("chat|Id", "trigger|Id", {
-                type: RecurrenceType.monthly,
-                day: 15,
-                hour: 12,
-                minute: 32,
-            });
-        });
-    });
-
     describe("set", () => {
         it("should encode the id", () => {
             const triggerGW = new TriggerGateway();
