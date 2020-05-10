@@ -13,13 +13,13 @@ describe("Chat", () => {
 
     describe("TimeFrames", () => {
         it("should set and return the time frame", () => {
-            const chat = new Chat("admin");
+            const chat = new Chat(["admin"]);
             chat.setTimeFrame("tf", { recurrence: baseRecurrence }, "admin");
             const tf = chat.getTimeFrame("tf");
             expect(tf).toBeDefined();
         });
-        it("should sfail if user has now privileges", () => {
-            const chat = new Chat("admin");
+        it("should fail if user has no privileges", () => {
+            const chat = new Chat(["admin"]);
             expect(() => {
                 chat.setTimeFrame("tf_not", { recurrence: baseRecurrence }, "another user");
             }).toThrow(new EntityError(EntityErrorCode.MISSING_PRIVILEGES));
@@ -27,13 +27,13 @@ describe("Chat", () => {
             expect(tf).not.toBeDefined();
         });
         it("should return undefined for not exisiting timeframes", () => {
-            const chat = new Chat("admin");
+            const chat = new Chat(["admin"]);
             chat.setTimeFrame("tf", { recurrence: baseRecurrence }, "admin");
             const tf = chat.getTimeFrame("notDefined");
             expect(tf).not.toBeDefined();
         });
         it("should create the correct TimeFrame", () => {
-            const chat = new Chat("admin");
+            const chat = new Chat(["admin"]);
             const tfBegin: ITimeFrameSettings = {
                 minute: { value: -1 },
                 hour: { value: -1 },
@@ -77,7 +77,7 @@ describe("Chat", () => {
             expect(actualTf2?.getEnd(date)).toEqual(tf2.getEnd(date));
         });
         it("should use empty settings as defaults", () => {
-            const chat = new Chat("admin");
+            const chat = new Chat(["admin"]);
             const tf = new TimeFrame({}, {}, baseRecurrence);
 
             chat.setTimeFrame("tf", { recurrence: baseRecurrence }, "admin");
@@ -105,7 +105,7 @@ describe("Chat", () => {
                 month: { value: 8 },
                 year: { value: 2020 },
             };
-            const chat = new Chat("admin");
+            const chat = new Chat(["admin"]);
             chat.setTimeFrame("tf", { begin: tfBegin, end: tfEnd, recurrence: baseRecurrence }, "admin");
             expect(chat.toJSON()).toEqual({
                 administrators: ["admin"],

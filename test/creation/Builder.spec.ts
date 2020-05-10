@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Builder } from "../../src/creation";
 import { MockFactory, EmptyCalendar, MockChat, MockStorage, MockTimer } from "../mocks";
-import { UpdateConfigImpl, ReminderImpl, InitializeChatImpl } from "../../src/useCases";
+import { UpdateConfigImpl, ReminderImpl, InitializeChatImpl, StartAssistantImpl } from "../../src/useCases";
 import {
     CommunicationController,
     TriggerGateway,
@@ -10,6 +9,8 @@ import {
     CalendarGateway,
 } from "../../src/gateways";
 
+// All Classes where the prototype is checked need to have their own mock!
+jest.mock("../../src/useCases/startAssistant");
 jest.mock("../../src/useCases");
 jest.mock("../../src/gateways/calendar/CalendarGateway");
 jest.mock("../../src/gateways/communication/CommunicationController");
@@ -24,10 +25,6 @@ jest.mock("../mocks/external");
 describe("Builder", () => {
     describe("build", () => {
         beforeAll(() => {
-            // (CommunicationPresenter as jest.Mock).mockImplementation(() => {
-            //     return { mock: "CommunicationPresenter" };
-            // });
-
             const mockFactory = new MockFactory();
             const builder = new Builder(mockFactory);
             builder.build({ calendar: {}, chatData: {}, storage: {} });
@@ -40,13 +37,13 @@ describe("Builder", () => {
                 expect(MockTimer).toHaveBeenCalledTimes(1);
             });
             it("should initialize the chat", () => {
-                expect(MockChat.prototype.init as jest.Mock).toHaveBeenCalledTimes(1);
-                const params = (MockChat.prototype.init as jest.Mock).mock.calls[0];
+                expect((MockChat as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
+                const params = (MockChat as jest.Mock).mock.instances[0].init.mock.calls[0];
                 expect(params[0]).toBeInstanceOf(CommunicationController);
             });
             it("should initialize the timer", () => {
-                expect(MockTimer.prototype.init as jest.Mock).toHaveBeenCalledTimes(1);
-                const params = (MockTimer.prototype.init as jest.Mock).mock.calls[0];
+                expect((MockTimer as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
+                const params = (MockTimer as jest.Mock).mock.instances[0].init.mock.calls[0];
                 expect(params[0]).toBeInstanceOf(TriggerGateway);
             });
         });
@@ -59,30 +56,30 @@ describe("Builder", () => {
                 expect(TriggerGateway).toHaveBeenCalledTimes(1);
             });
             it("should initialize the CalendarGateway", () => {
-                expect(CalendarGateway.prototype.init as jest.Mock).toHaveBeenCalledTimes(1);
-                const data = (CalendarGateway.prototype.init as jest.Mock).mock.calls[0][0];
+                expect((CalendarGateway as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
+                const data = (CalendarGateway as jest.Mock).mock.instances[0].init.mock.calls[0][0];
                 expect(data.calendarConnector).toBeInstanceOf(EmptyCalendar);
             });
             it("should initialize the CommunicationController", () => {
-                expect(CommunicationController.prototype.init as jest.Mock).toHaveBeenCalledTimes(1);
+                expect((CommunicationController as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
                 const data = (CommunicationController.prototype.init as jest.Mock).mock.calls[0][0];
                 expect(data.useCases?.update).toBeInstanceOf(UpdateConfigImpl);
                 expect(data.useCases?.init).toBeInstanceOf(InitializeChatImpl);
                 expect(data.presenter).toBeInstanceOf(CommunicationPresenter);
             });
             it("should initialize the CommunicationPresenter", () => {
-                expect(CommunicationPresenter.prototype.init as jest.Mock).toHaveBeenCalledTimes(1);
-                const data = (CommunicationPresenter.prototype.init as jest.Mock).mock.calls[0][0];
+                expect((CommunicationPresenter as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
+                const data = (CommunicationPresenter as jest.Mock).mock.instances[0].init.mock.calls[0][0];
                 expect(data.communication).toBeInstanceOf(MockChat);
             });
             it("should initialize the PeristenceGateway", () => {
-                expect(PeristenceGateway.prototype.init as jest.Mock).toHaveBeenCalledTimes(1);
-                const data = (PeristenceGateway.prototype.init as jest.Mock).mock.calls[0][0];
+                expect((PeristenceGateway as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
+                const data = (PeristenceGateway as jest.Mock).mock.instances[0].init.mock.calls[0][0];
                 expect(data.persistence).toBeInstanceOf(MockStorage);
             });
             it("should initialize the TriggerGateway", () => {
-                expect(TriggerGateway.prototype.init as jest.Mock).toHaveBeenCalledTimes(1);
-                const data = (TriggerGateway.prototype.init as jest.Mock).mock.calls[0][0];
+                expect((TriggerGateway as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
+                const data = (TriggerGateway as jest.Mock).mock.instances[0].init.mock.calls[0][0];
                 expect(data.triggerConfig).toBeInstanceOf(MockTimer);
                 expect(data.reminder).toBeInstanceOf(ReminderImpl);
             });
@@ -100,12 +97,21 @@ describe("Builder", () => {
                 expect(params[0]).toBeInstanceOf(CalendarGateway);
                 expect(params[1]).toBeInstanceOf(CommunicationPresenter);
             });
+            it("should create the start assistant use case", () => {
+                expect(StartAssistantImpl).toHaveBeenCalledTimes(1);
+                const params = (StartAssistantImpl as jest.Mock).mock.calls[0];
+                expect(params[0]).toBeInstanceOf(TriggerGateway);
+                expect(params[1]).toBeInstanceOf(PeristenceGateway);
+            });
             it("should create the update config use case", () => {
                 expect(UpdateConfigImpl).toHaveBeenCalledTimes(1);
                 const params = (UpdateConfigImpl as jest.Mock).mock.calls[0];
                 expect(params[0]).toBeInstanceOf(CommunicationPresenter);
                 expect(params[1]).toBeInstanceOf(TriggerGateway);
                 expect(params[2]).toBeInstanceOf(PeristenceGateway);
+            });
+            it("should execute the start assistant use case", () => {
+                expect((StartAssistantImpl as jest.Mock).mock.instances[0].execute).toHaveBeenCalledTimes(1);
             });
         });
     });

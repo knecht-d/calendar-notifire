@@ -16,11 +16,11 @@ export class Chats {
         return Chats.INSTANCE;
     }
 
-    public createChat(chatId: string, adminId: string) {
+    public createChat(chatId: string, adminIds: string[]) {
         if (this.chats[chatId]) {
             throw new EntityError(EntityErrorCode.CHAT_ALREADY_EXISTING);
         }
-        const chat = new Chat(adminId);
+        const chat = new Chat(adminIds);
         this.chats[chatId] = chat;
         return chat;
     }

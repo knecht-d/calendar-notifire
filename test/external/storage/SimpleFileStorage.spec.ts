@@ -4,24 +4,25 @@ import { SimpleFileStorage } from "../../../src/external";
 jest.mock("fs");
 describe("SimpleFileStorage", () => {
     describe("readAll", () => {
-        it("should not try to read the file if it does not exist", () => {
+        it("should return an empty object if it does not exist", () => {
             (existsSync as jest.Mock).mockReturnValue(false);
             const storage = new SimpleFileStorage({ file: "data/test.json" });
-            storage.readAll();
+            const result = storage.readAll();
             expect(readFileSync).not.toHaveBeenCalled();
+            expect(result).toEqual({});
         });
         it("should read and parse the file if it does exist", () => {
             (existsSync as jest.Mock).mockReturnValue(true);
             (readFileSync as jest.Mock).mockReturnValue('{"data": "someData"}');
             const storage = new SimpleFileStorage({ file: "data/test.json" });
-            storage.readAll();
+            const result = storage.readAll();
             expect(readFileSync).toHaveBeenCalledWith(
                 expect.stringMatching(new RegExp(".*/\\.\\./\\.\\./\\.\\./data/test\\.json$")),
                 {
                     encoding: "utf8",
                 },
             );
-            expect(storage.get("data")).toEqual("someData");
+            expect(result).toEqual({ data: "someData" });
         });
     });
     describe("get", () => {

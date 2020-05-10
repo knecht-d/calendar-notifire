@@ -30,13 +30,13 @@ describe("Chats", () => {
     it("should fail if chat created twice", () => {
         const chats = Chats.instance;
         expect(() => {
-            chats.createChat("test", "admin");
-            chats.createChat("test", "another admin");
+            chats.createChat("test", ["admin"]);
+            chats.createChat("test", ["another admin"]);
         }).toThrow(new EntityError(EntityErrorCode.CHAT_ALREADY_EXISTING));
     });
     it("should always return the same chat", () => {
         const chats = Chats.instance;
-        chats.createChat("test2", "admin");
+        chats.createChat("test2", ["admin"]);
         const chat1 = chats.getChat("test2");
         const chat2 = chats.getChat("test2");
         expect(chat1).toBe(chat2);
@@ -45,12 +45,12 @@ describe("Chats", () => {
     it("should return the chats as JSON", () => {
         const chats = Chats.instance;
         try {
-            chats.createChat("test", "admin");
+            chats.createChat("test", ["admin"]);
         } catch (error) {
             // Chat was already existing
         }
         try {
-            chats.createChat("test2", "admin");
+            chats.createChat("test2", ["admin"]);
         } catch (error) {
             // Chat was already existing
         }

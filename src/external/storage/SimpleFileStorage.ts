@@ -13,10 +13,11 @@ export class SimpleFileStorage extends AbstractStorage<{ file: string }> {
 
     readAll() {
         if (!existsSync(this.file)) {
-            return;
+            return {};
         }
         const rawData = readFileSync(this.file, { encoding: "utf8" });
         this.data = JSON.parse(rawData);
+        return this.data;
     }
 
     save(key: string, value: string) {
