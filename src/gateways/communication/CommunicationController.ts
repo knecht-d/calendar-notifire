@@ -1,5 +1,5 @@
 import { ITimeFrameSettings, RecurrenceType } from "../../interfaces";
-import { InitializeChat, IUpdateInput, UpdateConfig } from "../../useCases";
+import { InitializeChat, IUpdateInput, UpdateConfig, DeleteConfig } from "../../useCases";
 import { GateWay } from "../GateWay";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { IErrorReporter } from "./CommunicationPresenter";
@@ -8,6 +8,7 @@ import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from
 
 export interface ICommunicationIn {
     update: (chatId: string, userId: string, payload: string) => void;
+    delete: (chatId: string, userId: string, payload: string) => void;
     initChat: (chatId: string, userId: string) => void;
 }
 
@@ -16,6 +17,7 @@ interface IDependencies {
     useCases: {
         update: UpdateConfig;
         init: InitializeChat;
+        delete: DeleteConfig;
     };
 }
 
@@ -35,6 +37,26 @@ export class CommunicationController extends GateWay<IDependencies> implements I
             });
         } catch (error) {
             this.dependencies!.presenter.sendError(chatId, `${error}`);
+        }
+    }
+
+    delete(chatId: string, userId: string, payload: string) {
+        this.checkInitialized();
+        try {
+            const triggerId = payload
+                .trim()
+                .replace(/\s+/gm, " ")
+                .split(" ")[0];
+            if (!triggerId) {
+                throw new CommunicationError(CommunicationErrorCode.MISSING_TRIGGER_ID);
+            }
+            this.dependencies!.useCases.delete.execute({ chatId, userId, triggerId });
+        } catch (error) {
+            if (error instanceof CommunicationError) {
+                this.dependencies!.presenter.sendCommunicationError(chatId, error);
+            } else {
+                this.dependencies!.presenter.sendError(chatId, `${error}`);
+            }
         }
     }
 

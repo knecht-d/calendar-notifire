@@ -1,6 +1,12 @@
 import { Builder } from "../../src/creation";
 import { MockFactory, EmptyCalendar, MockChat, MockStorage, MockTimer } from "../mocks";
-import { UpdateConfigImpl, ReminderImpl, InitializeChatImpl, StartAssistantImpl } from "../../src/useCases";
+import {
+    DeleteConfigImpl,
+    UpdateConfigImpl,
+    ReminderImpl,
+    InitializeChatImpl,
+    StartAssistantImpl,
+} from "../../src/useCases";
 import {
     CommunicationController,
     TriggerGateway,
@@ -65,6 +71,7 @@ describe("Builder", () => {
                 const data = (CommunicationController.prototype.init as jest.Mock).mock.calls[0][0];
                 expect(data.useCases?.update).toBeInstanceOf(UpdateConfigImpl);
                 expect(data.useCases?.init).toBeInstanceOf(InitializeChatImpl);
+                expect(data.useCases?.delete).toBeInstanceOf(DeleteConfigImpl);
                 expect(data.presenter).toBeInstanceOf(CommunicationPresenter);
             });
             it("should initialize the CommunicationPresenter", () => {
@@ -85,6 +92,13 @@ describe("Builder", () => {
             });
         });
         describe("use cases", () => {
+            it("should create the delete chat use case", () => {
+                expect(DeleteConfigImpl).toHaveBeenCalledTimes(1);
+                const params = (DeleteConfigImpl as jest.Mock).mock.calls[0];
+                expect(params[0]).toBeInstanceOf(CommunicationPresenter);
+                expect(params[1]).toBeInstanceOf(TriggerGateway);
+                expect(params[2]).toBeInstanceOf(PeristenceGateway);
+            });
             it("should create the initialize chat use case", () => {
                 expect(InitializeChatImpl).toHaveBeenCalledTimes(1);
                 const params = (InitializeChatImpl as jest.Mock).mock.calls[0];

@@ -32,6 +32,7 @@ export const Mappings: IMappings = {
         sunday: "so",
     },
     errorCodes: {
+        MISSING_TRIGGER_ID: "Trigger ID Fehlt",
         INVALID_RECURRENCE_TYPE: "Falscher Typ für Wiederholungen [{given}]. Mögliche Werte: {expected}",
         INVALID_NUMBER_OF_ARGUMENTS: "Falsche Anzahl an Argumenten [{given}]. Beispiel: {example}",
         INVALID_DAYS: "Falsche Eingabe für Wochentage [{given}]. Mögliche Werte: {expected}",

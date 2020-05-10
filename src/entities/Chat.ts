@@ -25,6 +25,13 @@ export class Chat {
         return this.timeFrames[key];
     }
 
+    public removeTimeFrame(key: string, userId: string) {
+        if (!this.administrators.includes(userId)) {
+            throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
+        }
+        delete this.timeFrames[key];
+    }
+
     public toJSON() {
         const timeFrames = Object.entries(this.timeFrames)
             .filter(([_, value]) => !!value)
