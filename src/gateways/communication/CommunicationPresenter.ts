@@ -4,10 +4,11 @@ import {
     IDeleteConfigCommunication,
     IReadConfigCommunication,
     ITriggers,
+    IEventCommunication,
+    IEvent,
 } from "../../useCases";
 import { CommunicationError } from "./CommunicationError";
 import { Mappings } from "./Mappings";
-import { IEventCommunication, IEvent } from "../../useCases/reminder/Reminder";
 import { GateWay } from "../GateWay";
 
 export interface ICommunicationOut {
