@@ -28,7 +28,7 @@ export type IRecurrenceSettings = IMonthlyRecurrenceSettings | IDailyRecurrenceS
 
 export abstract class RecurrenceRule {
     constructor(protected type: RecurrenceType, protected hour: number, protected minute: number) {}
-    getBaseSetting(): IBaseRecurrenceSettings {
+    protected getBaseSetting(): IBaseRecurrenceSettings {
         return {
             type: this.type,
             hour: this.hour,

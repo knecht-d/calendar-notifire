@@ -1,0 +1,7 @@
+/build
+/coverage
+/.nyc_output
+/.vscode
+node_modules
+
+/data
