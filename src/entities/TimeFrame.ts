@@ -1,12 +1,8 @@
-import { ITimeCalc, ITimeFrameSettings, IRecurrenceRule } from "../interfaces";
+import { ITimeCalc, ITimeFrameSettings } from "../interfaces";
 
 export class TimeFrame {
     private static DEFAULT_SETTING: ITimeCalc = { value: 0 };
-    constructor(
-        private begin: ITimeFrameSettings,
-        private end: ITimeFrameSettings,
-        private recurrence: IRecurrenceRule,
-    ) {}
+    constructor(private begin: ITimeFrameSettings, private end: ITimeFrameSettings) {}
 
     public getStart(baseDate: Date) {
         const start = new Date(baseDate);
@@ -34,7 +30,6 @@ export class TimeFrame {
         return {
             begin: this.begin,
             end: this.end,
-            recurrence: this.recurrence,
         };
     }
 

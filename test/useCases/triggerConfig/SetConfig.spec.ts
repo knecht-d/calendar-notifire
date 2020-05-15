@@ -1,5 +1,5 @@
 import { SetConfig, SetConfigImpl } from "../../../src/useCases";
-import { MockCommunicationPresenter, MockPersistence, MockTriggerGateway, MockChatEntity } from "../../mocks";
+import { MockChatEntity, MockCommunicationPresenter, MockPersistence, MockTriggerGateway } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
     const MockChats = require("../../mocks").MockChats;
@@ -7,6 +7,10 @@ jest.mock("../../../src/entities/Chats", () => {
         Chats: MockChats,
     };
 });
+jest.mock("../../../src/useCases/utils", () => ({
+    createRecurrence: jest.fn().mockImplementation(x => x),
+    convertChatToPersistence: jest.fn().mockReturnValue({ mock: "newChat" }),
+}));
 describe("SetConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
     let mockTrigger: MockTriggerGateway;
@@ -34,8 +38,10 @@ describe("SetConfig", () => {
             expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
                 "trigger",
                 {
-                    begin: { mock: "frame start" },
-                    end: { mock: "frame end" },
+                    frame: {
+                        begin: { mock: "frame start" },
+                        end: { mock: "frame end" },
+                    },
                     recurrence: { mock: "recurrence" },
                 },
                 "user",

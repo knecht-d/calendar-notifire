@@ -1,6 +1,6 @@
-import { Reminder, ReminderImpl } from "../../../src/useCases";
-import { MockCalendarGateway, MockCommunicationPresenter, MockTimeFrame, MockChatEntity } from "../../mocks";
 import MockDate from "mockdate";
+import { Reminder, ReminderImpl } from "../../../src/useCases";
+import { MockCalendarGateway, MockChatEntity, MockCommunicationPresenter, MockTimeFrame } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
     const MockChats = require("../../mocks").MockChats;

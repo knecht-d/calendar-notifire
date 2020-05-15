@@ -1,10 +1,15 @@
-import { MockTriggerGateway, MockPersistence, MockChats, MockChatEntity } from "../../mocks";
-import { StartAssistantImpl, StartAssistant } from "../../../src/useCases";
+import { StartAssistant, StartAssistantImpl } from "../../../src/useCases";
+import { MockChatEntity, MockChats, MockPersistence, MockTriggerGateway } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
     const MockChats = require("../../mocks/Entities").MockChats;
     return {
         Chats: MockChats,
+    };
+});
+jest.mock("../../../src/useCases/utils", () => {
+    return {
+        createRecurrence: jest.fn().mockImplementation(({ type }) => ({ type })),
     };
 });
 describe("StartAssistamt", () => {
@@ -89,11 +94,13 @@ describe("StartAssistamt", () => {
             expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
                 "any",
                 {
-                    begin: {
-                        type: "MockedBegin1",
-                    },
-                    end: {
-                        type: "MockedEnd1",
+                    frame: {
+                        begin: {
+                            type: "MockedBegin1",
+                        },
+                        end: {
+                            type: "MockedEnd1",
+                        },
                     },
                     recurrence: {
                         type: "MockedRecurrence1",
@@ -104,11 +111,13 @@ describe("StartAssistamt", () => {
             expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
                 "frame",
                 {
-                    begin: {
-                        type: "MockedBegin2",
-                    },
-                    end: {
-                        type: "MockedEnd2",
+                    frame: {
+                        begin: {
+                            type: "MockedBegin2",
+                        },
+                        end: {
+                            type: "MockedEnd2",
+                        },
                     },
                     recurrence: {
                         type: "MockedRecurrence2",
@@ -119,11 +128,13 @@ describe("StartAssistamt", () => {
             expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
                 "some",
                 {
-                    begin: {
-                        type: "MockedBegin3",
-                    },
-                    end: {
-                        type: "MockedEnd3",
+                    frame: {
+                        begin: {
+                            type: "MockedBegin3",
+                        },
+                        end: {
+                            type: "MockedEnd3",
+                        },
                     },
                     recurrence: {
                         type: "MockedRecurrence3",
@@ -134,11 +145,13 @@ describe("StartAssistamt", () => {
             expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
                 "other",
                 {
-                    begin: {
-                        type: "MockedBegin4",
-                    },
-                    end: {
-                        type: "MockedEnd4",
+                    frame: {
+                        begin: {
+                            type: "MockedBegin4",
+                        },
+                        end: {
+                            type: "MockedEnd4",
+                        },
                     },
                     recurrence: {
                         type: "MockedRecurrence4",

@@ -1,5 +1,5 @@
 import { TriggerGateway } from "../../../src/gateways";
-import { RecurrenceType } from "../../../src/interfaces";
+import { PersistedRecurrenceType } from "../../../src/useCases";
 
 describe("TriggerGateway", () => {
     const mockTriggerConfigure = {
@@ -18,20 +18,30 @@ describe("TriggerGateway", () => {
         it("should encode the id", () => {
             const triggerGW = new TriggerGateway();
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
-            triggerGW.set("chat|Id", "trigger|Id", { type: RecurrenceType.monthly, day: 15, hour: 12, minute: 32 });
+            triggerGW.set("chat|Id", "trigger|Id", {
+                type: PersistedRecurrenceType.monthly,
+                day: 15,
+                hour: 12,
+                minute: 32,
+            });
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith("chat%7CId|trigger%7CId", expect.any(String));
         });
         it("should create a cron for monthly recurrence", () => {
             const triggerGW = new TriggerGateway();
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
-            triggerGW.set("chat|Id", "trigger|Id", { type: RecurrenceType.monthly, day: 15, hour: 12, minute: 32 });
+            triggerGW.set("chat|Id", "trigger|Id", {
+                type: PersistedRecurrenceType.monthly,
+                day: 15,
+                hour: 12,
+                minute: 32,
+            });
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), "32 12 15 * *");
         });
         it("should create a cron for daily recurrence", () => {
             const triggerGW = new TriggerGateway();
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.set("chat|Id", "trigger|Id", {
-                type: RecurrenceType.daily,
+                type: PersistedRecurrenceType.daily,
                 hour: 17,
                 minute: 15,
                 days: { monday: true, friday: true },
@@ -61,7 +71,7 @@ describe("TriggerGateway", () => {
                 const triggerGW = new TriggerGateway();
                 triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
                 triggerGW.set("chat|Id", "trigger|Id", {
-                    type: RecurrenceType.daily,
+                    type: PersistedRecurrenceType.daily,
                     hour: 17,
                     minute: 15,
                     days: flags as any,
@@ -73,7 +83,7 @@ describe("TriggerGateway", () => {
             const triggerGW = new TriggerGateway();
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.set("chat|Id", "trigger|Id", {
-                type: RecurrenceType.hourly,
+                type: PersistedRecurrenceType.hourly,
                 fromHour: 7,
                 toHour: 19,
                 minute: 45,

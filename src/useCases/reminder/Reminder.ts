@@ -1,5 +1,5 @@
-import { UseCase } from "../UseCase";
 import { Chats } from "../../entities";
+import { UseCase } from "../UseCase";
 import { UseCaseError, UseCaseErrorCode } from "../UseCaseError";
 
 export interface IReminderIn {
@@ -29,7 +29,7 @@ export class ReminderImpl extends Reminder {
     }
     execute({ chatId, triggerId }: IReminderIn) {
         const chat = Chats.instance.getChat(chatId);
-        const timeFrame = chat.getTimeFrame(triggerId);
+        const timeFrame = chat.getTimeFrame(triggerId)?.frame;
         if (!timeFrame) {
             throw new UseCaseError(UseCaseErrorCode.TRIGGER_NOT_DEFINED, { triggerId });
         }

@@ -1,10 +1,10 @@
-import { Chats } from "../../entities";
-import { IRecurrenceRule } from "../../interfaces";
-import { IChatPersistence } from "../interfaces";
+import { Chats, TimeFrame } from "../../entities";
+import { IChatPersistence, IPersistedRecurrenceRule } from "../types";
 import { UseCase } from "../UseCase";
+import { createRecurrence } from "../utils";
 
 export interface IStartAssistantTimer {
-    set: (chatId: string, triggerId: string, recurrence: IRecurrenceRule) => void;
+    set: (chatId: string, triggerId: string, recurrence: IPersistedRecurrenceRule) => void;
 }
 
 export interface IStartAssistantPersistence {
@@ -22,7 +22,13 @@ export class StartAssistantImpl extends StartAssistant {
         Object.entries(chatsData).forEach(([chatId, chatData]) => {
             const chat = Chats.instance.createChat(chatId, chatData.administrators);
             Object.entries(chatData.timeFrames).forEach(([timeFameKey, timeFameData]) => {
-                chat.setTimeFrame(timeFameKey, timeFameData, chatData.administrators[0]);
+                const timeFrame = new TimeFrame(timeFameData.begin, timeFameData.end);
+                const recurrence = createRecurrence(timeFameData.recurrence);
+                chat.setTimeFrame(
+                    timeFameKey,
+                    { frame: timeFrame, recurrence: recurrence },
+                    chatData.administrators[0],
+                );
                 this.timerSettings.set(chatId, timeFameKey, timeFameData.recurrence);
             });
         });

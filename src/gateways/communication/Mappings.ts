@@ -1,9 +1,10 @@
-import { RecurrenceType, ITimeFrameSettings } from "../../interfaces";
+import { ITimeFrameSettings } from "../../interfaces";
+import { PersistedRecurrenceType } from "../../useCases";
 import { CommunicationErrorCode } from "./CommunicationError";
 
 type Days = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 interface IMappings {
-    recurrence: { [key: string]: RecurrenceType | undefined };
+    recurrence: { [key: string]: PersistedRecurrenceType | undefined };
     timeFrames: { [key: string]: keyof ITimeFrameSettings };
     days: { [key in Days]: string };
     errorCodes: { [key in CommunicationErrorCode]: string };
@@ -11,9 +12,9 @@ interface IMappings {
 
 export const Mappings: IMappings = {
     recurrence: {
-        s: RecurrenceType.hourly,
-        t: RecurrenceType.daily,
-        m: RecurrenceType.monthly,
+        s: "h" as PersistedRecurrenceType,
+        t: "d" as PersistedRecurrenceType,
+        m: "m" as PersistedRecurrenceType,
     },
     timeFrames: {
         j: "year",

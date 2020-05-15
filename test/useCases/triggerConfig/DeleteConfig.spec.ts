@@ -1,5 +1,5 @@
-import { MockCommunicationPresenter, MockTriggerGateway, MockPersistence, MockChatEntity } from "../../mocks";
 import { DeleteConfig, DeleteConfigImpl } from "../../../src/useCases";
+import { MockChatEntity, MockCommunicationPresenter, MockPersistence, MockTriggerGateway } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
     const MockChats = require("../../mocks/Entities").MockChats;
@@ -28,7 +28,10 @@ describe("InitializeChat", () => {
 
             expect(MockChatEntity.removeTimeFrame).toHaveBeenCalledWith("trigger", "user");
             expect(mockTrigger.stop).toHaveBeenCalledWith("chat", "trigger");
-            expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", { mock: "newChat" });
+            expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
+                administrators: ["mockAdmin"],
+                timeFrames: {},
+            });
             expect(mockCommunication.sendDeleteConfigSuccess).toHaveBeenCalledWith("chat", "trigger");
         });
     });

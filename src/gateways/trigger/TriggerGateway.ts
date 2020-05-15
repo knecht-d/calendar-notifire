@@ -1,5 +1,11 @@
-import { IRecurrenceRule, RecurrenceType } from "../../interfaces";
-import { ISetTimer, Reminder, IStartAssistantTimer, IDeleteConfigTimer } from "../../useCases";
+import {
+    IDeleteConfigTimer,
+    IPersistedRecurrenceRule,
+    ISetTimer,
+    IStartAssistantTimer,
+    PersistedRecurrenceType,
+    Reminder,
+} from "../../useCases";
 import { GateWay } from "../GateWay";
 
 export interface ITriggerConfigure {
@@ -29,37 +35,37 @@ export class TriggerGateway extends GateWay<IDependencies>
         this.dependencies!.triggerConfig.stopTrigger(id);
     }
 
-    public set(chatId: string, triggerId: string, recurrence: IRecurrenceRule) {
+    public set(chatId: string, triggerId: string, recurrence: IPersistedRecurrenceRule) {
         const id = this.encodeId(chatId, triggerId);
         const cron = this.buildCron(recurrence);
         this.dependencies!.triggerConfig.setTrigger(id, cron);
     }
 
-    private buildCron(recurrence: IRecurrenceRule) {
+    private buildCron(recurrence: IPersistedRecurrenceRule) {
         const minute = `${recurrence.minute}`;
         const hour = (rec => {
             switch (rec.type) {
-                case RecurrenceType.monthly:
-                case RecurrenceType.daily:
+                case PersistedRecurrenceType.monthly:
+                case PersistedRecurrenceType.daily:
                     return `${rec.hour}`;
-                case RecurrenceType.hourly:
+                case PersistedRecurrenceType.hourly:
                     return `${rec.fromHour}-${rec.toHour}`;
             }
         })(recurrence);
         const dayMonth = (rec => {
             switch (rec.type) {
-                case RecurrenceType.monthly:
+                case PersistedRecurrenceType.monthly:
                     return `${rec.day}`;
-                case RecurrenceType.daily:
-                case RecurrenceType.hourly:
+                case PersistedRecurrenceType.daily:
+                case PersistedRecurrenceType.hourly:
                     return "*";
             }
         })(recurrence);
         const month = "*";
         const dayWeek = (rec => {
             switch (rec.type) {
-                case RecurrenceType.daily:
-                case RecurrenceType.hourly:
+                case PersistedRecurrenceType.daily:
+                case PersistedRecurrenceType.hourly:
                     const days = [
                         rec.days.sunday ? "0" : "",
                         rec.days.monday ? "1" : "",
@@ -72,7 +78,7 @@ export class TriggerGateway extends GateWay<IDependencies>
                         .filter(value => !!value)
                         .join(",");
                     return days;
-                case RecurrenceType.monthly:
+                case PersistedRecurrenceType.monthly:
                     return "*";
             }
         })(recurrence);

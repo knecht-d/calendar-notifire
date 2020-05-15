@@ -1,6 +1,7 @@
 import { Chats } from "../../entities";
-import { IChatPersistence } from "../interfaces";
+import { IChatPersistence } from "../types";
 import { UseCase } from "../UseCase";
+import { convertChatToPersistence } from "../utils";
 
 export interface IInitInput {
     userId: string;
@@ -24,7 +25,7 @@ export class InitializeChatImpl extends InitializeChat {
 
     public execute({ chatId, userId }: IInitInput) {
         const chat = Chats.instance.createChat(chatId, [userId]);
-        this.persistence.saveChatConfig(chatId, chat.toJSON());
+        this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
         this.communication.sendInitSuccess(chatId);
     }
 }
