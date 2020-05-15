@@ -1,6 +1,7 @@
 import { Chats } from "../../entities";
-import { IChatPersistence } from "../interfaces";
+import { IChatPersistence } from "../types";
 import { UseCase } from "../UseCase";
+import { convertChatToPersistence } from "../utils";
 
 export interface IDeleteConfigInput {
     userId: string;
@@ -35,7 +36,7 @@ export class DeleteConfigImpl extends DeleteConfig {
         const chat = Chats.instance.getChat(chatId);
         chat.removeTimeFrame(triggerId, userId);
         this.timerSettings.stop(chatId, triggerId);
-        this.persistence.saveChatConfig(chatId, chat.toJSON());
+        this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
         this.communication.sendDeleteConfigSuccess(chatId, triggerId);
     }
 }

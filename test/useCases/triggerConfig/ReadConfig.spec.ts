@@ -1,5 +1,5 @@
-import { MockCommunicationPresenter, MockChatEntity } from "../../mocks";
 import { ReadConfig, ReadConfigImpl } from "../../../src/useCases";
+import { MockChatEntity, MockCommunicationPresenter } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
     const MockChats = require("../../mocks/Entities").MockChats;
@@ -7,6 +7,9 @@ jest.mock("../../../src/entities/Chats", () => {
         Chats: MockChats,
     };
 });
+jest.mock("../../../src/useCases/utils", () => ({
+    convertRecurrence: jest.fn().mockImplementation(x => x),
+}));
 describe("ReadConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
     let useCase: ReadConfig;
@@ -16,24 +19,41 @@ describe("ReadConfig", () => {
     });
     describe("execute", () => {
         it("pass the config", () => {
-            const frames = {
-                frame1: {
-                    frameStart: { mock: "frame start" },
-                    frameEnd: { mock: "frame end" },
+            const settings = [
+                {
+                    key: "frame1",
+                    frame: {
+                        begin: { mock: "frame start" },
+                        end: { mock: "frame end" },
+                    },
                     recurrence: { mock: "recurrence" },
                 },
-                frame2: {
-                    frameStart: { mock: "frame start" },
-                    frameEnd: { mock: "frame end" },
+                {
+                    key: "frame2",
+                    frame: {
+                        begin: { mock: "frame start" },
+                        end: { mock: "frame end" },
+                    },
                     recurrence: { mock: "recurrence" },
                 },
-            };
-            MockChatEntity.toJSON.mockReturnValue({
-                timeFrames: frames,
+            ];
+            MockChatEntity.getConfig.mockReturnValue({
+                settings,
                 administrators: ["admin1", "admin2"],
             });
             useCase.execute({ chatId: "chat" });
-            expect(mockCommunication.sendReadConfig).toHaveBeenCalledWith("chat", frames);
+            expect(mockCommunication.sendReadConfig).toHaveBeenCalledWith("chat", {
+                frame1: {
+                    begin: { mock: "frame start" },
+                    end: { mock: "frame end" },
+                    recurrence: { mock: "recurrence" },
+                },
+                frame2: {
+                    begin: { mock: "frame start" },
+                    end: { mock: "frame end" },
+                    recurrence: { mock: "recurrence" },
+                },
+            });
         });
     });
 });

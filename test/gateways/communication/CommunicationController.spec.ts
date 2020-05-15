@@ -1,5 +1,5 @@
 import { CommunicationController } from "../../../src/gateways";
-import { RecurrenceType } from "../../../src/interfaces";
+import { PersistedRecurrenceType } from "../../../src/useCases";
 
 describe("CommunicationController", () => {
     const setMock = {
@@ -54,7 +54,7 @@ describe("CommunicationController", () => {
                     expect.objectContaining({
                         config: {
                             recurrence: {
-                                type: RecurrenceType.hourly,
+                                type: PersistedRecurrenceType.hourly,
                                 days: {
                                     monday: true,
                                     tuesday: true,
@@ -89,7 +89,7 @@ describe("CommunicationController", () => {
                     expect.objectContaining({
                         config: {
                             recurrence: {
-                                type: RecurrenceType.hourly,
+                                type: PersistedRecurrenceType.hourly,
                                 days: {
                                     monday: true,
                                     tuesday: true,
@@ -124,7 +124,7 @@ describe("CommunicationController", () => {
                     expect.objectContaining({
                         config: {
                             recurrence: {
-                                type: RecurrenceType.hourly,
+                                type: PersistedRecurrenceType.hourly,
                                 days: {
                                     monday: true,
                                     tuesday: true,
@@ -162,7 +162,7 @@ describe("CommunicationController", () => {
                     expect.objectContaining({
                         config: {
                             recurrence: {
-                                type: RecurrenceType.daily,
+                                type: PersistedRecurrenceType.daily,
                                 days: {
                                     monday: true,
                                     tuesday: true,
@@ -216,7 +216,7 @@ describe("CommunicationController", () => {
                     expect.objectContaining({
                         config: {
                             recurrence: {
-                                type: RecurrenceType.monthly,
+                                type: PersistedRecurrenceType.monthly,
                                 day: 25,
                                 hour: 14,
                                 minute: 5,

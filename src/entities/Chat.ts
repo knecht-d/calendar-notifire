@@ -1,48 +1,59 @@
-import { IRecurrenceRule, ITimeFrameJSON, ITimeFrameSettings } from "../interfaces";
+import { ITimeFrameSettings } from "../interfaces";
 import { EntityError, EntityErrorCode } from "./EntityError";
+import { IRecurrenceSettings, RecurrenceRule } from "./RecurrenceRule";
 import { TimeFrame } from "./TimeFrame";
 
 export class Chat {
-    private timeFrames: { [frameId: string]: TimeFrame | undefined };
+    private settings: { [frameId: string]: { frame: TimeFrame; recurrence: RecurrenceRule } | undefined };
     private administrators: string[];
     constructor(adminIds: string[]) {
-        this.timeFrames = {};
+        this.settings = {};
         this.administrators = adminIds;
     }
 
-    public setTimeFrame(
-        key: string,
-        settings: { begin?: ITimeFrameSettings; end?: ITimeFrameSettings; recurrence: IRecurrenceRule },
-        userId: string,
-    ) {
+    public setTimeFrame(key: string, settings: { frame: TimeFrame; recurrence: RecurrenceRule }, userId: string) {
         if (!this.administrators.includes(userId)) {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
-        this.timeFrames[key] = new TimeFrame(settings.begin || {}, settings.end || {}, settings.recurrence);
+        this.settings[key] = settings;
     }
 
     public getTimeFrame(key: string) {
-        return this.timeFrames[key];
+        return this.settings[key];
     }
 
     public removeTimeFrame(key: string, userId: string) {
         if (!this.administrators.includes(userId)) {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
-        delete this.timeFrames[key];
+        delete this.settings[key];
     }
 
-    public toJSON() {
-        const timeFrames = Object.entries(this.timeFrames)
-            .filter(([_, value]) => !!value)
-            .map(([key, value]) => ({ key, value: value!.toJSON() }))
-            .reduce((map, { key, value }) => {
-                map[key] = value;
-                return map;
-            }, {} as { [frameId: string]: ITimeFrameJSON });
+    public getConfig(): IChatConfig {
+        const settings = Object.entries(this.settings)
+            .filter(([_key, setting]) => !!setting)
+            .map(([key, setting]) => {
+                return {
+                    key,
+                    frame: setting!.frame.toJSON(),
+                    recurrence: setting!.recurrence.getSettings(),
+                };
+            });
         return {
-            timeFrames,
+            settings,
             administrators: this.administrators,
         };
     }
+}
+
+export interface IChatConfig {
+    administrators: string[];
+    settings: Array<{
+        key: string;
+        frame: {
+            begin: ITimeFrameSettings;
+            end: ITimeFrameSettings;
+        };
+        recurrence: IRecurrenceSettings;
+    }>;
 }

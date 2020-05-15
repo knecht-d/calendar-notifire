@@ -19,7 +19,10 @@ describe("InitializeChat", () => {
     describe("execute", () => {
         it("should create a new chat", () => {
             useCase.execute({ chatId: "chat", userId: "user" });
-            expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", { mock: "newChat" });
+            expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
+                administrators: ["mockAdmin"],
+                timeFrames: {},
+            });
             expect(mockCommunication.sendInitSuccess).toHaveBeenCalledWith("chat");
         });
     });

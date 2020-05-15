@@ -1,14 +1,14 @@
-import { Chats } from "../../entities";
-import { IRecurrenceRule, ITimeFrameSettings } from "../../interfaces";
-import { IChatPersistence } from "../interfaces";
+import { Chats, TimeFrame } from "../../entities";
+import { IChatPersistence, IPersistedRecurrenceRule, ITimeFrameSettings } from "../types";
 import { UseCase } from "../UseCase";
+import { convertChatToPersistence, createRecurrence } from "../utils";
 
 export interface ISetConfigInput {
     userId: string;
     chatId: string;
     triggerId: string;
     config: {
-        recurrence: IRecurrenceRule;
+        recurrence: IPersistedRecurrenceRule;
         frameStart: ITimeFrameSettings;
         frameEnd: ITimeFrameSettings;
     };
@@ -20,7 +20,7 @@ export interface ISetConfigCommunication {
 }
 
 export interface ISetTimer {
-    set: (chatId: string, triggerId: string, recurrence: IRecurrenceRule) => void;
+    set: (chatId: string, triggerId: string, recurrence: IPersistedRecurrenceRule) => void;
 }
 
 export interface IUpdateChatPersistence {
@@ -39,13 +39,11 @@ export class SetConfigImpl extends SetConfig {
 
     public execute({ chatId, userId, triggerId, config }: ISetConfigInput) {
         const chat = Chats.instance.getChat(chatId);
-        chat.setTimeFrame(
-            triggerId,
-            { begin: config.frameStart, end: config.frameEnd, recurrence: config.recurrence },
-            userId,
-        );
+        const timeFrame = new TimeFrame(config.frameStart, config.frameEnd);
+        const recurrence = createRecurrence(config.recurrence);
+        chat.setTimeFrame(triggerId, { frame: timeFrame, recurrence: recurrence }, userId);
         this.timerSettings.set(chatId, triggerId, config.recurrence);
-        this.persistence.saveChatConfig(chatId, chat.toJSON());
+        this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
         this.communication.sendSetConfigSuccess(chatId, triggerId);
     }
 }

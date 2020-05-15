@@ -1,5 +1,12 @@
-import { ITimeFrameSettings, RecurrenceType } from "../../interfaces";
-import { InitializeChat, ISetConfigInput, SetConfig, DeleteConfig, ReadConfig } from "../../useCases";
+import {
+    DeleteConfig,
+    InitializeChat,
+    ISetConfigInput,
+    ITimeFrameSettings,
+    PersistedRecurrenceType,
+    ReadConfig,
+    SetConfig,
+} from "../../useCases";
 import { GateWay } from "../GateWay";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { IErrorReporter } from "./CommunicationPresenter";
@@ -27,9 +34,9 @@ interface IDependencies {
 
 export class CommunicationController extends GateWay<IDependencies> implements ICommunicationIn {
     private readonly configExtractors = {
-        [RecurrenceType.hourly]: this.extractHourlyConfig.bind(this),
-        [RecurrenceType.daily]: this.extractDailyConfig.bind(this),
-        [RecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
+        [PersistedRecurrenceType.hourly]: this.extractHourlyConfig.bind(this),
+        [PersistedRecurrenceType.daily]: this.extractDailyConfig.bind(this),
+        [PersistedRecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
     };
 
     read(chatId: string) {
@@ -109,7 +116,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         const endConfig = parts[3];
         return {
             recurrence: {
-                type: RecurrenceType.monthly,
+                type: PersistedRecurrenceType.monthly,
                 day: Number.parseInt(parts[0]),
                 hour: Number.parseInt(time[0]),
                 minute: Number.parseInt(time[1]),
@@ -127,7 +134,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         const endConfig = parts[3];
         return {
             recurrence: {
-                type: RecurrenceType.daily,
+                type: PersistedRecurrenceType.daily,
                 days: {
                     monday: days.includes(Mappings.days.monday),
                     tuesday: days.includes(Mappings.days.tuesday),
@@ -158,7 +165,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         const endConfig = parts[4];
         return {
             recurrence: {
-                type: RecurrenceType.hourly,
+                type: PersistedRecurrenceType.hourly,
                 days: {
                     monday: days.includes(Mappings.days.monday),
                     tuesday: days.includes(Mappings.days.tuesday),
