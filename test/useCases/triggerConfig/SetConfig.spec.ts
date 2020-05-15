@@ -1,4 +1,4 @@
-import { SetConfig, SetConfigImpl } from "../../../src/useCases";
+import { MessageKey, SetConfig, SetConfigImpl } from "../../../src/useCases";
 import { MockChatEntity, MockCommunicationPresenter, MockPersistence, MockTriggerGateway } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
@@ -48,7 +48,10 @@ describe("SetConfig", () => {
             );
             expect(mockTrigger.set).toHaveBeenCalledWith("chat", "trigger", { mock: "recurrence" });
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", { mock: "newChat" });
-            expect(mockCommunication.sendSetConfigSuccess).toHaveBeenCalledWith("chat", "trigger");
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
+                key: MessageKey.SET_CONFIG,
+                triggerId: "trigger",
+            });
         });
     });
 });

@@ -1,5 +1,5 @@
 import { Chats } from "../../entities";
-import { IChatConfigSaver, ITimerStopper } from "../interfaces";
+import { IChatConfigSaver, ICommunication, ITimerStopper, MessageKey } from "../interfaces";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -9,15 +9,10 @@ export interface IDeleteConfigInput {
     triggerId: string;
 }
 
-export interface IDeleteConfigCommunication {
-    sendDeleteConfigSuccess: (chatId: string, triggerId: string, message?: string) => void;
-    sendDeleteConfigError: (chatId: string, triggerId: string, message?: string) => void;
-}
-
 export abstract class DeleteConfig extends UseCase<IDeleteConfigInput> {}
 export class DeleteConfigImpl extends DeleteConfig {
     constructor(
-        private communication: IDeleteConfigCommunication,
+        private communication: ICommunication,
         private timerSettings: ITimerStopper,
         private persistence: IChatConfigSaver,
     ) {
@@ -29,6 +24,6 @@ export class DeleteConfigImpl extends DeleteConfig {
         chat.removeTimeFrame(triggerId, userId);
         this.timerSettings.stop(chatId, triggerId);
         this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
-        this.communication.sendDeleteConfigSuccess(chatId, triggerId);
+        this.communication.send(chatId, { key: MessageKey.DELETE_CONFIG, triggerId });
     }
 }

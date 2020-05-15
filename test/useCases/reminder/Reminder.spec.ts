@@ -1,5 +1,5 @@
 import MockDate from "mockdate";
-import { Reminder, ReminderImpl } from "../../../src/useCases";
+import { MessageKey, Reminder, ReminderImpl } from "../../../src/useCases";
 import { MockCalendarGateway, MockChatEntity, MockCommunicationPresenter, MockTimeFrame } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
@@ -20,7 +20,7 @@ describe("Reminder", () => {
     });
     beforeEach(() => {
         mockCalendar.getEventsBetween.mockClear();
-        mockCommunication.sendEvents.mockClear();
+        mockCommunication.send.mockClear();
     });
     afterAll(() => {
         MockDate.reset();
@@ -38,7 +38,10 @@ describe("Reminder", () => {
             expect(MockTimeFrame.getStart).toHaveBeenCalledWith(new Date(2020, 4, 10, 0, 12, 0, 0));
             expect(MockTimeFrame.getEnd).toHaveBeenCalledWith(new Date(2020, 4, 10, 0, 12, 0, 0));
             expect(mockCalendar.getEventsBetween).toHaveBeenCalledWith(dateStart, dateEnd);
-            expect(mockCommunication.sendEvents).toHaveBeenCalledWith("chat", [{ mocked: "Event" }]);
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
+                key: MessageKey.EVENTS,
+                events: [{ mocked: "Event" }],
+            });
         });
         it("should throw if the timeframe does not exist", () => {
             MockChatEntity.getTimeFrame.mockReturnValue(undefined);
@@ -48,7 +51,7 @@ describe("Reminder", () => {
             }).toThrow('TRIGGER_NOT_DEFINED: {"triggerId":"trigger"}');
 
             expect(mockCalendar.getEventsBetween).not.toHaveBeenCalled();
-            expect(mockCommunication.sendEvents).not.toHaveBeenCalled();
+            expect(mockCommunication.send).not.toHaveBeenCalled();
         });
     });
 });

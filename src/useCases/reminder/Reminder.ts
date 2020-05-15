@@ -1,4 +1,5 @@
 import { Chats } from "../../entities";
+import { ICommunication, IEvent, MessageKey } from "../interfaces";
 import { UseCase } from "../UseCase";
 import { UseCaseError, UseCaseErrorCode } from "../UseCaseError";
 
@@ -7,24 +8,13 @@ export interface IReminderIn {
     triggerId: string;
 }
 
-export interface IEvent {
-    start: Date;
-    end: Date;
-    title: string;
-    description?: string;
-    location?: string;
-}
-
 export interface IEventProvider {
     getEventsBetween: (from: Date, to: Date) => IEvent[];
 }
 
-export interface IEventCommunication {
-    sendEvents: (chatId: string, events: IEvent[]) => void;
-}
 export abstract class Reminder extends UseCase<IReminderIn> {}
 export class ReminderImpl extends Reminder {
-    constructor(private eventProvider: IEventProvider, private communication: IEventCommunication) {
+    constructor(private eventProvider: IEventProvider, private communication: ICommunication) {
         super();
     }
     execute({ chatId, triggerId }: IReminderIn) {
@@ -40,6 +30,6 @@ export class ReminderImpl extends Reminder {
         const from = timeFrame.getStart(currentTime);
         const to = timeFrame.getEnd(currentTime);
         const events = this.eventProvider.getEventsBetween(from, to);
-        this.communication.sendEvents(chatId, events);
+        this.communication.send(chatId, { key: MessageKey.EVENTS, events });
     }
 }

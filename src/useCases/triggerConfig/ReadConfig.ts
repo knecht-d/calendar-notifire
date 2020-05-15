@@ -1,5 +1,5 @@
 import { Chats } from "../../entities";
-import { ISerializedTimeFrame } from "../interfaces";
+import { ICommunication, ISerializedTimeFrame, MessageKey } from "../interfaces";
 import { UseCase } from "../UseCase";
 import { convertRecurrence } from "../utils";
 
@@ -7,17 +7,9 @@ export interface IReadConfigInput {
     chatId: string;
 }
 
-export interface ITriggers {
-    [key: string]: ISerializedTimeFrame;
-}
-
-export interface IReadConfigCommunication {
-    sendReadConfig: (chatId: string, triggers: ITriggers) => void;
-}
-
 export abstract class ReadConfig extends UseCase<IReadConfigInput> {}
 export class ReadConfigImpl extends ReadConfig {
-    constructor(private communication: IReadConfigCommunication) {
+    constructor(private communication: ICommunication) {
         super();
     }
 
@@ -32,6 +24,6 @@ export class ReadConfigImpl extends ReadConfig {
             };
             return frames;
         }, {} as { [frameKey: string]: ISerializedTimeFrame });
-        this.communication.sendReadConfig(chatId, timeFrames);
+        this.communication.send(chatId, { key: MessageKey.READ_CONFIG, timeFrames });
     }
 }

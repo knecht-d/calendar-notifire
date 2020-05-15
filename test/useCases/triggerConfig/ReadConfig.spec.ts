@@ -1,4 +1,4 @@
-import { ReadConfig, ReadConfigImpl } from "../../../src/useCases";
+import { MessageKey, ReadConfig, ReadConfigImpl } from "../../../src/useCases";
 import { MockChatEntity, MockCommunicationPresenter } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
@@ -42,16 +42,19 @@ describe("ReadConfig", () => {
                 administrators: ["admin1", "admin2"],
             });
             useCase.execute({ chatId: "chat" });
-            expect(mockCommunication.sendReadConfig).toHaveBeenCalledWith("chat", {
-                frame1: {
-                    begin: { mock: "frame start" },
-                    end: { mock: "frame end" },
-                    recurrence: { mock: "recurrence" },
-                },
-                frame2: {
-                    begin: { mock: "frame start" },
-                    end: { mock: "frame end" },
-                    recurrence: { mock: "recurrence" },
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
+                key: MessageKey.READ_CONFIG,
+                timeFrames: {
+                    frame1: {
+                        begin: { mock: "frame start" },
+                        end: { mock: "frame end" },
+                        recurrence: { mock: "recurrence" },
+                    },
+                    frame2: {
+                        begin: { mock: "frame start" },
+                        end: { mock: "frame end" },
+                        recurrence: { mock: "recurrence" },
+                    },
                 },
             });
         });

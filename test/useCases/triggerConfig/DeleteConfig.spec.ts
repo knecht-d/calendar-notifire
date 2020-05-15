@@ -1,4 +1,4 @@
-import { DeleteConfig, DeleteConfigImpl } from "../../../src/useCases";
+import { DeleteConfig, DeleteConfigImpl, MessageKey } from "../../../src/useCases";
 import { MockChatEntity, MockCommunicationPresenter, MockPersistence, MockTriggerGateway } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
@@ -32,7 +32,10 @@ describe("InitializeChat", () => {
                 administrators: ["mockAdmin"],
                 timeFrames: {},
             });
-            expect(mockCommunication.sendDeleteConfigSuccess).toHaveBeenCalledWith("chat", "trigger");
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
+                key: MessageKey.DELETE_CONFIG,
+                triggerId: "trigger",
+            });
         });
     });
 });

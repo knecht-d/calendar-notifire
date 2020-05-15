@@ -2,6 +2,7 @@
 
 import { CommunicationPresenter } from "../../../src/gateways";
 import { CommunicationError } from "../../../src/gateways/communication/CommunicationError";
+import { MessageKey } from "../../../src/useCases";
 
 jest.mock("../../../src/gateways/communication/Mappings", () => {
     // Works and lets you check for constructor calls:
@@ -12,6 +13,20 @@ jest.mock("../../../src/gateways/communication/Mappings", () => {
                 NO_EXAMPLE: "Some Code: Given [{given}] Expected: {expected}",
                 NO_EXPECTED: "Some Code: Given [{given}] Example: {example}",
                 DUPLICATE_GIVEN: "Some Code: Given [{given}] Expected: {expected} Given [{given}]",
+            },
+            successMessages: {
+                SET_CONFIG: "Succ - SET_CONFIG {triggerId}{message}",
+                DELETE_CONFIG: "Succ - DELETE_CONFIG {triggerId}{message}",
+                READ_CONFIG: "Succ - READ_CONFIG {timeFrames}{message}",
+                INITIALIZE_CHAT: "Succ - INITIALIZE_CHAT{message}",
+                EVENTS: "Succ - EVENTS {events}{message}",
+            },
+            errorMessages: {
+                SET_CONFIG: "Err - SET_CONFIG {triggerId}{message}",
+                DELETE_CONFIG: "Err - DELETE_CONFIG {triggerId}{message}",
+                READ_CONFIG: "Err - READ_CONFIG {timeFrames}{message}",
+                INITIALIZE_CHAT: "Err - INITIALIZE_CHAT{message}",
+                EVENTS: "Err - EVENTS {events}{message}",
             },
         },
     };
@@ -24,128 +39,177 @@ describe("CommunicationPresenter", () => {
         mockCommunicationOut.send.mockClear();
     });
 
-    describe("sendReadConfig", () => {
-        it("should send the triggers", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            const mockTriggers = { trigger: { mock: "trigger" }, trigger2: { mock: "trigger2" } };
-            presenter.sendReadConfig("someChat", mockTriggers as any);
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                JSON.stringify(mockTriggers, null, "  "),
-            );
+    describe("send", () => {
+        describe("READ_CONFIG", () => {
+            it("should send the triggers", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers = { trigger: { mock: "trigger" }, trigger2: { mock: "trigger2" } };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    timeFrames: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `Succ - READ_CONFIG ${JSON.stringify(mockTriggers, null, "  ")}`,
+                );
+            });
         });
-    });
 
-    describe("sendDeleteConfigSuccess", () => {
-        it("should send a plain success message to the chat", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendDeleteConfigSuccess("someChat", "someTrigger");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Löschen von someTrigger erfolgreich.");
+        describe("DELETE_CONFIG", () => {
+            it("should send a plain success message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.DELETE_CONFIG,
+                    triggerId: "someTrigger",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - DELETE_CONFIG someTrigger");
+            });
+            it("should add the additional message for succes", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.DELETE_CONFIG,
+                    triggerId: "someTrigger",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Succ - DELETE_CONFIG someTrigger Details",
+                );
+            });
+            it("should send a plain error message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.DELETE_CONFIG,
+                    hasError: true,
+                    triggerId: "someTrigger",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - DELETE_CONFIG someTrigger");
+            });
+            it("should add the additional message for error", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.DELETE_CONFIG,
+                    hasError: true,
+                    triggerId: "someTrigger",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Err - DELETE_CONFIG someTrigger Details",
+                );
+            });
         });
-        it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendDeleteConfigSuccess("someChat", "someTrigger", "Details");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Löschen von someTrigger erfolgreich. Details",
-            );
+        describe("SET_CONFIG", () => {
+            it("should send a plain success message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.SET_CONFIG,
+                    triggerId: "someTrigger",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - SET_CONFIG someTrigger");
+            });
+            it("should add the additional message for success", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.SET_CONFIG,
+                    triggerId: "someTrigger",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Succ - SET_CONFIG someTrigger Details",
+                );
+            });
+            it("should send a plain error message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.SET_CONFIG,
+                    hasError: true,
+                    triggerId: "someTrigger",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - SET_CONFIG someTrigger");
+            });
+            it("should add the additional message for error", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.SET_CONFIG,
+                    hasError: true,
+                    triggerId: "someTrigger",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Err - SET_CONFIG someTrigger Details",
+                );
+            });
         });
-    });
-    describe("sendDeleteConfigError", () => {
-        it("should send a plain error message to the chat", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendDeleteConfigError("someChat", "someTrigger");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Löschen von someTrigger fehlgeschlagen.",
-            );
+        describe("INITIALIZE_CHAT", () => {
+            it("should send a plain success message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.INITIALIZE_CHAT,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - INITIALIZE_CHAT");
+            });
+            it("should add the additional message for success", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.INITIALIZE_CHAT,
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - INITIALIZE_CHAT Details");
+            });
+            it("should send a plain error message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.INITIALIZE_CHAT,
+                    hasError: true,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - INITIALIZE_CHAT");
+            });
+            it("should add the additional message for error", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.INITIALIZE_CHAT,
+                    hasError: true,
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - INITIALIZE_CHAT Details");
+            });
         });
-        it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendDeleteConfigError("someChat", "someTrigger", "Details");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Löschen von someTrigger fehlgeschlagen - Details",
-            );
-        });
-    });
-    describe("sendSetConfigSuccess", () => {
-        it("should send a plain success message to the chat", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendSetConfigSuccess("someChat", "someTrigger");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Setzen von someTrigger erfolgreich.");
-        });
-        it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendSetConfigSuccess("someChat", "someTrigger", "Details");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Setzen von someTrigger erfolgreich. Details",
-            );
-        });
-    });
-    describe("sendSetConfigError", () => {
-        it("should send a plain error message to the chat", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendSetConfigError("someChat", "someTrigger");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Setzen von someTrigger fehlgeschlagen.",
-            );
-        });
-        it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendSetConfigError("someChat", "someTrigger", "Details");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Setzen von someTrigger fehlgeschlagen - Details",
-            );
-        });
-    });
-    describe("sendInitSuccess", () => {
-        it("should send a plain success message to the chat", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendInitSuccess("someChat");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Erzeugen des Chats erfolgreich.");
-        });
-        it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendInitSuccess("someChat", "Details");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Erzeugen des Chats erfolgreich. Details",
-            );
-        });
-    });
-    describe("sendInitError", () => {
-        it("should send a plain error message to the chat", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendInitError("someChat");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Erzeugen des Chats fehlgeschlagen.",
-            );
-        });
-        it("should add the additional message", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendInitError("someChat", "Details");
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Erzeugen des Chats fehlgeschlagen - Details",
-            );
+        describe("EVENTS", () => {
+            it("should send the events", () => {
+                const presenter = new CommunicationPresenter();
+                const events = [
+                    {
+                        start: new Date(2020, 4, 1, 12, 0),
+                        end: new Date(2020, 4, 1, 12, 0),
+                        title: "Event",
+                    },
+                ];
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.EVENTS,
+                    events,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `Succ - EVENTS ${JSON.stringify(events, null, "  ")}`,
+                );
+            });
         });
     });
     describe("sendError", () => {
@@ -204,20 +268,6 @@ describe("CommunicationPresenter", () => {
                 "someChat",
                 "Fehler: Some Code: Given [-given-] Expected: -expected- Given [-given-]",
             );
-        });
-    });
-    describe("sendEvents", () => {
-        it("should send the events", () => {
-            const presenter = new CommunicationPresenter();
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendEvents("someChat", [
-                {
-                    start: new Date(2020, 4, 1, 12, 0),
-                    end: new Date(2020, 4, 1, 12, 0),
-                    title: "Event",
-                },
-            ]);
-            expect(mockCommunicationOut.send).toMatchSnapshot();
         });
     });
 });
