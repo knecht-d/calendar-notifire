@@ -14,7 +14,7 @@ module.exports = {
         project: "tsconfig.json",
         sourceType: "module",
     },
-    plugins: ["@typescript-eslint", "jest", "prettier"],
+    plugins: ["@typescript-eslint", "jest", "import", "prettier"],
     rules: {
         "jest/no-disabled-tests": "warn",
         "jest/no-focused-tests": "error",
@@ -67,5 +67,10 @@ module.exports = {
                 ],
             },
         ],
+
+        "import/no-default-export": "error",
+        "import/order": "error",
+        "import/newline-after-import": "error",
+        "import/no-absolute-path": "error",
     },
 };

@@ -2,9 +2,11 @@ import { IEventProvider, IEvent } from "../../useCases";
 import { GateWay } from "../GateWay";
 
 export interface ICalendarConnector {
-    getEvents: () => IEvent[];
-    getEventsBetween?: (from: Date, to: Date) => IEvent[];
+    getEvents: () => ICalendarEvent[];
+    getEventsBetween?: (from: Date, to: Date) => ICalendarEvent[];
 }
+
+export type ICalendarEvent = IEvent;
 
 interface ICalendarGatewayDependencies {
     calendarConnector: ICalendarConnector;
@@ -13,7 +15,7 @@ interface ICalendarGatewayDependencies {
 export class CalendarGateway extends GateWay<ICalendarGatewayDependencies> implements IEventProvider {
     getEventsBetween(from: Date, to: Date): IEvent[] {
         this.checkInitialized();
-        let events: IEvent[] = [];
+        let events: ICalendarEvent[] = [];
         if (this.dependencies!.calendarConnector.getEventsBetween) {
             events = this.dependencies!.calendarConnector.getEventsBetween(from, to);
         } else {

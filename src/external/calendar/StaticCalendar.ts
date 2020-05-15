@@ -1,15 +1,15 @@
+import { ICalendarEvent } from "../../gateways";
 import { AbstractCalendar } from "./AbstractCalendar";
-import { IEvent } from "../../useCases";
 
-export class StaticCalendar extends AbstractCalendar<{ events: IEvent[] }> {
+export class StaticCalendar extends AbstractCalendar<{ events: ICalendarEvent[] }> {
     getEventsBetween: undefined;
 
-    private events: IEvent[];
-    constructor(setupData: { events: IEvent[] }) {
+    private events: ICalendarEvent[];
+    constructor(setupData: { events: ICalendarEvent[] }) {
         super(setupData);
         this.events = this.setupData.events;
     }
-    getEvents(): IEvent[] {
+    getEvents(): ICalendarEvent[] {
         return this.events;
     }
 }

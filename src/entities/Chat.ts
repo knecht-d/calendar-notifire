@@ -1,6 +1,6 @@
-import { TimeFrame } from "./TimeFrame";
-import { ITimeFrameSettings, IRecurrenceRule, ITimeFrameJSON } from "../interfaces";
+import { IRecurrenceRule, ITimeFrameJSON, ITimeFrameSettings } from "../interfaces";
 import { EntityError, EntityErrorCode } from "./EntityError";
+import { TimeFrame } from "./TimeFrame";
 
 export class Chat {
     private timeFrames: { [frameId: string]: TimeFrame | undefined };
