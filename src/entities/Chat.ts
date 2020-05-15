@@ -13,14 +13,34 @@ export interface IChatConfig {
 
 export class Chat {
     private settings: { [frameId: string]: { frame: TimeFrame; recurrence: RecurrenceRule } | undefined };
-    private administrators: string[];
+    private administrators: Set<string>;
     constructor(adminIds: string[]) {
         this.settings = {};
-        this.administrators = adminIds;
+        this.administrators = new Set(adminIds);
+    }
+
+    public addAdmin(currentUser: string, newAdmin: string) {
+        if (!this.administrators.has(currentUser)) {
+            throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
+        }
+        this.administrators.add(newAdmin);
+    }
+
+    public removeAdmin(currentUser: string, toBeRemovedAdmin: string) {
+        if (!this.administrators.has(currentUser)) {
+            throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
+        }
+        if (!this.administrators.has(toBeRemovedAdmin)) {
+            throw new EntityError(EntityErrorCode.NO_ADMIN, { user: toBeRemovedAdmin });
+        }
+        if (this.administrators.size === 1) {
+            throw new EntityError(EntityErrorCode.LAST_ADMIN);
+        }
+        this.administrators.delete(toBeRemovedAdmin);
     }
 
     public setTimeFrame(key: string, settings: { frame: TimeFrame; recurrence: RecurrenceRule }, userId: string) {
-        if (!this.administrators.includes(userId)) {
+        if (!this.administrators.has(userId)) {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
         this.settings[key] = settings;
@@ -31,7 +51,7 @@ export class Chat {
     }
 
     public removeTimeFrame(key: string, userId: string) {
-        if (!this.administrators.includes(userId)) {
+        if (!this.administrators.has(userId)) {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
         delete this.settings[key];
@@ -49,7 +69,7 @@ export class Chat {
             });
         return {
             settings,
-            administrators: this.administrators,
+            administrators: Array.from(this.administrators),
         };
     }
 }

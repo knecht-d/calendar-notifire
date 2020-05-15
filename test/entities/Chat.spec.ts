@@ -8,6 +8,62 @@ describe("Chat", () => {
     const baseFrame = new TimeFrame({}, {});
     const baseSettings = { frame: baseFrame, recurrence: baseRecurrence };
 
+    describe("Administrators", () => {
+        it("should add all users given in the constructor", () => {
+            const chat = new Chat(["admin1", "admin2", "admin3"]);
+            const config = chat.getConfig();
+            expect(config.administrators).toEqual(["admin1", "admin2", "admin3"]);
+        });
+
+        describe("addAdmin", () => {
+            it("should add a new admin if current user is an admin", () => {
+                const chat = new Chat(["admin1"]);
+                chat.addAdmin("admin1", "admin2");
+                const config = chat.getConfig();
+                expect(config.administrators).toEqual(["admin1", "admin2"]);
+            });
+            it("should fail to add a new admin if current user is not an admin", () => {
+                const chat = new Chat(["admin1"]);
+                expect(() => {
+                    chat.addAdmin("noAdmin", "admin2");
+                }).toThrow(new EntityError(EntityErrorCode.MISSING_PRIVILEGES));
+            });
+        });
+
+        describe("removeAdmin", () => {
+            it("should remove a new admin if current user is an admin", () => {
+                const chat = new Chat(["admin1", "admin2"]);
+                chat.removeAdmin("admin1", "admin2");
+                const config = chat.getConfig();
+                expect(config.administrators).toEqual(["admin1"]);
+            });
+            it("should remove the admin itself", () => {
+                const chat = new Chat(["admin1", "admin2"]);
+                chat.removeAdmin("admin1", "admin1");
+                const config = chat.getConfig();
+                expect(config.administrators).toEqual(["admin2"]);
+            });
+            it("should fail to remove a new admin if current user is not an admin", () => {
+                const chat = new Chat(["admin1", "admin2"]);
+                expect(() => {
+                    chat.removeAdmin("noAdmin", "admin2");
+                }).toThrow(new EntityError(EntityErrorCode.MISSING_PRIVILEGES));
+            });
+            it("should fail to remove a new admin if to be removed user is not an admin", () => {
+                const chat = new Chat(["admin1", "admin2"]);
+                expect(() => {
+                    chat.removeAdmin("admin1", "noAdmin");
+                }).toThrow(new EntityError(EntityErrorCode.NO_ADMIN, { user: "noAdmin" }));
+            });
+            it("should fail to remove a new admin if to be removed user is the last admin", () => {
+                const chat = new Chat(["admin1"]);
+                expect(() => {
+                    chat.removeAdmin("admin1", "admin1");
+                }).toThrow(new EntityError(EntityErrorCode.LAST_ADMIN));
+            });
+        });
+    });
+
     describe("TimeFrames", () => {
         it("should set and return the time frame", () => {
             const chat = new Chat(["admin"]);
@@ -102,7 +158,7 @@ describe("Chat", () => {
         });
     });
 
-    describe("serialize", () => {
+    describe("getConfig", () => {
         it("should return the chat in JSON format", () => {
             const tfBegin: TimeFrameSettings = {
                 minute: { value: 30 },
