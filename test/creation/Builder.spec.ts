@@ -1,20 +1,22 @@
 import { Builder } from "../../src/creation";
-import { MockFactory, EmptyCalendar, MockChat, MockStorage, MockTimer } from "../mocks";
 import {
-    DeleteConfigImpl,
-    SetConfigImpl,
-    ReminderImpl,
-    InitializeChatImpl,
-    StartAssistantImpl,
-    ReadConfigImpl,
-} from "../../src/useCases";
-import {
-    CommunicationController,
-    TriggerGateway,
-    PeristenceGateway,
-    CommunicationPresenter,
     CalendarGateway,
+    CommunicationController,
+    CommunicationPresenter,
+    PeristenceGateway,
+    TriggerGateway,
 } from "../../src/gateways";
+import {
+    AddAdminImpl,
+    DeleteConfigImpl,
+    InitializeChatImpl,
+    ReadConfigImpl,
+    ReminderImpl,
+    RemoveAdminImpl,
+    SetConfigImpl,
+    StartAssistantImpl,
+} from "../../src/useCases";
+import { EmptyCalendar, MockChat, MockFactory, MockStorage, MockTimer } from "../mocks";
 
 // All Classes where the prototype is checked need to have their own mock!
 jest.mock("../../src/useCases/startAssistant");
@@ -73,7 +75,9 @@ describe("Builder", () => {
                 expect(data.useCases?.config.delete).toBeInstanceOf(DeleteConfigImpl);
                 expect(data.useCases?.config.read).toBeInstanceOf(ReadConfigImpl);
                 expect(data.useCases?.config.set).toBeInstanceOf(SetConfigImpl);
-                expect(data.useCases?.initChat).toBeInstanceOf(InitializeChatImpl);
+                expect(data.useCases?.admin.init).toBeInstanceOf(InitializeChatImpl);
+                expect(data.useCases?.admin.add).toBeInstanceOf(AddAdminImpl);
+                expect(data.useCases?.admin.remove).toBeInstanceOf(RemoveAdminImpl);
                 expect(data.presenter).toBeInstanceOf(CommunicationPresenter);
             });
             it("should initialize the CommunicationPresenter", () => {
