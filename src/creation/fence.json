@@ -1,5 +1,5 @@
 {
   "tags": ["creation"],
   "exports": ["index"],
-  "imports": ["external", "gateways", "useCases", "interfaces"]
+  "imports": ["external", "gateways", "useCases"]
 }

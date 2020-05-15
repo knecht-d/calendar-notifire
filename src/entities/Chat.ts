@@ -1,7 +1,15 @@
-import { ITimeFrameSettings } from "../interfaces";
 import { EntityError, EntityErrorCode } from "./EntityError";
 import { IRecurrenceSettings, RecurrenceRule } from "./RecurrenceRule";
-import { TimeFrame } from "./TimeFrame";
+import { ITimeFrameConfig, TimeFrame } from "./TimeFrame";
+
+export interface IChatConfig {
+    administrators: string[];
+    settings: Array<{
+        key: string;
+        frame: ITimeFrameConfig;
+        recurrence: IRecurrenceSettings;
+    }>;
+}
 
 export class Chat {
     private settings: { [frameId: string]: { frame: TimeFrame; recurrence: RecurrenceRule } | undefined };
@@ -35,7 +43,7 @@ export class Chat {
             .map(([key, setting]) => {
                 return {
                     key,
-                    frame: setting!.frame.toJSON(),
+                    frame: setting!.frame.getConfig(),
                     recurrence: setting!.recurrence.getSettings(),
                 };
             });
@@ -44,16 +52,4 @@ export class Chat {
             administrators: this.administrators,
         };
     }
-}
-
-export interface IChatConfig {
-    administrators: string[];
-    settings: Array<{
-        key: string;
-        frame: {
-            begin: ITimeFrameSettings;
-            end: ITimeFrameSettings;
-        };
-        recurrence: IRecurrenceSettings;
-    }>;
 }

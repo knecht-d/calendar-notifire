@@ -1,8 +1,18 @@
-import { ITimeCalc, ITimeFrameSettings } from "../interfaces";
+export type TimeFrameGranulrity = "year" | "month" | "day" | "hour" | "minute";
+export type TimeFrameSettings = { [key in TimeFrameGranulrity]?: ITimeCalc };
+export interface ITimeCalc {
+    value: number;
+    fixed?: boolean;
+}
+
+export interface ITimeFrameConfig {
+    begin: TimeFrameSettings;
+    end: TimeFrameSettings;
+}
 
 export class TimeFrame {
     private static DEFAULT_SETTING: ITimeCalc = { value: 0 };
-    constructor(private begin: ITimeFrameSettings, private end: ITimeFrameSettings) {}
+    constructor(private begin: TimeFrameSettings, private end: TimeFrameSettings) {}
 
     public getStart(baseDate: Date) {
         const start = new Date(baseDate);
@@ -26,7 +36,7 @@ export class TimeFrame {
         return end;
     }
 
-    public toJSON() {
+    public getConfig(): ITimeFrameConfig {
         return {
             begin: this.begin,
             end: this.end,
