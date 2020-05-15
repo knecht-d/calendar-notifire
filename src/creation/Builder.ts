@@ -6,12 +6,14 @@ import {
     TriggerGateway,
 } from "../gateways";
 import {
+    AddAdminImpl,
+    DeleteConfigImpl,
     InitializeChatImpl,
+    ReadConfigImpl,
     ReminderImpl,
+    RemoveAdminImpl,
     SetConfigImpl,
     StartAssistantImpl,
-    DeleteConfigImpl,
-    ReadConfigImpl,
 } from "../useCases";
 import { GenericFactory } from "./GenericFactory";
 
@@ -39,6 +41,8 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         const reminder = new ReminderImpl(calendarGW, communicationPresenter);
         const start = new StartAssistantImpl(triggerGW, persitenceGW);
         const setConfig = new SetConfigImpl(communicationPresenter, triggerGW, persitenceGW);
+        const addAdmin = new AddAdminImpl(communicationPresenter, persitenceGW);
+        const removeAdmin = new RemoveAdminImpl(communicationPresenter, persitenceGW);
 
         // Initialize Gateways
         calendarGW.init({ calendarConnector: calendar });
@@ -49,7 +53,11 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
                     read: read,
                     set: setConfig,
                 },
-                initChat: initChat,
+                admin: {
+                    init: initChat,
+                    add: addAdmin,
+                    remove: removeAdmin,
+                },
             },
             presenter: communicationPresenter,
         });

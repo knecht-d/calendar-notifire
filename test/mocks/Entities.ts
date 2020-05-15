@@ -7,6 +7,8 @@ export const MockChatEntity = {
     getTimeFrame: jest.fn().mockReturnValue({ frame: MockTimeFrame }),
     setTimeFrame: jest.fn(),
     removeTimeFrame: jest.fn(),
+    addAdmin: jest.fn(),
+    removeAdmin: jest.fn(),
     getConfig: jest.fn().mockReturnValue({ administrators: ["mockAdmin"], settings: [] }),
 };
 

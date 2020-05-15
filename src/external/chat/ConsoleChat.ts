@@ -44,6 +44,12 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
                     case "/start":
                         this.communication!.initChat(this.chatId, this.userId);
                         break;
+                    case "/addAdmin":
+                        this.communication!.addAdmin(this.chatId, this.userId, payload);
+                        break;
+                    case "/removeAdmin":
+                        this.communication!.removeAdmin(this.chatId, this.userId, payload);
+                        break;
                     default:
                         console.log("User Input Data : " + data);
                         break;

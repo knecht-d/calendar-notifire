@@ -1,10 +1,12 @@
 import {
+    AddAdmin,
     DeleteConfig,
     InitializeChat,
     ISetConfigInput,
     ITimeFrameSettings,
     PersistedRecurrenceType,
     ReadConfig,
+    RemoveAdmin,
     SetConfig,
 } from "../../useCases";
 import { GateWay } from "../GateWay";
@@ -17,6 +19,8 @@ export interface ICommunicationIn {
     set: (chatId: string, userId: string, payload: string) => void;
     delete: (chatId: string, userId: string, payload: string) => void;
     initChat: (chatId: string, userId: string) => void;
+    addAdmin: (chatId: string, userId: string, payload: string) => void;
+    removeAdmin: (chatId: string, userId: string, payload: string) => void;
     read: (chatId: string) => void;
 }
 
@@ -28,7 +32,11 @@ interface IDependencies {
             read: ReadConfig;
             set: SetConfig;
         };
-        initChat: InitializeChat;
+        admin: {
+            init: InitializeChat;
+            add: AddAdmin;
+            remove: RemoveAdmin;
+        };
     };
 }
 
@@ -47,7 +55,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
     initChat(chatId: string, userId: string) {
         this.checkInitialized();
         try {
-            this.dependencies!.useCases.initChat.execute({
+            this.dependencies!.useCases.admin.init.execute({
                 chatId,
                 userId,
             });
@@ -107,6 +115,23 @@ export class CommunicationController extends GateWay<IDependencies> implements I
                 this.dependencies!.presenter.sendError(chatId, `${error}`);
             }
         }
+    }
+
+    addAdmin(chatId: string, userId: string, payload: string) {
+        this.checkInitialized();
+        const adminId = payload
+            .trim()
+            .replace(/\s+/gm, " ")
+            .split(" ")[0];
+        this.dependencies!.useCases.admin.add.execute({ chatId, userId, adminId });
+    }
+    removeAdmin(chatId: string, userId: string, payload: string) {
+        this.checkInitialized();
+        const adminId = payload
+            .trim()
+            .replace(/\s+/gm, " ")
+            .split(" ")[0];
+        this.dependencies!.useCases.admin.remove.execute({ chatId, userId, adminId });
     }
 
     private extractMonthlyConfig(parts: string[]): ISetConfigInput["config"] {
