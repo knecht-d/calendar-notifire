@@ -1,8 +1,7 @@
 import { DailyRecurrenceRule } from "../../src/entities";
 import { Chat } from "../../src/entities/Chat";
 import { EntityError, EntityErrorCode } from "../../src/entities/EntityError";
-import { TimeFrame } from "../../src/entities/TimeFrame";
-import { ITimeFrameSettings } from "../../src/interfaces";
+import { TimeFrame, TimeFrameSettings } from "../../src/entities/TimeFrame";
 
 describe("Chat", () => {
     const baseRecurrence = new DailyRecurrenceRule(17, 42, {});
@@ -48,28 +47,28 @@ describe("Chat", () => {
         });
         it("should create the correct TimeFrame", () => {
             const chat = new Chat(["admin"]);
-            const tfBegin: ITimeFrameSettings = {
+            const tfBegin: TimeFrameSettings = {
                 minute: { value: -1 },
                 hour: { value: -1 },
                 day: { value: -1 },
                 month: { value: -1 },
                 year: { value: -1 },
             };
-            const tfEnd: ITimeFrameSettings = {
+            const tfEnd: TimeFrameSettings = {
                 minute: { value: 2 },
                 hour: { value: 2 },
                 day: { value: 2 },
                 month: { value: 2 },
                 year: { value: 2 },
             };
-            const tf2Begin: ITimeFrameSettings = {
+            const tf2Begin: TimeFrameSettings = {
                 minute: { value: 30 },
                 hour: { value: 12 },
                 day: { value: 2 },
                 month: { value: 1 },
                 year: { value: 2020 },
             };
-            const tf2End: ITimeFrameSettings = {
+            const tf2End: TimeFrameSettings = {
                 minute: { value: 40 },
                 hour: { value: 13 },
                 day: { value: 3 },
@@ -105,14 +104,14 @@ describe("Chat", () => {
 
     describe("serialize", () => {
         it("should return the chat in JSON format", () => {
-            const tfBegin: ITimeFrameSettings = {
+            const tfBegin: TimeFrameSettings = {
                 minute: { value: 30 },
                 hour: { value: 12 },
                 day: { value: 2 },
                 month: { value: 1 },
                 year: { value: 2020 },
             };
-            const tfEnd: ITimeFrameSettings = {
+            const tfEnd: TimeFrameSettings = {
                 minute: { value: 40 },
                 hour: { value: 13 },
                 day: { value: 3 },

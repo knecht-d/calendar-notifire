@@ -1,5 +1,4 @@
-import { ITimeFrameSettings } from "../../interfaces";
-import { PersistedRecurrenceType } from "../../useCases";
+import { ITimeFrameSettings, PersistedRecurrenceType } from "../../useCases";
 import { CommunicationErrorCode } from "./CommunicationError";
 
 type Days = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";

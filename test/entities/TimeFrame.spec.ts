@@ -187,10 +187,10 @@ describe("TimeFrame", () => {
             });
         });
     });
-    describe("toJSON", () => {
+    describe("getConfig", () => {
         it("should return the settings as a JSON", () => {
             const tf = new TimeFrame({ hour: { value: -10, fixed: false } }, { minute: { value: 0, fixed: true } });
-            expect(tf.toJSON()).toEqual({
+            expect(tf.getConfig()).toEqual({
                 begin: { hour: { value: -10, fixed: false } },
                 end: { minute: { value: 0, fixed: true } },
             });
