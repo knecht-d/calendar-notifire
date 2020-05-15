@@ -1,5 +1,5 @@
 import { Chats, TimeFrame } from "../../entities";
-import { IChatPersistence, IPersistedRecurrenceRule, ITimeFrameSettings } from "../types";
+import { IChatConfigSaver, IPersistedRecurrenceRule, ITimeFrameSettings, ITimerSetter } from "../interfaces";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence, createRecurrence } from "../utils";
 
@@ -19,20 +19,12 @@ export interface ISetConfigCommunication {
     sendSetConfigError: (chatId: string, triggerId: string, message?: string) => void;
 }
 
-export interface ISetTimer {
-    set: (chatId: string, triggerId: string, recurrence: IPersistedRecurrenceRule) => void;
-}
-
-export interface IUpdateChatPersistence {
-    saveChatConfig: (chatId: string, chat: IChatPersistence) => void;
-}
-
 export abstract class SetConfig extends UseCase<ISetConfigInput> {}
 export class SetConfigImpl extends SetConfig {
     constructor(
         private communication: ISetConfigCommunication,
-        private timerSettings: ISetTimer,
-        private persistence: IUpdateChatPersistence,
+        private timerSettings: ITimerSetter,
+        private persistence: IChatConfigSaver,
     ) {
         super();
     }

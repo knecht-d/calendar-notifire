@@ -1,24 +1,16 @@
 import { Chats, TimeFrame } from "../../entities";
-import { IChatPersistence, IPersistedRecurrenceRule } from "../types";
+import { IChatConfigLoader, ITimerSetter } from "../interfaces";
 import { UseCase } from "../UseCase";
 import { createRecurrence } from "../utils";
 
-export interface IStartAssistantTimer {
-    set: (chatId: string, triggerId: string, recurrence: IPersistedRecurrenceRule) => void;
-}
-
-export interface IStartAssistantPersistence {
-    readAllChats: () => { [chatId: string]: IChatPersistence };
-}
-
 export abstract class StartAssistant extends UseCase<void> {}
 export class StartAssistantImpl extends StartAssistant {
-    constructor(private timerSettings: IStartAssistantTimer, private persistence: IStartAssistantPersistence) {
+    constructor(private timerSettings: ITimerSetter, private configLoader: IChatConfigLoader) {
         super();
     }
 
     public execute() {
-        const chatsData = this.persistence.readAllChats();
+        const chatsData = this.configLoader.readAllChats();
         Object.entries(chatsData).forEach(([chatId, chatData]) => {
             const chat = Chats.instance.createChat(chatId, chatData.administrators);
             Object.entries(chatData.timeFrames).forEach(([timeFameKey, timeFameData]) => {

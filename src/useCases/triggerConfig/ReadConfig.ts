@@ -1,5 +1,5 @@
 import { Chats } from "../../entities";
-import { ISerializedTimeFrame } from "../types";
+import { ISerializedTimeFrame } from "../interfaces";
 import { UseCase } from "../UseCase";
 import { convertRecurrence } from "../utils";
 

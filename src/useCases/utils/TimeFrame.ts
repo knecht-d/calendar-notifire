@@ -1,5 +1,5 @@
 import { DailyRecurrenceRule, HourlyRecurrenceRule, MonthlyRecurrenceRule, RecurrenceRule } from "../../entities";
-import { IPersistedRecurrenceRule, PersistedRecurrenceType } from "../types";
+import { IPersistedRecurrenceRule, PersistedRecurrenceType } from "../interfaces";
 
 // TODO Make this a factory
 
