@@ -13,7 +13,7 @@
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
     "fences": "gf -p tsconfig.build.json",
-    "lint": "eslint -c .eslintrc.js --ext .ts ./src",
+    "lint": "eslint -c .eslintrc.js --ext .ts .",
     "check": "npm run fences && npm run lint",
     "pretty": "pretty-quick",
     "precommit": "pretty-quick --staged && lint-staged && npm run fences",
