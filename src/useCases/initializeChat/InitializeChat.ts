@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
+import { IChatPersistence } from "../interfaces";
 import { UseCase } from "../UseCase";
-import { IChatPersistence } from "../triggerConfig";
 
 export interface IInitInput {
     userId: string;

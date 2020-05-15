@@ -1,5 +1,6 @@
-import { IRecurrenceRule, ITimeFrameSettings, ITimeFrameJSON } from "../../interfaces";
 import { Chats } from "../../entities";
+import { IRecurrenceRule, ITimeFrameSettings } from "../../interfaces";
+import { IChatPersistence } from "../interfaces";
 import { UseCase } from "../UseCase";
 
 export interface ISetConfigInput {
@@ -11,11 +12,6 @@ export interface ISetConfigInput {
         frameStart: ITimeFrameSettings;
         frameEnd: ITimeFrameSettings;
     };
-}
-
-export interface IChatPersistence {
-    timeFrames: { [frameKey: string]: ITimeFrameJSON };
-    administrators: string[];
 }
 
 export interface ISetConfigCommunication {

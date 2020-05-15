@@ -1,7 +1,6 @@
-import { GenericFactory } from "./GenericFactory";
-import { ConsoleChat, SimpleFileStorage, TestSetIntervalTimer } from "../external";
-import { StaticCalendar } from "../external/calendar";
+import { ConsoleChat, SimpleFileStorage, StaticCalendar, TestSetIntervalTimer } from "../external";
 import { IEvent } from "../useCases";
+import { GenericFactory } from "./GenericFactory";
 
 export class LocalFactory extends GenericFactory<
     { events: IEvent[] },

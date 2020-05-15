@@ -1,15 +1,15 @@
 import {
-    ISetConfigCommunication,
-    IInitCommunication,
     IDeleteConfigCommunication,
-    IReadConfigCommunication,
-    ITriggers,
-    IEventCommunication,
     IEvent,
+    IEventCommunication,
+    IInitCommunication,
+    IReadConfigCommunication,
+    ISetConfigCommunication,
+    ITriggers,
 } from "../../useCases";
+import { GateWay } from "../GateWay";
 import { CommunicationError } from "./CommunicationError";
 import { Mappings } from "./Mappings";
-import { GateWay } from "../GateWay";
 
 export interface ICommunicationOut {
     send: (chatId: string, message: string) => void;

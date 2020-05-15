@@ -1,5 +1,4 @@
-import { AbstractChat, AbstractStorage, AbstractTimer } from "../external";
-import { AbstractCalendar } from "../external/calendar";
+import { AbstractCalendar, AbstractChat, AbstractStorage, AbstractTimer } from "../external";
 
 export abstract class GenericFactory<CalendarSetup, StorageSetup, ChatSetup> {
     constructor(
