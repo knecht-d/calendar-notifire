@@ -11,6 +11,20 @@ interface IBaseRecurrenceSettings {
     hour: number;
     minute: number;
 }
+interface IHourlyRecurrenceSettings extends IBaseRecurrenceSettings {
+    type: RecurrenceType.hourly;
+    toHour: number;
+    weekDays: DayFlags;
+}
+interface IDailyRecurrenceSettings extends IBaseRecurrenceSettings {
+    type: RecurrenceType.daily;
+    weekDays: DayFlags;
+}
+interface IMonthlyRecurrenceSettings extends IBaseRecurrenceSettings {
+    type: RecurrenceType.monthly;
+    dayOfMonth: number;
+}
+export type IRecurrenceSettings = IMonthlyRecurrenceSettings | IDailyRecurrenceSettings | IHourlyRecurrenceSettings;
 
 export abstract class RecurrenceRule {
     constructor(protected type: RecurrenceType, protected hour: number, protected minute: number) {}
@@ -22,12 +36,6 @@ export abstract class RecurrenceRule {
         };
     }
     abstract getSettings(): IRecurrenceSettings;
-}
-
-interface IHourlyRecurrenceSettings extends IBaseRecurrenceSettings {
-    type: RecurrenceType.hourly;
-    toHour: number;
-    weekDays: DayFlags;
 }
 
 export class HourlyRecurrenceRule extends RecurrenceRule {
@@ -44,11 +52,6 @@ export class HourlyRecurrenceRule extends RecurrenceRule {
     }
 }
 
-interface IDailyRecurrenceSettings extends IBaseRecurrenceSettings {
-    type: RecurrenceType.daily;
-    weekDays: DayFlags;
-}
-
 export class DailyRecurrenceRule extends RecurrenceRule {
     constructor(hour: number, minute: number, private weekDays: DayFlags) {
         super(RecurrenceType.daily, hour, minute);
@@ -60,11 +63,6 @@ export class DailyRecurrenceRule extends RecurrenceRule {
             weekDays: this.weekDays,
         };
     }
-}
-
-interface IMonthlyRecurrenceSettings extends IBaseRecurrenceSettings {
-    type: RecurrenceType.monthly;
-    dayOfMonth: number;
 }
 
 export class MonthlyRecurrenceRule extends RecurrenceRule {
@@ -79,5 +77,3 @@ export class MonthlyRecurrenceRule extends RecurrenceRule {
         };
     }
 }
-
-export type IRecurrenceSettings = IMonthlyRecurrenceSettings | IDailyRecurrenceSettings | IHourlyRecurrenceSettings;

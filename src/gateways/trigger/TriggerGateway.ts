@@ -1,8 +1,7 @@
 import {
-    IDeleteConfigTimer,
     IPersistedRecurrenceRule,
-    ISetTimer,
-    IStartAssistantTimer,
+    ITimerSetter,
+    ITimerStopper,
     PersistedRecurrenceType,
     Reminder,
 } from "../../useCases";
@@ -22,8 +21,7 @@ interface IDependencies {
     reminder: Reminder;
 }
 
-export class TriggerGateway extends GateWay<IDependencies>
-    implements ISetTimer, IDeleteConfigTimer, ITriggerReceiver, IStartAssistantTimer {
+export class TriggerGateway extends GateWay<IDependencies> implements ITimerStopper, ITriggerReceiver, ITimerSetter {
     trigger(id: string) {
         this.checkInitialized();
         const { chatId, triggerId } = this.decodeId(id);

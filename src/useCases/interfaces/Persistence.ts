@@ -1,4 +1,15 @@
-import { PersistedRecurrenceType } from "../Enums";
+export interface IChatConfigSaver {
+    saveChatConfig: (chatId: string, chat: IChatPersistence) => void;
+}
+export interface IChatConfigLoader {
+    readAllChats: () => { [chatId: string]: IChatPersistence };
+}
+
+export enum PersistedRecurrenceType {
+    hourly = "h",
+    daily = "d",
+    monthly = "m",
+}
 
 export interface IChatPersistence {
     timeFrames: { [frameKey: string]: ISerializedTimeFrame };

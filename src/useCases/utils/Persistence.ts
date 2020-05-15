@@ -1,5 +1,10 @@
 import { Chat, IRecurrenceSettings, RecurrenceType } from "../../entities";
-import { IChatPersistence, IPersistedRecurrenceRule, ISerializedTimeFrame, PersistedRecurrenceType } from "../types";
+import {
+    IChatPersistence,
+    IPersistedRecurrenceRule,
+    ISerializedTimeFrame,
+    PersistedRecurrenceType,
+} from "../interfaces";
 
 export function convertRecurrence(settings: IRecurrenceSettings): IPersistedRecurrenceRule {
     switch (settings.type) {
