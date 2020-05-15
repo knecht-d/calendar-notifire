@@ -1,9 +1,4 @@
-import {
-    IUpdateChatPersistence,
-    IChatPersistence,
-    IInitChatPersistence,
-    IStartAssistantPersistence,
-} from "../../useCases";
+import { IChatConfigLoader, IChatConfigSaver, IChatPersistence } from "../../useCases";
 import { GateWay } from "../GateWay";
 
 export interface IPerrsistence {
@@ -15,8 +10,7 @@ interface IDependencies {
     persistence: IPerrsistence;
 }
 
-export class PeristenceGateway extends GateWay<IDependencies>
-    implements IUpdateChatPersistence, IInitChatPersistence, IStartAssistantPersistence {
+export class PeristenceGateway extends GateWay<IDependencies> implements IChatConfigSaver, IChatConfigLoader {
     readAllChats() {
         this.checkInitialized();
         const serializedData = this.dependencies!.persistence.readAll();

@@ -1,13 +1,7 @@
 import { GateWay } from "../../../src/gateways/GateWay";
-import {
-    IUpdateChatPersistence,
-    IInitChatPersistence,
-    IStartAssistantPersistence,
-    IDeleteConfigChatPersistence,
-} from "../../../src/useCases";
+import { IChatConfigLoader, IChatConfigSaver } from "../../../src/useCases";
 
-export class MockPersistence extends GateWay<{}>
-    implements IStartAssistantPersistence, IDeleteConfigChatPersistence, IUpdateChatPersistence, IInitChatPersistence {
+export class MockPersistence extends GateWay<{}> implements IChatConfigSaver, IChatConfigLoader {
     saveChatConfig = jest.fn();
     readAllChats = jest.fn();
 }
