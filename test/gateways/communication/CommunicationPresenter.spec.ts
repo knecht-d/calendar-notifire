@@ -15,6 +15,8 @@ jest.mock("../../../src/gateways/communication/Mappings", () => {
                 DUPLICATE_GIVEN: "Some Code: Given [{given}] Expected: {expected} Given [{given}]",
             },
             successMessages: {
+                ADD_ADMIN: "Succ - ADD_ADMIN {newAdmin}{message}",
+                REMOVE_ADMIN: "Succ - REMOVE_ADMIN {oldAdmin}{message}",
                 SET_CONFIG: "Succ - SET_CONFIG {triggerId}{message}",
                 DELETE_CONFIG: "Succ - DELETE_CONFIG {triggerId}{message}",
                 READ_CONFIG: "Succ - READ_CONFIG {timeFrames}{message}",
@@ -22,6 +24,8 @@ jest.mock("../../../src/gateways/communication/Mappings", () => {
                 EVENTS: "Succ - EVENTS {events}{message}",
             },
             errorMessages: {
+                ADD_ADMIN: "Err - ADD_ADMIN {newAdmin}{message}",
+                REMOVE_ADMIN: "Err - REMOVE_ADMIN {oldAdmin}{message}",
                 SET_CONFIG: "Err - SET_CONFIG {triggerId}{message}",
                 DELETE_CONFIG: "Err - DELETE_CONFIG {triggerId}{message}",
                 READ_CONFIG: "Err - READ_CONFIG {timeFrames}{message}",
@@ -209,6 +213,90 @@ describe("CommunicationPresenter", () => {
                     "someChat",
                     `Succ - EVENTS ${JSON.stringify(events, null, "  ")}`,
                 );
+            });
+        });
+        describe("ADD_ADMIN", () => {
+            it("should send a plain success message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.ADD_ADMIN,
+                    newAdmin: "admin",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - ADD_ADMIN admin");
+            });
+            it("should add the additional message for succes", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.ADD_ADMIN,
+                    newAdmin: "admin",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - ADD_ADMIN admin Details");
+            });
+            it("should send a plain error message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.ADD_ADMIN,
+                    hasError: true,
+                    newAdmin: "admin",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - ADD_ADMIN admin");
+            });
+            it("should add the additional message for error", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.ADD_ADMIN,
+                    hasError: true,
+                    newAdmin: "admin",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - ADD_ADMIN admin Details");
+            });
+        });
+        describe("REMOVE_ADMIN", () => {
+            it("should send a plain success message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.REMOVE_ADMIN,
+                    oldAdmin: "admin",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - REMOVE_ADMIN admin");
+            });
+            it("should add the additional message for succes", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.REMOVE_ADMIN,
+                    oldAdmin: "admin",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - REMOVE_ADMIN admin Details");
+            });
+            it("should send a plain error message to the chat", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.REMOVE_ADMIN,
+                    hasError: true,
+                    oldAdmin: "admin",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - REMOVE_ADMIN admin");
+            });
+            it("should add the additional message for error", () => {
+                const presenter = new CommunicationPresenter();
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.REMOVE_ADMIN,
+                    hasError: true,
+                    oldAdmin: "admin",
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - REMOVE_ADMIN admin Details");
             });
         });
     });

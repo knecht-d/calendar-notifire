@@ -53,6 +53,12 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
             case MessageKey.EVENTS:
                 replacements = { events: JSON.stringify(message.events, null, "  ") };
                 break;
+            case MessageKey.ADD_ADMIN:
+                replacements = { newAdmin: message.newAdmin };
+                break;
+            case MessageKey.REMOVE_ADMIN:
+                replacements = { oldAdmin: message.oldAdmin };
+                break;
         }
         replacements = {
             message: message.message ? ` ${message.message}` : "",

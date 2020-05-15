@@ -17,6 +17,8 @@ export interface ITriggers {
 }
 
 export enum MessageKey {
+    ADD_ADMIN = "ADD_ADMIN",
+    REMOVE_ADMIN = "REMOVE_ADMIN",
     INITIALIZE_CHAT = "INITIALIZE_CHAT",
     SET_CONFIG = "SET_CONFIG",
     DELETE_CONFIG = "DELETE_CONFIG",
@@ -53,9 +55,20 @@ interface IEventsMessage extends IBaseMessage {
     events: IEvent[];
 }
 
+interface IAddAdminMessage extends IBaseMessage {
+    key: MessageKey.ADD_ADMIN;
+    newAdmin: string;
+}
+interface IRemoveAdminMessage extends IBaseMessage {
+    key: MessageKey.REMOVE_ADMIN;
+    oldAdmin: string;
+}
+
 export type IMessage =
     | ISetConfigMessage
     | IDeleteConfigMessage
     | IReadConfigMessage
     | IInitializeChatMessage
-    | IEventsMessage;
+    | IEventsMessage
+    | IAddAdminMessage
+    | IRemoveAdminMessage;

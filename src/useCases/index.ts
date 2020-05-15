@@ -1,4 +1,4 @@
-export * from "./initializeChat";
+export * from "./administration";
 export * from "./interfaces";
 export * from "./reminder";
 export * from "./startAssistant";

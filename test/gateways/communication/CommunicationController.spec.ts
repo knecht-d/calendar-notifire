@@ -14,6 +14,12 @@ describe("CommunicationController", () => {
     const readMock = {
         execute: jest.fn(),
     };
+    const addAdminMock = {
+        execute: jest.fn(),
+    };
+    const removeAdminMock = {
+        execute: jest.fn(),
+    };
     const errrorReporterMock = {
         sendCommunicationError: jest.fn(),
         sendError: jest.fn(),
@@ -26,7 +32,11 @@ describe("CommunicationController", () => {
                 read: readMock,
                 set: setMock,
             },
-            initChat: initMock,
+            admin: {
+                init: initMock,
+                add: addAdminMock,
+                remove: removeAdminMock,
+            },
         },
         presenter: errrorReporterMock,
     });
@@ -565,6 +575,22 @@ describe("CommunicationController", () => {
         it("should pass the data to the use case", () => {
             controller.read("chat");
             expect(readMock.execute).toHaveBeenCalledWith({ chatId: "chat" });
+        });
+    });
+    describe("addAdmin", () => {
+        it("should pass the data to the use case", () => {
+            controller.addAdmin("chat", "user", " newAdmin ");
+            expect(addAdminMock.execute).toHaveBeenCalledWith({ chatId: "chat", userId: "user", adminId: "newAdmin" });
+        });
+    });
+    describe("removeadmin", () => {
+        it("should pass the data to the use case", () => {
+            controller.removeAdmin("chat", "user", " newAdmin ");
+            expect(removeAdminMock.execute).toHaveBeenCalledWith({
+                chatId: "chat",
+                userId: "user",
+                adminId: "newAdmin",
+            });
         });
     });
 });

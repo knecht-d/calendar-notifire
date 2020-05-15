@@ -43,6 +43,8 @@ export const Mappings: IMappings = {
         INVALID_FRAME_CONFIG: "Falsche Eingabe für den Betrachtungszeitraum [{given}]. Beispiel: {example}",
     },
     successMessages: {
+        ADD_ADMIN: "{newAdmin} erfolgreich zu Administratoren hinzugefügt.{message}",
+        REMOVE_ADMIN: "{oldAdmin} erfolgreich von Administratoren entfernt.{message}",
         SET_CONFIG: "Setzen von {triggerId} erfolgreich.{message}",
         DELETE_CONFIG: "Löschen von {triggerId} erfolgreich.{message}",
         READ_CONFIG: "Konfiguration: {timeFrames}{message}",
@@ -50,6 +52,8 @@ export const Mappings: IMappings = {
         EVENTS: "Termine: {events}{message}",
     },
     errorMessages: {
+        ADD_ADMIN: "Hinzufügen von {newAdmin} zu Administratoren fehlgeschlagen.{message}",
+        REMOVE_ADMIN: "Entfernen von {oldAdmin} aus Administratoren fehlgeschlagen.{message}",
         SET_CONFIG: "Setzen von {triggerId} fehlgeschlagen.{message}",
         DELETE_CONFIG: "Löschen von {triggerId} fehlgeschlagen.{message}",
         READ_CONFIG: "Lesen der Konfiguration fehlgeschlagen.{message}",
