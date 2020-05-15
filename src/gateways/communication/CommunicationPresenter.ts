@@ -1,12 +1,4 @@
-import {
-    IDeleteConfigCommunication,
-    IEvent,
-    IEventCommunication,
-    IInitCommunication,
-    IReadConfigCommunication,
-    ISetConfigCommunication,
-    ITriggers,
-} from "../../useCases";
+import { ICommunication, IMessage, MessageKey } from "../../useCases";
 import { GateWay } from "../GateWay";
 import { CommunicationError } from "./CommunicationError";
 import { Mappings } from "./Mappings";
@@ -24,56 +16,56 @@ interface IDependencies {
     communication: ICommunicationOut;
 }
 
-export class CommunicationPresenter extends GateWay<IDependencies>
-    implements
-        ISetConfigCommunication,
-        IInitCommunication,
-        IEventCommunication,
-        IErrorReporter,
-        IDeleteConfigCommunication,
-        IReadConfigCommunication {
-    sendEvents(chatId: string, events: IEvent[]) {
-        this.send(chatId, `Events: ${JSON.stringify(events, null, "  ")}`);
-    }
-    sendReadConfig(chatId: string, triggers: ITriggers) {
-        this.send(chatId, JSON.stringify(triggers, null, "  "));
-    }
-
-    sendDeleteConfigSuccess(chatId: string, triggerId: string, message?: string) {
-        this.send(chatId, `Löschen von ${triggerId} erfolgreich.${message ? ` ${message}` : ""}`);
-    }
-    sendDeleteConfigError(chatId: string, triggerId: string, message?: string) {
-        this.sendError(chatId, `Löschen von ${triggerId} fehlgeschlagen${message ? ` - ${message}` : "."}`);
-    }
-
-    sendSetConfigSuccess(chatId: string, triggerId: string, message?: string) {
-        this.send(chatId, `Setzen von ${triggerId} erfolgreich.${message ? ` ${message}` : ""}`);
-    }
-    sendSetConfigError(chatId: string, triggerId: string, message?: string) {
-        this.sendError(chatId, `Setzen von ${triggerId} fehlgeschlagen${message ? ` - ${message}` : "."}`);
-    }
-
-    sendInitSuccess(chatId: string, message?: string) {
-        this.send(chatId, `Erzeugen des Chats erfolgreich.${message ? ` ${message}` : ""}`);
-    }
-    sendInitError(chatId: string, message?: string) {
-        this.sendError(chatId, `Erzeugen des Chats fehlgeschlagen${message ? ` - ${message}` : "."}`);
-    }
-
+export class CommunicationPresenter extends GateWay<IDependencies> implements IErrorReporter, ICommunication {
     sendCommunicationError(chatId: string, error: CommunicationError) {
-        const message = Mappings.errorCodes[error.key]
-            .replace(/{given}/gm, error.given)
-            .replace(/{expected}/gm, error.expected)
-            .replace(/{example}/gm, error.example || "");
+        const message = this.replacePlaceHolders(Mappings.errorCodes[error.key], {
+            given: error.given,
+            expected: error.expected,
+            example: error.example || "",
+        });
         this.sendError(chatId, message);
     }
 
     sendError(chatId: string, message: string) {
-        this.send(chatId, `Fehler: ${message}`);
+        this.dependencies!.communication.send(chatId, `Fehler: ${message}`);
     }
 
-    private send(chatId: string, message: string) {
+    send(chatId: string, message: IMessage) {
         this.checkInitialized();
-        this.dependencies!.communication.send(chatId, message);
+        const text = this.getText(message);
+        this.dependencies!.communication.send(chatId, text);
+    }
+
+    private getText(message: IMessage): string {
+        const mapping = message.hasError ? Mappings.errorMessages : Mappings.successMessages;
+        let replacements: { [key: string]: string } = {};
+        switch (message.key) {
+            case MessageKey.SET_CONFIG:
+            case MessageKey.DELETE_CONFIG:
+                replacements = { triggerId: message.triggerId };
+                break;
+            case MessageKey.READ_CONFIG:
+                replacements = { timeFrames: JSON.stringify(message.timeFrames, null, "  ") };
+                break;
+            case MessageKey.INITIALIZE_CHAT:
+                replacements = {};
+                break;
+            case MessageKey.EVENTS:
+                replacements = { events: JSON.stringify(message.events, null, "  ") };
+                break;
+        }
+        replacements = {
+            message: message.message ? ` ${message.message}` : "",
+            ...replacements,
+        };
+        return this.replacePlaceHolders(mapping[message.key], replacements);
+    }
+
+    private replacePlaceHolders(message: string, replacements: { [key: string]: string }) {
+        let newMessage = message;
+        Object.entries(replacements).forEach(([key, value]) => {
+            newMessage = newMessage.replace(new RegExp(`{${key}}`, "gm"), value);
+        });
+        return newMessage;
     }
 }

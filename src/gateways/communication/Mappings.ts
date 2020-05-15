@@ -1,4 +1,4 @@
-import { ITimeFrameSettings, PersistedRecurrenceType } from "../../useCases";
+import { ITimeFrameSettings, MessageKey, PersistedRecurrenceType } from "../../useCases";
 import { CommunicationErrorCode } from "./CommunicationError";
 
 type Days = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
@@ -7,6 +7,8 @@ interface IMappings {
     timeFrames: { [key: string]: keyof ITimeFrameSettings };
     days: { [key in Days]: string };
     errorCodes: { [key in CommunicationErrorCode]: string };
+    successMessages: { [key in MessageKey]: string };
+    errorMessages: { [key in MessageKey]: string };
 }
 
 export const Mappings: IMappings = {
@@ -39,5 +41,19 @@ export const Mappings: IMappings = {
         INVALID_DAY_OF_MONTH: "Falsche Eingabe für Tag des Monats [{given}]. Mögliche Werte: {expected}",
         INVALID_TIME: "Falsche Zeitangabe [{given}]. Mögliche Werte: {expected}",
         INVALID_FRAME_CONFIG: "Falsche Eingabe für den Betrachtungszeitraum [{given}]. Beispiel: {example}",
+    },
+    successMessages: {
+        SET_CONFIG: "Setzen von {triggerId} erfolgreich.{message}",
+        DELETE_CONFIG: "Löschen von {triggerId} erfolgreich.{message}",
+        READ_CONFIG: "Konfiguration: {timeFrames}{message}",
+        INITIALIZE_CHAT: "Initialisierung des Chats erfolgreich.{message}",
+        EVENTS: "Termine: {events}{message}",
+    },
+    errorMessages: {
+        SET_CONFIG: "Setzen von {triggerId} fehlgeschlagen.{message}",
+        DELETE_CONFIG: "Löschen von {triggerId} fehlgeschlagen.{message}",
+        READ_CONFIG: "Lesen der Konfiguration fehlgeschlagen.{message}",
+        INITIALIZE_CHAT: "Initialisierung des Chats fehlgeschlagen.{message}",
+        EVENTS: "Lesen der Termine fehlgeschlagen.{message}",
     },
 };

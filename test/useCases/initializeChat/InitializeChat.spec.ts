@@ -1,4 +1,4 @@
-import { InitializeChat, InitializeChatImpl } from "../../../src/useCases";
+import { InitializeChat, InitializeChatImpl, MessageKey } from "../../../src/useCases";
 import { MockCommunicationPresenter, MockPersistence } from "../../mocks";
 
 jest.mock("../../../src/entities/Chats", () => {
@@ -23,7 +23,7 @@ describe("InitializeChat", () => {
                 administrators: ["mockAdmin"],
                 timeFrames: {},
             });
-            expect(mockCommunication.sendInitSuccess).toHaveBeenCalledWith("chat");
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", { key: MessageKey.INITIALIZE_CHAT });
         });
     });
 });
