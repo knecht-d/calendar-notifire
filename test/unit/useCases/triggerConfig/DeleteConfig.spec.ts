@@ -19,8 +19,8 @@ describe("InitializeChat", () => {
         useCase = new DeleteConfigImpl(mockCommunication, mockTrigger, mockPersistence);
     });
     describe("execute", () => {
-        it("should remove and stop the timer", () => {
-            useCase.execute({
+        it("should remove and stop the timer", async () => {
+            await useCase.execute({
                 chatId: "chat",
                 userId: "user",
                 triggerId: "trigger",

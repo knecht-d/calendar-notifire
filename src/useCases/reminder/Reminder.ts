@@ -9,7 +9,7 @@ export interface IReminderIn {
 }
 
 export interface IEventProvider {
-    getEventsBetween: (from: Date, to: Date) => IEvent[];
+    getEventsBetween: (from: Date, to: Date) => Promise<IEvent[]>;
 }
 
 export abstract class Reminder extends UseCase<IReminderIn> {}
@@ -17,7 +17,7 @@ export class ReminderImpl extends Reminder {
     constructor(private eventProvider: IEventProvider, private communication: ICommunication) {
         super();
     }
-    execute({ chatId, triggerId }: IReminderIn) {
+    async execute({ chatId, triggerId }: IReminderIn) {
         const chat = Chats.instance.getChat(chatId);
         const timeFrame = chat.getTimeFrame(triggerId)?.frame;
         if (!timeFrame) {
@@ -29,7 +29,7 @@ export class ReminderImpl extends Reminder {
 
         const from = timeFrame.getStart(currentTime);
         const to = timeFrame.getEnd(currentTime);
-        const events = this.eventProvider.getEventsBetween(from, to);
+        const events = await this.eventProvider.getEventsBetween(from, to);
         this.communication.send(chatId, { key: MessageKey.EVENTS, events });
     }
 }

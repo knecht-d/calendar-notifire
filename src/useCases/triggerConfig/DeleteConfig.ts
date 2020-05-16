@@ -20,10 +20,13 @@ export class DeleteConfigImpl extends DeleteConfig {
     }
 
     public execute({ chatId, userId, triggerId }: IDeleteConfigInput) {
-        const chat = Chats.instance.getChat(chatId);
-        chat.removeTimeFrame(triggerId, userId);
-        this.timerSettings.stop(chatId, triggerId);
-        this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
-        this.communication.send(chatId, { key: MessageKey.DELETE_CONFIG, triggerId });
+        return new Promise<void>(resolve => {
+            const chat = Chats.instance.getChat(chatId);
+            chat.removeTimeFrame(triggerId, userId);
+            this.timerSettings.stop(chatId, triggerId);
+            this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
+            this.communication.send(chatId, { key: MessageKey.DELETE_CONFIG, triggerId });
+            resolve();
+        });
     }
 }

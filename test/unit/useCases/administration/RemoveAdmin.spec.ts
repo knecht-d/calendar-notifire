@@ -17,8 +17,8 @@ describe("RemoveAdmin", () => {
         useCase = new RemoveAdminImpl(mockCommunication, mockPersistence);
     });
     describe("execute", () => {
-        it("should remove an admin", () => {
-            useCase.execute({ chatId: "chat", userId: "user", adminId: "admin" });
+        it("should remove an admin", async () => {
+            await useCase.execute({ chatId: "chat", userId: "user", adminId: "admin" });
             expect(MockChatEntity.removeAdmin).toHaveBeenCalledWith("user", "admin");
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
                 administrators: ["mockAdmin"],

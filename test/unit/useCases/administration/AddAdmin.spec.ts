@@ -17,8 +17,8 @@ describe("AddAdmin", () => {
         useCase = new AddAdminImpl(mockCommunication, mockPersistence);
     });
     describe("execute", () => {
-        it("should add an admin", () => {
-            useCase.execute({ chatId: "chat", userId: "user", adminId: "admin" });
+        it("should add an admin", async () => {
+            await useCase.execute({ chatId: "chat", userId: "user", adminId: "admin" });
             expect(MockChatEntity.addAdmin).toHaveBeenCalledWith("user", "admin");
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
                 administrators: ["mockAdmin"],

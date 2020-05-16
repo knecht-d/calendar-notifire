@@ -103,16 +103,19 @@ describe("TriggerGateway", () => {
     });
 
     describe("trigger", () => {
-        it("should fail if it was not initialized", () => {
+        it("should fail if it was not initialized", async () => {
             const triggerGW = new TriggerGateway();
-            expect(() => {
-                triggerGW.trigger("someID");
-            }).toThrow("Not Initialized");
+            expect.assertions(1);
+            try {
+                await triggerGW.trigger("someID");
+            } catch (error) {
+                expect(error).toEqual(new Error("Not Initialized"));
+            }
         });
-        it("should execute the reminder with the decoded id", () => {
+        it("should execute the reminder with the decoded id", async () => {
             const triggerGW = new TriggerGateway();
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
-            triggerGW.trigger("chat%7CId|trigger%7CId");
+            await triggerGW.trigger("chat%7CId|trigger%7CId");
             expect(mockReminder.execute).toHaveBeenLastCalledWith({ chatId: "chat|Id", triggerId: "trigger|Id" });
         });
     });

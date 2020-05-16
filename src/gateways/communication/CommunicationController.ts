@@ -16,12 +16,12 @@ import { Mappings } from "./Mappings";
 import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from "./validation";
 
 export interface ICommunicationIn {
-    set: (chatId: string, userId: string, payload: string) => void;
-    delete: (chatId: string, userId: string, payload: string) => void;
-    initChat: (chatId: string, userId: string) => void;
-    addAdmin: (chatId: string, userId: string, payload: string) => void;
-    removeAdmin: (chatId: string, userId: string, payload: string) => void;
-    read: (chatId: string) => void;
+    set: (chatId: string, userId: string, payload: string) => Promise<void>;
+    delete: (chatId: string, userId: string, payload: string) => Promise<void>;
+    initChat: (chatId: string, userId: string) => Promise<void>;
+    addAdmin: (chatId: string, userId: string, payload: string) => Promise<void>;
+    removeAdmin: (chatId: string, userId: string, payload: string) => Promise<void>;
+    read: (chatId: string) => Promise<void>;
 }
 
 interface IDependencies {
@@ -47,15 +47,15 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         [PersistedRecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
     };
 
-    read(chatId: string) {
+    async read(chatId: string) {
         this.checkInitialized();
-        this.dependencies!.useCases.config.read.execute({ chatId });
+        await this.dependencies!.useCases.config.read.execute({ chatId });
     }
 
-    initChat(chatId: string, userId: string) {
+    async initChat(chatId: string, userId: string) {
         this.checkInitialized();
         try {
-            this.dependencies!.useCases.admin.init.execute({
+            await this.dependencies!.useCases.admin.init.execute({
                 chatId,
                 userId,
             });
@@ -64,7 +64,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
-    delete(chatId: string, userId: string, payload: string) {
+    async delete(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         try {
             const triggerId = payload
@@ -74,7 +74,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
             if (!triggerId) {
                 throw new CommunicationError(CommunicationErrorCode.MISSING_TRIGGER_ID);
             }
-            this.dependencies!.useCases.config.delete.execute({ chatId, userId, triggerId });
+            await this.dependencies!.useCases.config.delete.execute({ chatId, userId, triggerId });
         } catch (error) {
             if (error instanceof CommunicationError) {
                 this.dependencies!.presenter.sendCommunicationError(chatId, error);
@@ -84,7 +84,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
-    set(chatId: string, userId: string, payload: string) {
+    async set(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         try {
             const payloadParts = payload
@@ -102,7 +102,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
                 );
             }
             const configExtractors = this.configExtractors;
-            this.dependencies!.useCases.config.set.execute({
+            await this.dependencies!.useCases.config.set.execute({
                 chatId,
                 userId,
                 triggerId,
@@ -117,21 +117,21 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
-    addAdmin(chatId: string, userId: string, payload: string) {
+    async addAdmin(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         const adminId = payload
             .trim()
             .replace(/\s+/gm, " ")
             .split(" ")[0];
-        this.dependencies!.useCases.admin.add.execute({ chatId, userId, adminId });
+        await this.dependencies!.useCases.admin.add.execute({ chatId, userId, adminId });
     }
-    removeAdmin(chatId: string, userId: string, payload: string) {
+    async removeAdmin(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         const adminId = payload
             .trim()
             .replace(/\s+/gm, " ")
             .split(" ")[0];
-        this.dependencies!.useCases.admin.remove.execute({ chatId, userId, adminId });
+        await this.dependencies!.useCases.admin.remove.execute({ chatId, userId, adminId });
     }
 
     private extractMonthlyConfig(parts: string[]): ISetConfigInput["config"] {

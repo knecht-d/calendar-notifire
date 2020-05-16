@@ -9,22 +9,22 @@ export class MockChat extends AbstractChat<{}> {
         super(setupData);
     }
 
-    public fireSet(chatId: string, userId: string, payload: string) {
-        this.communication!.set(chatId, userId, payload);
+    public async fireSet(chatId: string, userId: string, payload: string) {
+        await this.communication!.set(chatId, userId, payload);
     }
-    public fireInitChat(chatId: string, userId: string) {
-        this.communication!.initChat(chatId, userId);
+    public async fireInitChat(chatId: string, userId: string) {
+        await this.communication!.initChat(chatId, userId);
     }
-    public fireDelete(chatId: string, userId: string, payload: string) {
-        this.communication!.delete(chatId, userId, payload);
+    public async fireDelete(chatId: string, userId: string, payload: string) {
+        await this.communication!.delete(chatId, userId, payload);
     }
-    public fireRead(chatId: string) {
-        this.communication!.read(chatId);
+    public async fireRead(chatId: string) {
+        await this.communication!.read(chatId);
     }
-    public fireAddAdmin(chatId: string, userId: string, payload: string) {
-        this.communication!.addAdmin(chatId, userId, payload);
+    public async fireAddAdmin(chatId: string, userId: string, payload: string) {
+        await this.communication!.addAdmin(chatId, userId, payload);
     }
-    public fireRemoveAdmin(chatId: string, userId: string, payload: string) {
-        this.communication!.removeAdmin(chatId, userId, payload);
+    public async fireRemoveAdmin(chatId: string, userId: string, payload: string) {
+        await this.communication!.removeAdmin(chatId, userId, payload);
     }
 }

@@ -17,9 +17,12 @@ export class AddAdminImpl extends AddAdmin {
     }
 
     public execute({ chatId, userId, adminId }: IAddAdminInput) {
-        const chat = Chats.instance.getChat(chatId);
-        chat.addAdmin(userId, adminId);
-        this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
-        this.communication.send(chatId, { key: MessageKey.ADD_ADMIN, newAdmin: adminId });
+        return new Promise<void>(resolve => {
+            const chat = Chats.instance.getChat(chatId);
+            chat.addAdmin(userId, adminId);
+            this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
+            this.communication.send(chatId, { key: MessageKey.ADD_ADMIN, newAdmin: adminId });
+            resolve();
+        });
     }
 }

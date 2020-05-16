@@ -9,7 +9,7 @@ export class StaticCalendar extends AbstractCalendar<{ events: ICalendarEvent[] 
         super(setupData);
         this.events = this.setupData.events;
     }
-    getEvents(): ICalendarEvent[] {
-        return this.events;
+    getEvents(): Promise<ICalendarEvent[]> {
+        return Promise.resolve(this.events);
     }
 }

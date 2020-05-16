@@ -17,9 +17,12 @@ export class RemoveAdminImpl extends RemoveAdmin {
     }
 
     public execute({ chatId, userId, adminId }: IRemoveAdminInput) {
-        const chat = Chats.instance.getChat(chatId);
-        chat.removeAdmin(userId, adminId);
-        this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
-        this.communication.send(chatId, { key: MessageKey.REMOVE_ADMIN, oldAdmin: adminId });
+        return new Promise<void>(resolve => {
+            const chat = Chats.instance.getChat(chatId);
+            chat.removeAdmin(userId, adminId);
+            this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
+            this.communication.send(chatId, { key: MessageKey.REMOVE_ADMIN, oldAdmin: adminId });
+            resolve();
+        });
     }
 }

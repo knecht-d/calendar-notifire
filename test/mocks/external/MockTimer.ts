@@ -9,7 +9,7 @@ export class MockTimer extends AbstractTimer {
         delete this.triggers[id];
     });
 
-    fireTrigger(id: string) {
-        this.triggerReceiver!.trigger(id);
+    async fireTrigger(id: string) {
+        await this.triggerReceiver!.trigger(id);
     }
 }

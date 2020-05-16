@@ -18,7 +18,7 @@ describe("ReadConfig", () => {
         useCase = new ReadConfigImpl(mockCommunication);
     });
     describe("execute", () => {
-        it("pass the config", () => {
+        it("pass the config", async () => {
             const settings = [
                 {
                     key: "frame1",
@@ -41,7 +41,7 @@ describe("ReadConfig", () => {
                 settings,
                 administrators: ["admin1", "admin2"],
             });
-            useCase.execute({ chatId: "chat" });
+            await useCase.execute({ chatId: "chat" });
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
                 key: MessageKey.READ_CONFIG,
                 timeFrames: {

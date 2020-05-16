@@ -1,5 +1,5 @@
 import MockDate from "mockdate";
-import { MessageKey, Reminder, ReminderImpl } from "../../../../src/useCases";
+import { MessageKey, Reminder, ReminderImpl, UseCaseError, UseCaseErrorCode } from "../../../../src/useCases";
 import { MockCalendarGateway, MockChatEntity, MockCommunicationPresenter, MockTimeFrame } from "../../../mocks";
 
 jest.mock("../../../../src/entities/Chats", () => {
@@ -26,14 +26,14 @@ describe("Reminder", () => {
         MockDate.reset();
     });
     describe("execute", () => {
-        it("should return the Events in the given timeframe", () => {
+        it("should return the Events in the given timeframe", async () => {
             const dateStart = new Date(2020, 4, 10, 0, 32);
             const dateEnd = new Date(2020, 4, 10, 0, 42);
             MockTimeFrame.getStart.mockReturnValueOnce(dateStart);
             MockTimeFrame.getEnd.mockReturnValueOnce(dateEnd);
             mockCalendar.getEventsBetween.mockReturnValue([{ mocked: "Event" }]);
 
-            useCase.execute({ chatId: "chat", triggerId: "trigger" });
+            await useCase.execute({ chatId: "chat", triggerId: "trigger" });
 
             expect(MockTimeFrame.getStart).toHaveBeenCalledWith(new Date(2020, 4, 10, 0, 12, 0, 0));
             expect(MockTimeFrame.getEnd).toHaveBeenCalledWith(new Date(2020, 4, 10, 0, 12, 0, 0));
@@ -43,13 +43,14 @@ describe("Reminder", () => {
                 events: [{ mocked: "Event" }],
             });
         });
-        it("should throw if the timeframe does not exist", () => {
+        it("should throw if the timeframe does not exist", async () => {
             MockChatEntity.getTimeFrame.mockReturnValue(undefined);
-
-            expect(() => {
-                useCase.execute({ chatId: "chat", triggerId: "trigger" });
-            }).toThrow('TRIGGER_NOT_DEFINED: {"triggerId":"trigger"}');
-
+            expect.assertions(3);
+            try {
+                await useCase.execute({ chatId: "chat", triggerId: "trigger" });
+            } catch (error) {
+                expect(error).toEqual(new UseCaseError(UseCaseErrorCode.TRIGGER_NOT_DEFINED, { triggerId: "trigger" }));
+            }
             expect(mockCalendar.getEventsBetween).not.toHaveBeenCalled();
             expect(mockCommunication.send).not.toHaveBeenCalled();
         });

@@ -17,8 +17,8 @@ describe("InitializeChat", () => {
         useCase = new InitializeChatImpl(mockCommunication, mockPersistence);
     });
     describe("execute", () => {
-        it("should create a new chat", () => {
-            useCase.execute({ chatId: "chat", userId: "user" });
+        it("should create a new chat", async () => {
+            await useCase.execute({ chatId: "chat", userId: "user" });
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
                 administrators: ["mockAdmin"],
                 timeFrames: {},
