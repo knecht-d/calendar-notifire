@@ -16,7 +16,7 @@ import {
     SetConfigImpl,
     StartAssistantImpl,
 } from "../../../src/useCases";
-import { EmptyCalendar, MockChat, MockFactory, MockStorage, MockTimer } from "../../mocks";
+import { MockCalendar, MockChat, MockFactory, MockStorage, MockTimer } from "../../mocks";
 
 // All Classes where the prototype is checked need to have their own mock!
 jest.mock("../../../src/useCases/startAssistant");
@@ -36,11 +36,11 @@ describe("Builder", () => {
         beforeAll(() => {
             const mockFactory = new MockFactory();
             const builder = new Builder(mockFactory);
-            builder.build({ calendar: {}, chatData: {}, storage: {} });
+            builder.build({ calendar: { events: [] }, chatData: {}, storage: {} });
         });
         describe("external", () => {
             it("should create the external classes", () => {
-                expect(EmptyCalendar).toHaveBeenCalledTimes(1);
+                expect(MockCalendar).toHaveBeenCalledTimes(1);
                 expect(MockChat).toHaveBeenCalledTimes(1);
                 expect(MockStorage).toHaveBeenCalledTimes(1);
                 expect(MockTimer).toHaveBeenCalledTimes(1);
@@ -67,7 +67,7 @@ describe("Builder", () => {
             it("should initialize the CalendarGateway", () => {
                 expect((CalendarGateway as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
                 const data = (CalendarGateway as jest.Mock).mock.instances[0].init.mock.calls[0][0];
-                expect(data.calendarConnector).toBeInstanceOf(EmptyCalendar);
+                expect(data.calendarConnector).toBeInstanceOf(MockCalendar);
             });
             it("should initialize the CommunicationController", () => {
                 expect((CommunicationController as jest.Mock).mock.instances[0].init).toHaveBeenCalledTimes(1);
