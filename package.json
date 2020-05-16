@@ -6,6 +6,7 @@
   "scripts": {
     "test:watch": "jest --watchAll",
     "test": "jest",
+    "test:unit": "jest /unit/",
     "cover:watch": "jest --coverage --watchAll",
     "cover": "jest --coverage",
     "build": "pretty-quick && npm run check && rimraf ./build && tsc -p ./tsconfig.build.json",
