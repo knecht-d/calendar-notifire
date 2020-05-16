@@ -1,3 +1,3 @@
 export abstract class UseCase<In> {
-    abstract execute(input: In): void;
+    abstract execute(input: In): Promise<void>;
 }

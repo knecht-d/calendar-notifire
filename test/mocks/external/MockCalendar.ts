@@ -12,6 +12,6 @@ export class MockCalendar extends AbstractCalendar<IMockCalendarSetupData> {
         this.events = setupData.events;
     }
     getEvents() {
-        return this.events;
+        return Promise.resolve(this.events);
     }
 }

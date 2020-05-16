@@ -16,8 +16,11 @@ export class InitializeChatImpl extends InitializeChat {
     }
 
     public execute({ chatId, userId }: IInitInput) {
-        const chat = Chats.instance.createChat(chatId, [userId]);
-        this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
-        this.communication.send(chatId, { key: MessageKey.INITIALIZE_CHAT });
+        return new Promise<void>(resolve => {
+            const chat = Chats.instance.createChat(chatId, [userId]);
+            this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
+            this.communication.send(chatId, { key: MessageKey.INITIALIZE_CHAT });
+            resolve();
+        });
     }
 }

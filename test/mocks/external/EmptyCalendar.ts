@@ -6,6 +6,6 @@ export class EmptyCalendar extends AbstractCalendar<{}> {
         super(setupData);
     }
     getEvents() {
-        return [];
+        return Promise.resolve([]);
     }
 }

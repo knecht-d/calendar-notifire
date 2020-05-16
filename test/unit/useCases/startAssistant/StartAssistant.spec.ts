@@ -84,13 +84,13 @@ describe("StartAssistamt", () => {
                 },
             });
         });
-        it("should create all the stored chats", () => {
-            useCase.execute();
+        it("should create all the stored chats", async () => {
+            await useCase.execute();
             expect(MockChats.instance.createChat).toHaveBeenCalledWith("chat", ["admin0", "admin8"]);
             expect(MockChats.instance.createChat).toHaveBeenCalledWith("chat2", ["admin1", "admin5"]);
         });
-        it("should create the timeFrames", () => {
-            useCase.execute();
+        it("should create the timeFrames", async () => {
+            await useCase.execute();
             expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
                 "any",
                 {
@@ -160,8 +160,8 @@ describe("StartAssistamt", () => {
                 "admin1",
             );
         });
-        it("should det the timeFrames in the triger", () => {
-            useCase.execute();
+        it("should det the timeFrames in the triger", async () => {
+            await useCase.execute();
             expect(mockTrigger.set).toHaveBeenCalledWith("chat", "any", { type: "MockedRecurrence1" });
             expect(mockTrigger.set).toHaveBeenCalledWith("chat", "frame", { type: "MockedRecurrence2" });
             expect(mockTrigger.set).toHaveBeenCalledWith("chat2", "some", { type: "MockedRecurrence3" });

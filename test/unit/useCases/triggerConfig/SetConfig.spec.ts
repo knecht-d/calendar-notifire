@@ -23,8 +23,8 @@ describe("SetConfig", () => {
         useCase = new SetConfigImpl(mockCommunication, mockTrigger, mockPersistence);
     });
     describe("execute", () => {
-        it("should set a new time frame", () => {
-            useCase.execute({
+        it("should set a new time frame", async () => {
+            await useCase.execute({
                 chatId: "chat",
                 userId: "user",
                 triggerId: "trigger",

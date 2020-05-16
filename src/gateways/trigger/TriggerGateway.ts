@@ -13,7 +13,7 @@ export interface ITriggerConfigure {
 }
 
 export interface ITriggerReceiver {
-    trigger: (id: string) => void;
+    trigger: (id: string) => Promise<void>;
 }
 
 interface IDependencies {
@@ -22,10 +22,10 @@ interface IDependencies {
 }
 
 export class TriggerGateway extends GateWay<IDependencies> implements ITimerStopper, ITriggerReceiver, ITimerSetter {
-    trigger(id: string) {
+    async trigger(id: string) {
         this.checkInitialized();
         const { chatId, triggerId } = this.decodeId(id);
-        this.dependencies!.reminder.execute({ chatId, triggerId });
+        await this.dependencies!.reminder.execute({ chatId, triggerId });
     }
 
     public stop(chatId: string, triggerId: string) {

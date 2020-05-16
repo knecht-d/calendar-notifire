@@ -14,16 +14,19 @@ export class ReadConfigImpl extends ReadConfig {
     }
 
     public execute({ chatId }: IReadConfigInput) {
-        const chat = Chats.instance.getChat(chatId);
-        const chatConfig = chat.getConfig();
-        const timeFrames = chatConfig.settings.reduce((frames, setting) => {
-            frames[setting.key] = {
-                begin: setting.frame.begin,
-                end: setting.frame.end,
-                recurrence: convertRecurrence(setting.recurrence),
-            };
-            return frames;
-        }, {} as { [frameKey: string]: ISerializedTimeFrame });
-        this.communication.send(chatId, { key: MessageKey.READ_CONFIG, timeFrames });
+        return new Promise<void>(resolve => {
+            const chat = Chats.instance.getChat(chatId);
+            const chatConfig = chat.getConfig();
+            const timeFrames = chatConfig.settings.reduce((frames, setting) => {
+                frames[setting.key] = {
+                    begin: setting.frame.begin,
+                    end: setting.frame.end,
+                    recurrence: convertRecurrence(setting.recurrence),
+                };
+                return frames;
+            }, {} as { [frameKey: string]: ISerializedTimeFrame });
+            this.communication.send(chatId, { key: MessageKey.READ_CONFIG, timeFrames });
+            resolve();
+        });
     }
 }
