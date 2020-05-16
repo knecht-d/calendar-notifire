@@ -1,10 +1,10 @@
 import { GenericFactory } from "../../src/creation";
-import { EmptyCalendar, MockChat, MockStorage, MockTimer } from "./external";
+import { IMockCalendarSetupData, MockCalendar, MockChat, MockStorage, MockTimer } from "./external";
 
-export class MockFactory extends GenericFactory<{}, {}, {}> {
+export class MockFactory extends GenericFactory<IMockCalendarSetupData, {}, {}> {
     constructor() {
         super({
-            calendar: EmptyCalendar,
+            calendar: MockCalendar,
             chat: MockChat,
             storage: MockStorage,
             timer: MockTimer,
