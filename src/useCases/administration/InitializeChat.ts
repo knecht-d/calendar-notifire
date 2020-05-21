@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
-import { IUseCaseLogger } from "../logging";
+import { IUseCaseLogger, logMethod } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -16,7 +16,8 @@ export class InitializeChatImpl extends InitializeChat {
         super(logger);
     }
 
-    protected _execute({ chatId, userId }: IInitInput) {
+    @logMethod()
+    execute({ chatId, userId }: IInitInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.createChat(chatId, [userId]);
             this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));

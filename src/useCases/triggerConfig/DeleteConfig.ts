@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, ITimerStopper, MessageKey } from "../interfaces";
-import { IUseCaseLogger } from "../logging";
+import { IUseCaseLogger, logMethod } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -21,7 +21,8 @@ export class DeleteConfigImpl extends DeleteConfig {
         super(logger);
     }
 
-    protected _execute({ chatId, userId, triggerId }: IDeleteConfigInput) {
+    @logMethod()
+    execute({ chatId, userId, triggerId }: IDeleteConfigInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             chat.removeTimeFrame(triggerId, userId);

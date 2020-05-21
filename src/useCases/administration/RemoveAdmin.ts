@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
-import { IUseCaseLogger } from "../logging";
+import { IUseCaseLogger, logMethod } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -17,7 +17,8 @@ export class RemoveAdminImpl extends RemoveAdmin {
         super(logger);
     }
 
-    protected _execute({ chatId, userId, adminId }: IRemoveAdminInput) {
+    @logMethod()
+    execute({ chatId, userId, adminId }: IRemoveAdminInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             chat.removeAdmin(userId, adminId);
