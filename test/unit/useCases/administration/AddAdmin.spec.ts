@@ -1,5 +1,6 @@
 import { AddAdmin, AddAdminImpl, MessageKey } from "../../../../src/useCases";
 import { MockChatEntity, MockCommunicationPresenter, MockPersistence } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
     const MockChats = require("../../../mocks").MockChats;
@@ -10,11 +11,13 @@ jest.mock("../../../../src/entities/Chats", () => {
 describe("AddAdmin", () => {
     let mockCommunication: MockCommunicationPresenter;
     let mockPersistence: MockPersistence;
+    let mockLogger: MockLogger;
     let useCase: AddAdmin;
     beforeAll(() => {
-        mockCommunication = new MockCommunicationPresenter();
-        mockPersistence = new MockPersistence();
-        useCase = new AddAdminImpl(mockCommunication, mockPersistence);
+        mockCommunication = new MockCommunicationPresenter(mockLogger);
+        mockPersistence = new MockPersistence(mockLogger);
+        mockLogger = new MockLogger();
+        useCase = new AddAdminImpl(mockLogger, mockCommunication, mockPersistence);
     });
     describe("execute", () => {
         it("should add an admin", async () => {

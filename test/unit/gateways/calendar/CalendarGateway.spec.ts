@@ -1,4 +1,5 @@
 import { CalendarGateway } from "../../../../src/gateways";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 describe("CalendarGateway", () => {
     const mockEvents = [
@@ -23,6 +24,7 @@ describe("CalendarGateway", () => {
             title: "Event4",
         },
     ];
+    const mockLogger = new MockLogger();
     const mockSimpleCalendarConnector = {
         getEvents: jest.fn(() => Promise.resolve(mockEvents)),
     };
@@ -37,7 +39,7 @@ describe("CalendarGateway", () => {
     });
     describe("getEventsBetween", () => {
         it("should call getEventsBetween if it is implemented", async () => {
-            const gateway = new CalendarGateway();
+            const gateway = new CalendarGateway(mockLogger);
             gateway.init({ calendarConnector: mockExtendedCalendarConnector });
             const from = new Date(2020, 4, 2, 0, 0);
             const to = new Date(2020, 4, 7, 0, 0);
@@ -46,7 +48,7 @@ describe("CalendarGateway", () => {
             expect(mockExtendedCalendarConnector.getEvents).not.toHaveBeenCalled();
         });
         it("should call getEvent if getEventsBetween is not implemented", async () => {
-            const gateway = new CalendarGateway();
+            const gateway = new CalendarGateway(mockLogger);
             gateway.init({ calendarConnector: mockSimpleCalendarConnector });
             const from = new Date(2020, 4, 2, 0, 0);
             const to = new Date(2020, 4, 7, 0, 0);
@@ -54,7 +56,7 @@ describe("CalendarGateway", () => {
             expect(mockSimpleCalendarConnector.getEvents).toHaveBeenCalledWith();
         });
         it("should filter events if getEvents is used", async () => {
-            const gateway = new CalendarGateway();
+            const gateway = new CalendarGateway(mockLogger);
             gateway.init({ calendarConnector: mockSimpleCalendarConnector });
             const from = new Date(2020, 4, 2, 0, 0);
             const to = new Date(2020, 4, 7, 0, 0);
@@ -62,7 +64,7 @@ describe("CalendarGateway", () => {
             expect(events).toEqual([mockEvents[0], mockEvents[2]]);
         });
         it("should sort the events ascending by the start date", async () => {
-            const gateway = new CalendarGateway();
+            const gateway = new CalendarGateway(mockLogger);
             gateway.init({ calendarConnector: mockSimpleCalendarConnector });
             const from = new Date(2020, 4, 1, 0, 0);
             const to = new Date(2020, 4, 11, 0, 0);
@@ -90,7 +92,7 @@ describe("CalendarGateway", () => {
             const mockConnector = {
                 getEvents: jest.fn(() => Promise.resolve(events)),
             };
-            const gateway = new CalendarGateway();
+            const gateway = new CalendarGateway(mockLogger);
             gateway.init({ calendarConnector: mockConnector });
             const from = new Date(2020, 4, 2, 0, 0);
             const to = new Date(2020, 4, 4, 0, 0);
@@ -112,7 +114,7 @@ describe("CalendarGateway", () => {
             const mockConnector = {
                 getEvents: jest.fn(() => Promise.resolve(events)),
             };
-            const gateway = new CalendarGateway();
+            const gateway = new CalendarGateway(mockLogger);
             gateway.init({ calendarConnector: mockConnector });
             const from = new Date(2020, 4, 1, 1, 13);
             const to = new Date(2020, 4, 1, 2, 42);

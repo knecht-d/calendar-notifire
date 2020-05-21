@@ -7,6 +7,7 @@ import {
     ITimerSetter,
     MessageKey,
 } from "../interfaces";
+import { IUseCaseLogger } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence, createRecurrence } from "../utils";
 
@@ -24,11 +25,12 @@ export interface ISetConfigInput {
 export abstract class SetConfig extends UseCase<ISetConfigInput> {}
 export class SetConfigImpl extends SetConfig {
     constructor(
+        logger: IUseCaseLogger,
         private communication: ICommunication,
         private timerSettings: ITimerSetter,
         private persistence: IChatConfigSaver,
     ) {
-        super();
+        super(logger);
     }
 
     public execute({ chatId, userId, triggerId, config }: ISetConfigInput) {

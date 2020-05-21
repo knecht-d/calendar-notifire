@@ -1,14 +1,15 @@
 import { TriggerGateway } from "../../../../src/gateways";
 import { PersistedRecurrenceType } from "../../../../src/useCases";
+import { MockUseCase } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 describe("TriggerGateway", () => {
     const mockTriggerConfigure = {
         setTrigger: jest.fn(),
         stopTrigger: jest.fn(),
     };
-    const mockReminder = {
-        execute: jest.fn(),
-    };
+    const mockReminder = new MockUseCase();
+    const mockLogger = new MockLogger();
     beforeEach(() => {
         mockTriggerConfigure.setTrigger.mockClear();
         mockReminder.execute.mockClear();
@@ -16,7 +17,7 @@ describe("TriggerGateway", () => {
 
     describe("set", () => {
         it("should encode the id", () => {
-            const triggerGW = new TriggerGateway();
+            const triggerGW = new TriggerGateway(mockLogger);
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.set("chat|Id", "trigger|Id", {
                 type: PersistedRecurrenceType.monthly,
@@ -27,7 +28,7 @@ describe("TriggerGateway", () => {
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith("chat%7CId|trigger%7CId", expect.any(String));
         });
         it("should create a cron for monthly recurrence", () => {
-            const triggerGW = new TriggerGateway();
+            const triggerGW = new TriggerGateway(mockLogger);
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.set("chat|Id", "trigger|Id", {
                 type: PersistedRecurrenceType.monthly,
@@ -38,7 +39,7 @@ describe("TriggerGateway", () => {
             expect(mockTriggerConfigure.setTrigger).toHaveBeenCalledWith(expect.any(String), "32 12 15 * *");
         });
         it("should create a cron for daily recurrence", () => {
-            const triggerGW = new TriggerGateway();
+            const triggerGW = new TriggerGateway(mockLogger);
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.set("chat|Id", "trigger|Id", {
                 type: PersistedRecurrenceType.daily,
@@ -68,7 +69,7 @@ describe("TriggerGateway", () => {
             };
             const testData = createTestData();
             it.each(testData)("daily recurrence: %s", (_day, flags, index) => {
-                const triggerGW = new TriggerGateway();
+                const triggerGW = new TriggerGateway(mockLogger);
                 triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
                 triggerGW.set("chat|Id", "trigger|Id", {
                     type: PersistedRecurrenceType.daily,
@@ -80,7 +81,7 @@ describe("TriggerGateway", () => {
             });
         });
         it("should create a cron for hourly recurrence", () => {
-            const triggerGW = new TriggerGateway();
+            const triggerGW = new TriggerGateway(mockLogger);
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.set("chat|Id", "trigger|Id", {
                 type: PersistedRecurrenceType.hourly,
@@ -95,7 +96,7 @@ describe("TriggerGateway", () => {
 
     describe("stop", () => {
         it("should stop using the encoded id", () => {
-            const triggerGW = new TriggerGateway();
+            const triggerGW = new TriggerGateway(mockLogger);
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.stop("chat|Id", "trigger|Id");
             expect(mockTriggerConfigure.stopTrigger).toHaveBeenCalledWith("chat%7CId|trigger%7CId");
@@ -104,7 +105,7 @@ describe("TriggerGateway", () => {
 
     describe("trigger", () => {
         it("should fail if it was not initialized", async () => {
-            const triggerGW = new TriggerGateway();
+            const triggerGW = new TriggerGateway(mockLogger);
             expect.assertions(1);
             try {
                 await triggerGW.trigger("someID");
@@ -113,7 +114,7 @@ describe("TriggerGateway", () => {
             }
         });
         it("should execute the reminder with the decoded id", async () => {
-            const triggerGW = new TriggerGateway();
+            const triggerGW = new TriggerGateway(mockLogger);
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             await triggerGW.trigger("chat%7CId|trigger%7CId");
             expect(mockReminder.execute).toHaveBeenLastCalledWith({ chatId: "chat|Id", triggerId: "trigger|Id" });

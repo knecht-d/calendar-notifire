@@ -1,12 +1,13 @@
 import { Telegraf } from "telegraf";
 import { TelegrafContext } from "telegraf/typings/context";
+import { ILogger } from "../logging";
 import { AbstractChat } from "./AbstractChat";
 
 export class TelegramChat extends AbstractChat<{ botToken: string }> {
     private bot: Telegraf<TelegrafContext>;
 
-    constructor(setupData: { botToken: string }) {
-        super(setupData);
+    constructor(logger: ILogger, setupData: { botToken: string }) {
+        super(logger, setupData);
         this.bot = new Telegraf(setupData.botToken);
     }
 

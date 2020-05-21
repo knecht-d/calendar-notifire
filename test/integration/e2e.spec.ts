@@ -1,4 +1,5 @@
 import { Builder } from "../../src/creation";
+import { ILogger, LogLevels } from "../../src/external";
 import { MockCalendar, MockChat, MockFactory, MockStorage, MockTimer } from "../mocks";
 
 let calendar: MockCalendar;
@@ -10,20 +11,20 @@ jest.mock("../mocks", () => {
     return {
         ...actual,
         MockFactory: jest.fn().mockImplementation(() => ({
-            createCalendar: (setupData: any) => {
-                calendar = new actual.MockCalendar(setupData);
+            createCalendar: (logger: ILogger, setupData: any) => {
+                calendar = new actual.MockCalendar(logger, setupData);
                 return calendar;
             },
-            createChat: (setupData: any) => {
-                chat = new actual.MockChat(setupData);
+            createChat: (logger: ILogger, setupData: any) => {
+                chat = new actual.MockChat(logger, setupData);
                 return chat;
             },
-            createStorage: (setupData: any) => {
-                storage = new actual.MockStorage(setupData);
+            createStorage: (logger: ILogger, setupData: any) => {
+                storage = new actual.MockStorage(logger, setupData);
                 return storage;
             },
-            createTimer: (setupData: any) => {
-                timer = new actual.MockTimer(setupData);
+            createTimer: (logger: ILogger, setupData: any) => {
+                timer = new actual.MockTimer(logger, setupData);
                 return timer;
             },
         })),
@@ -33,7 +34,7 @@ describe("End to end test", () => {
     beforeAll(() => {
         const mockFactory = new MockFactory();
         const builder = new Builder(mockFactory);
-        builder.build({ calendar: { events: [] }, chatData: {}, storage: {} });
+        builder.build({ calendar: { events: [] }, chatData: {}, storage: {}, loggger: { level: LogLevels.error } });
     });
     beforeEach(() => {
         chat.send.mockClear();

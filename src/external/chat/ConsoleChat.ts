@@ -1,3 +1,4 @@
+import { ILogger } from "../logging";
 import { AbstractChat } from "./AbstractChat";
 
 /* istanbul ignore file */
@@ -5,8 +6,8 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
     private chatId: string;
     private userId: string;
 
-    constructor(setupData: { chatId: string; userId: string }) {
-        super(setupData);
+    constructor(logger: ILogger, setupData: { chatId: string; userId: string }) {
+        super(logger, setupData);
         this.chatId = setupData.chatId;
         this.userId = setupData.userId;
     }

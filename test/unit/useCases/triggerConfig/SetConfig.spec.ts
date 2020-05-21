@@ -1,5 +1,6 @@
 import { MessageKey, SetConfig, SetConfigImpl } from "../../../../src/useCases";
 import { MockChatEntity, MockCommunicationPresenter, MockPersistence, MockTriggerGateway } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
     const MockChats = require("../../../mocks").MockChats;
@@ -15,12 +16,14 @@ describe("SetConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
     let mockTrigger: MockTriggerGateway;
     let mockPersistence: MockPersistence;
+    let mockLogger: MockLogger;
     let useCase: SetConfig;
     beforeAll(() => {
-        mockCommunication = new MockCommunicationPresenter();
-        mockTrigger = new MockTriggerGateway();
-        mockPersistence = new MockPersistence();
-        useCase = new SetConfigImpl(mockCommunication, mockTrigger, mockPersistence);
+        mockCommunication = new MockCommunicationPresenter(mockLogger);
+        mockTrigger = new MockTriggerGateway(mockLogger);
+        mockPersistence = new MockPersistence(mockLogger);
+        mockLogger = new MockLogger();
+        useCase = new SetConfigImpl(mockLogger, mockCommunication, mockTrigger, mockPersistence);
     });
     describe("execute", () => {
         it("should set a new time frame", async () => {

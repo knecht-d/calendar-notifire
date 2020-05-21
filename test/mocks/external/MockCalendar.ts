@@ -1,3 +1,4 @@
+import { ILogger } from "../../../src/external";
 import { AbstractCalendar } from "../../../src/external/calendar";
 import { ICalendarEvent } from "../../../src/gateways";
 
@@ -7,8 +8,8 @@ export interface IMockCalendarSetupData {
 export class MockCalendar extends AbstractCalendar<IMockCalendarSetupData> {
     getEventsBetween: undefined;
     public events: ICalendarEvent[];
-    constructor(setupData: IMockCalendarSetupData) {
-        super(setupData);
+    constructor(logger: ILogger, setupData: IMockCalendarSetupData) {
+        super(logger, setupData);
         this.events = setupData.events;
     }
     getEvents() {

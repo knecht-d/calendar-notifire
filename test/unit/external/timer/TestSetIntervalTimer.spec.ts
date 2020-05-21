@@ -1,14 +1,16 @@
 import { TestSetIntervalTimer } from "../../../../src/external";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.useFakeTimers();
 describe("TestSetIntervalTimer", () => {
     const mockTriggerReceiver = {
         trigger: jest.fn(),
     };
+    const mockLogger = new MockLogger();
     let timer: TestSetIntervalTimer;
     beforeEach(() => {
         mockTriggerReceiver.trigger.mockClear();
-        timer = new TestSetIntervalTimer();
+        timer = new TestSetIntervalTimer(mockLogger);
         (setInterval as jest.Mock).mockClear();
         (clearInterval as jest.Mock).mockClear();
     });

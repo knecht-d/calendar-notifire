@@ -1,8 +1,12 @@
-import { ICommunicationOut, ICommunicationIn } from "../../gateways";
+import { ICommunicationIn, ICommunicationOut } from "../../gateways";
+import { External } from "../External";
+import { ILogger } from "../logging";
 
-export abstract class AbstractChat<ChatSetup> implements ICommunicationOut {
+export abstract class AbstractChat<ChatSetup> extends External implements ICommunicationOut {
     protected communication?: ICommunicationIn;
-    constructor(protected setupData: ChatSetup) {}
+    constructor(logger: ILogger, protected setupData: ChatSetup) {
+        super(logger);
+    }
 
     public init(communication: ICommunicationIn) {
         this.communication = communication;

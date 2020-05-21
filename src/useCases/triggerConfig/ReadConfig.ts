@@ -1,5 +1,6 @@
 import { Chats } from "../../entities";
 import { ICommunication, ISerializedTimeFrame, MessageKey } from "../interfaces";
+import { IUseCaseLogger } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertRecurrence } from "../utils";
 
@@ -9,8 +10,8 @@ export interface IReadConfigInput {
 
 export abstract class ReadConfig extends UseCase<IReadConfigInput> {}
 export class ReadConfigImpl extends ReadConfig {
-    constructor(private communication: ICommunication) {
-        super();
+    constructor(logger: IUseCaseLogger, private communication: ICommunication) {
+        super(logger);
     }
 
     public execute({ chatId }: IReadConfigInput) {

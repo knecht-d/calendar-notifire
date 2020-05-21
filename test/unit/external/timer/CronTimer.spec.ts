@@ -1,5 +1,6 @@
 import { CronJob } from "cron";
 import { CronTimer } from "../../../../src/external";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 const CronJobMock = CronJob as jest.Mock<CronJob>;
 jest.mock("cron");
@@ -7,10 +8,11 @@ describe("CronTimer", () => {
     const mockTriggerReceiver = {
         trigger: jest.fn(),
     };
+    const mockLogger = new MockLogger();
     let timer: CronTimer;
     beforeEach(() => {
         mockTriggerReceiver.trigger.mockClear();
-        timer = new CronTimer();
+        timer = new CronTimer(mockLogger);
         CronJobMock.mockClear();
     });
     describe("setTrigger", () => {

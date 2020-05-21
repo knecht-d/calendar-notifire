@@ -1,6 +1,7 @@
 import MockDate from "mockdate";
 import { MessageKey, Reminder, ReminderImpl, UseCaseError, UseCaseErrorCode } from "../../../../src/useCases";
 import { MockCalendarGateway, MockChatEntity, MockCommunicationPresenter, MockTimeFrame } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
     const MockChats = require("../../../mocks").MockChats;
@@ -11,12 +12,14 @@ jest.mock("../../../../src/entities/Chats", () => {
 describe("Reminder", () => {
     let mockCommunication: MockCommunicationPresenter;
     let mockCalendar: MockCalendarGateway;
+    let mockLogger: MockLogger;
     let useCase: Reminder;
     beforeAll(() => {
         MockDate.set(new Date(2020, 4, 10, 0, 12, 13, 14));
-        mockCommunication = new MockCommunicationPresenter();
-        mockCalendar = new MockCalendarGateway();
-        useCase = new ReminderImpl(mockCalendar, mockCommunication);
+        mockCommunication = new MockCommunicationPresenter(mockLogger);
+        mockCalendar = new MockCalendarGateway(mockLogger);
+        mockLogger = new MockLogger();
+        useCase = new ReminderImpl(mockLogger, mockCalendar, mockCommunication);
     });
     beforeEach(() => {
         mockCalendar.getEventsBetween.mockClear();
