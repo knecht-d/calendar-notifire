@@ -10,6 +10,7 @@ import {
     SetConfig,
 } from "../../useCases";
 import { GateWay } from "../GateWay";
+import { logCall } from "../logging";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { IErrorReporter } from "./CommunicationPresenter";
 import { Mappings } from "./Mappings";
@@ -47,11 +48,13 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         [PersistedRecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
     };
 
+    @logCall()
     async read(chatId: string) {
         this.checkInitialized();
         await this.dependencies!.useCases.config.read.execute({ chatId });
     }
 
+    @logCall()
     async initChat(chatId: string, userId: string) {
         this.checkInitialized();
         try {
@@ -64,6 +67,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
+    @logCall()
     async delete(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         try {
@@ -84,6 +88,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
+    @logCall()
     async set(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         try {
@@ -117,6 +122,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         }
     }
 
+    @logCall()
     async addAdmin(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         const adminId = payload
@@ -125,6 +131,8 @@ export class CommunicationController extends GateWay<IDependencies> implements I
             .split(" ")[0];
         await this.dependencies!.useCases.admin.add.execute({ chatId, userId, adminId });
     }
+
+    @logCall()
     async removeAdmin(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         const adminId = payload

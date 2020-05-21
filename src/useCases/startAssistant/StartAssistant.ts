@@ -1,6 +1,6 @@
 import { Chats, TimeFrame } from "../../entities";
 import { IChatConfigLoader, ITimerSetter } from "../interfaces";
-import { IUseCaseLogger, logMethod } from "../logging";
+import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
 import { createRecurrence } from "../utils";
 
@@ -10,7 +10,7 @@ export class StartAssistantImpl extends StartAssistant {
         super(logger);
     }
 
-    @logMethod()
+    @logExecute()
     execute() {
         return new Promise<void>(resolve => {
             const chatsData = this.configLoader.readAllChats();

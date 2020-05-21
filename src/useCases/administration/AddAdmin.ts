@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
-import { IUseCaseLogger, logMethod } from "../logging";
+import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -17,7 +17,7 @@ export class AddAdminImpl extends AddAdmin {
         super(logger);
     }
 
-    @logMethod()
+    @logExecute()
     execute({ chatId, userId, adminId }: IAddAdminInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
