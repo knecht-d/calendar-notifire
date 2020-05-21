@@ -73,4 +73,12 @@ module.exports = {
         "import/newline-after-import": "error",
         "import/no-absolute-path": "error",
     },
+    overrides: [
+        {
+            files: ["*.spec.ts"],
+            rules: {
+                "@typescript-eslint/unbound-method": "off",
+            },
+        },
+    ],
 };

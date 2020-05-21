@@ -40,9 +40,13 @@
   },
   "homepage": "https://github.com/deeKay93/calendar-notifire#readme",
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "cron": "^1.8.2",
+    "ical-expander": "^3.0.0",
+    "telegraf": "^3.38.0"
   },
   "devDependencies": {
+    "@types/cron": "^1.7.2",
     "@types/jest": "^24.9.1",
     "@types/node": "^13.13.6",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
