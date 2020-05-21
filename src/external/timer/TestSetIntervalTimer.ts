@@ -2,9 +2,8 @@ import { AbstractTimer } from "./AbstractTimer";
 
 export class TestSetIntervalTimer extends AbstractTimer {
     private triggers: { [id: string]: NodeJS.Timeout } = {};
-    setTrigger(id: string, cron: string) {
+    setTrigger(id: string, _cron: string) {
         const interval = setInterval(() => {
-            console.log("Trigger:", id, cron);
             if (this.triggerReceiver) {
                 this.triggerReceiver.trigger(id);
             }

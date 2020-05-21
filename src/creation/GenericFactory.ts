@@ -1,6 +1,6 @@
 import { AbstractCalendar, AbstractChat, AbstractStorage, AbstractTimer } from "../external";
 
-export abstract class GenericFactory<CalendarSetup, StorageSetup, ChatSetup> {
+export class GenericFactory<CalendarSetup, StorageSetup, ChatSetup> {
     constructor(
         protected classes: {
             calendar: new (setupData: CalendarSetup) => AbstractCalendar<CalendarSetup>;
