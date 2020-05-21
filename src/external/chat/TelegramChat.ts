@@ -1,6 +1,6 @@
 import { Telegraf } from "telegraf";
 import { TelegrafContext } from "telegraf/typings/context";
-import { ILogger } from "../logging";
+import { ILogger, logCall, LogLevels, logTime } from "../logging";
 import { AbstractChat } from "./AbstractChat";
 
 export class TelegramChat extends AbstractChat<{ botToken: string }> {
@@ -11,10 +11,14 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
         this.bot = new Telegraf(setupData.botToken);
     }
 
+    @logCall({ level: LogLevels.info })
+    @logTime({ async: true })
     public send(chatId: string, message: string) {
         this.bot.telegram.sendMessage(chatId, message);
     }
 
+    @logCall({ level: LogLevels.info })
+    @logTime({ async: true })
     public start() {
         if (!this.communication) {
             throw Error("Chat must be initialized!");

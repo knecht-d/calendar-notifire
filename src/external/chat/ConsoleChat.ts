@@ -1,4 +1,4 @@
-import { ILogger } from "../logging";
+import { ILogger, logCall, LogLevels, logTime } from "../logging";
 import { AbstractChat } from "./AbstractChat";
 
 /* istanbul ignore file */
@@ -16,6 +16,8 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
         console.log(chatId, message);
     }
 
+    @logCall({ level: LogLevels.info })
+    @logTime({ async: true })
     public start() {
         if (!this.communication) {
             throw Error("Chat must be initialized!");
