@@ -33,7 +33,7 @@ export class SetConfigImpl extends SetConfig {
         super(logger);
     }
 
-    public execute({ chatId, userId, triggerId, config }: ISetConfigInput) {
+    protected _execute({ chatId, userId, triggerId, config }: ISetConfigInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             const timeFrame = new TimeFrame(config.frameStart, config.frameEnd);

@@ -1,7 +1,9 @@
 export interface IUseCaseLogger {
-    error: (message: string, error?: Error) => void;
-    warn: (message: string) => void;
-    info: (message: string) => void;
-    verbose: (message: string) => void;
-    debug: (message: string) => void;
+    error: (message: string | Error) => void;
+    warn: (message: string | Error) => void;
+    info: (message: string | Error) => void;
+    timerStart: () => string;
+    timerStop: (key: string, message: string) => void;
+    verbose: (message: string | Error) => void;
+    debug: (message: string | Error) => void;
 }

@@ -28,8 +28,7 @@ describe("Logger", () => {
 
     it.each(cases)("level %s should result in logging %j", (level, functionNames) => {
         const logger = new Logger(level);
-        const error = new Error();
-        logger.error("error", error);
+        logger.error("error");
         logger.warn("warn");
         logger.info("info");
         logger.verbose("log");
@@ -37,12 +36,27 @@ describe("Logger", () => {
 
         expect.assertions(level + 1);
         functionNames.forEach(logFunction => {
-            if (logFunction === "error") {
-                expect(console[logFunction]).toHaveBeenCalledWith(logFunction, error);
-                return;
-            }
             // @ts-ignore
             expect(console[logFunction]).toHaveBeenCalledWith(logFunction);
         });
     });
+
+    it("should log the executionTime as info", done => {
+        const logger = new Logger(LogLevels.info);
+        const key1 = logger.timerStart();
+        const key2 = logger.timerStart();
+        logger.timerStop(key1, "One");
+        expect(console.info).toHaveBeenNthCalledWith(
+            1,
+            expect.stringMatching(/Execution time \[One\]: 0s [0-9]+\.[0-9]+ms/),
+        );
+        setTimeout(() => {
+            logger.timerStop(key2, "Two");
+            expect(console.info).toHaveBeenNthCalledWith(
+                2,
+                expect.stringMatching(/Execution time \[Two\]: 1s [0-9]+\.[0-9]+ms/),
+            );
+            done();
+        }, 1000);
+    }, 1100);
 });

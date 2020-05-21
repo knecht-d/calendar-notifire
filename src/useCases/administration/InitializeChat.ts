@@ -16,7 +16,7 @@ export class InitializeChatImpl extends InitializeChat {
         super(logger);
     }
 
-    public execute({ chatId, userId }: IInitInput) {
+    protected _execute({ chatId, userId }: IInitInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.createChat(chatId, [userId]);
             this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));

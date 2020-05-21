@@ -12,7 +12,7 @@ describe("TriggerGateway", () => {
     const mockLogger = new MockLogger();
     beforeEach(() => {
         mockTriggerConfigure.setTrigger.mockClear();
-        mockReminder.execute.mockClear();
+        mockReminder._execute.mockClear();
     });
 
     describe("set", () => {

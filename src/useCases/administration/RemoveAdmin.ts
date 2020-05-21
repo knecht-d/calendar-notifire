@@ -17,7 +17,7 @@ export class RemoveAdminImpl extends RemoveAdmin {
         super(logger);
     }
 
-    public execute({ chatId, userId, adminId }: IRemoveAdminInput) {
+    protected _execute({ chatId, userId, adminId }: IRemoveAdminInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             chat.removeAdmin(userId, adminId);

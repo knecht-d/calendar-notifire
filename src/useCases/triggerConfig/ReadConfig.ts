@@ -14,7 +14,7 @@ export class ReadConfigImpl extends ReadConfig {
         super(logger);
     }
 
-    public execute({ chatId }: IReadConfigInput) {
+    protected _execute({ chatId }: IReadConfigInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             const chatConfig = chat.getConfig();

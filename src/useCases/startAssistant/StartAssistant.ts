@@ -10,7 +10,7 @@ export class StartAssistantImpl extends StartAssistant {
         super(logger);
     }
 
-    public execute() {
+    protected _execute() {
         return new Promise<void>(resolve => {
             const chatsData = this.configLoader.readAllChats();
             Object.entries(chatsData).forEach(([chatId, chatData]) => {

@@ -18,7 +18,7 @@ export class ReminderImpl extends Reminder {
     constructor(logger: IUseCaseLogger, private eventProvider: IEventProvider, private communication: ICommunication) {
         super(logger);
     }
-    async execute({ chatId, triggerId }: IReminderIn) {
+    protected async _execute({ chatId, triggerId }: IReminderIn) {
         const chat = Chats.instance.getChat(chatId);
         const timeFrame = chat.getTimeFrame(triggerId)?.frame;
         if (!timeFrame) {

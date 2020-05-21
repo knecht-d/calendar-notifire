@@ -21,7 +21,7 @@ export class DeleteConfigImpl extends DeleteConfig {
         super(logger);
     }
 
-    public execute({ chatId, userId, triggerId }: IDeleteConfigInput) {
+    protected _execute({ chatId, userId, triggerId }: IDeleteConfigInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             chat.removeTimeFrame(triggerId, userId);

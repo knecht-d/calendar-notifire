@@ -17,7 +17,7 @@ export class AddAdminImpl extends AddAdmin {
         super(logger);
     }
 
-    public execute({ chatId, userId, adminId }: IAddAdminInput) {
+    protected _execute({ chatId, userId, adminId }: IAddAdminInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             chat.addAdmin(userId, adminId);
