@@ -1,5 +1,6 @@
 import { MessageKey, ReadConfig, ReadConfigImpl } from "../../../../src/useCases";
 import { MockChatEntity, MockCommunicationPresenter } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
     const MockChats = require("../../../mocks/Entities").MockChats;
@@ -12,10 +13,12 @@ jest.mock("../../../../src/useCases/utils", () => ({
 }));
 describe("ReadConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
+    let mockLogger: MockLogger;
     let useCase: ReadConfig;
     beforeAll(() => {
-        mockCommunication = new MockCommunicationPresenter();
-        useCase = new ReadConfigImpl(mockCommunication);
+        mockCommunication = new MockCommunicationPresenter(mockLogger);
+        mockLogger = new MockLogger();
+        useCase = new ReadConfigImpl(mockLogger, mockCommunication);
     });
     describe("execute", () => {
         it("pass the config", async () => {

@@ -1,9 +1,11 @@
 import { StaticCalendar } from "../../../../src/external";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 describe("StaticCalendar", () => {
     describe("getEventsBetween", () => {
         it("should be undefined", () => {
-            const calendar = new StaticCalendar({ events: [] });
+            const mockLogger = new MockLogger();
+            const calendar = new StaticCalendar(mockLogger, { events: [] });
             expect(calendar.getEventsBetween).toBeUndefined();
         });
     });
@@ -26,7 +28,8 @@ describe("StaticCalendar", () => {
                     end: new Date(2020, 4, 16, 15, 30, 0, 0),
                 },
             ];
-            const calendar = new StaticCalendar({ events: staticEvents });
+            const mockLogger = new MockLogger();
+            const calendar = new StaticCalendar(mockLogger, { events: staticEvents });
             await expect(calendar.getEvents()).resolves.toEqual(staticEvents);
         });
     });

@@ -1,5 +1,6 @@
 import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
+import { IUseCaseLogger } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -11,8 +12,8 @@ export interface IInitInput {
 export abstract class InitializeChat extends UseCase<IInitInput> {}
 
 export class InitializeChatImpl extends InitializeChat {
-    constructor(private communication: ICommunication, private persistence: IChatConfigSaver) {
-        super();
+    constructor(logger: IUseCaseLogger, private communication: ICommunication, private persistence: IChatConfigSaver) {
+        super(logger);
     }
 
     public execute({ chatId, userId }: IInitInput) {

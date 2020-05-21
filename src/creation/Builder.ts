@@ -1,3 +1,4 @@
+import { Logger, LogLevels } from "../external";
 import {
     CalendarGateway,
     CommunicationController,
@@ -20,29 +21,35 @@ import { GenericFactory } from "./GenericFactory";
 export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
     constructor(private factory: GenericFactory<CalendarSetup, StorageSetup, ChatSetup>) {}
 
-    build(setupData: { calendar: CalendarSetup; storage: StorageSetup; chatData: ChatSetup }) {
+    build(setupData: {
+        calendar: CalendarSetup;
+        storage: StorageSetup;
+        chatData: ChatSetup;
+        loggger: { level: LogLevels };
+    }) {
         // Create External
-        const calendar = this.factory.createCalendar(setupData.calendar);
-        const chat = this.factory.createChat(setupData.chatData);
-        const storage = this.factory.createStorage(setupData.storage);
-        const timer = this.factory.createTimer();
+        const logger = new Logger(setupData.loggger.level);
+        const calendar = this.factory.createCalendar(logger, setupData.calendar);
+        const chat = this.factory.createChat(logger, setupData.chatData);
+        const storage = this.factory.createStorage(logger, setupData.storage);
+        const timer = this.factory.createTimer(logger);
 
         // Create Gateways
-        const calendarGW = new CalendarGateway();
-        const communicationController = new CommunicationController();
-        const communicationPresenter = new CommunicationPresenter();
-        const persitenceGW = new PeristenceGateway();
-        const triggerGW = new TriggerGateway();
+        const calendarGW = new CalendarGateway(logger);
+        const communicationController = new CommunicationController(logger);
+        const communicationPresenter = new CommunicationPresenter(logger);
+        const persitenceGW = new PeristenceGateway(logger);
+        const triggerGW = new TriggerGateway(logger);
 
         // Create Use Cases
-        const deleteConfig = new DeleteConfigImpl(communicationPresenter, triggerGW, persitenceGW);
-        const initChat = new InitializeChatImpl(communicationPresenter, persitenceGW);
-        const read = new ReadConfigImpl(communicationPresenter);
-        const reminder = new ReminderImpl(calendarGW, communicationPresenter);
-        const start = new StartAssistantImpl(triggerGW, persitenceGW);
-        const setConfig = new SetConfigImpl(communicationPresenter, triggerGW, persitenceGW);
-        const addAdmin = new AddAdminImpl(communicationPresenter, persitenceGW);
-        const removeAdmin = new RemoveAdminImpl(communicationPresenter, persitenceGW);
+        const deleteConfig = new DeleteConfigImpl(logger, communicationPresenter, triggerGW, persitenceGW);
+        const initChat = new InitializeChatImpl(logger, communicationPresenter, persitenceGW);
+        const read = new ReadConfigImpl(logger, communicationPresenter);
+        const reminder = new ReminderImpl(logger, calendarGW, communicationPresenter);
+        const start = new StartAssistantImpl(logger, triggerGW, persitenceGW);
+        const setConfig = new SetConfigImpl(logger, communicationPresenter, triggerGW, persitenceGW);
+        const addAdmin = new AddAdminImpl(logger, communicationPresenter, persitenceGW);
+        const removeAdmin = new RemoveAdminImpl(logger, communicationPresenter, persitenceGW);
 
         // Initialize Gateways
         calendarGW.init({ calendarConnector: calendar });

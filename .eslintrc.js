@@ -7,6 +7,7 @@ module.exports = {
     extends: [
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:import/typescript",
         // "plugin:prettier/recommended",
     ],
     parser: "@typescript-eslint/parser",
@@ -72,6 +73,7 @@ module.exports = {
         "import/order": "error",
         "import/newline-after-import": "error",
         "import/no-absolute-path": "error",
+        "import/no-cycle": "error",
     },
     overrides: [
         {

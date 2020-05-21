@@ -1,12 +1,13 @@
-import { readFileSync, existsSync, writeFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
+import { ILogger } from "../logging";
 import { AbstractStorage } from "./AbstractStorage";
 
 export class SimpleFileStorage extends AbstractStorage<{ file: string }> {
     private file: string;
     private data: { [key: string]: string } = {};
 
-    constructor(setupData: { file: string }) {
-        super(setupData);
+    constructor(logger: ILogger, setupData: { file: string }) {
+        super(logger, setupData);
         const root = `${__dirname}/../../..`;
         this.file = `${root}/${this.setupData.file}`;
     }

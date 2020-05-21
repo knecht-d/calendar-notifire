@@ -4,6 +4,7 @@ import { TelegrafContext } from "telegraf/typings/context";
 import { TelegramChat } from "../../../../src/external";
 import { ICommunicationIn } from "../../../../src/gateways";
 import { MockCommunicationController } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 const TelegrafMock = (Telegraf as unknown) as jest.Mock<Telegraf<TelegrafContext>>;
 jest.mock("telegraf");
@@ -11,12 +12,14 @@ describe("TelegramChat", () => {
     let chat: TelegramChat;
     let telegraf: Telegraf<TelegrafContext>;
     let communication: ICommunicationIn;
+    let mockLogger: MockLogger;
     beforeEach(() => {
         TelegrafMock.mockClear();
-        chat = new TelegramChat({ botToken: "testToken" });
+        mockLogger = new MockLogger();
+        chat = new TelegramChat(mockLogger, { botToken: "testToken" });
         telegraf = TelegrafMock.mock.instances[0];
         telegraf.telegram = new Telegram("testToken");
-        communication = new MockCommunicationController();
+        communication = new MockCommunicationController(mockLogger);
     });
     describe("constructor", () => {
         it("should create a bot", () => {

@@ -1,6 +1,7 @@
 import { ITriggerConfigure, ITriggerReceiver } from "../../gateways";
+import { External } from "../External";
 
-export abstract class AbstractTimer implements ITriggerConfigure {
+export abstract class AbstractTimer extends External implements ITriggerConfigure {
     protected triggerReceiver?: ITriggerReceiver;
     public init(triggerReceiver: ITriggerReceiver) {
         this.triggerReceiver = triggerReceiver;

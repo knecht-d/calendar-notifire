@@ -1,5 +1,6 @@
 import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
+import { IUseCaseLogger } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -12,8 +13,8 @@ export interface IAddAdminInput {
 export abstract class AddAdmin extends UseCase<IAddAdminInput> {}
 
 export class AddAdminImpl extends AddAdmin {
-    constructor(private communication: ICommunication, private persistence: IChatConfigSaver) {
-        super();
+    constructor(logger: IUseCaseLogger, private communication: ICommunication, private persistence: IChatConfigSaver) {
+        super(logger);
     }
 
     public execute({ chatId, userId, adminId }: IAddAdminInput) {

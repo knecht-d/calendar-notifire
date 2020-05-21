@@ -1,30 +1,21 @@
 import { CommunicationController } from "../../../../src/gateways";
 import { PersistedRecurrenceType } from "../../../../src/useCases";
+import { MockUseCase } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 describe("CommunicationController", () => {
-    const setMock = {
-        execute: jest.fn(),
-    };
-    const initMock = {
-        execute: jest.fn(),
-    };
-    const deleteMock = {
-        execute: jest.fn(),
-    };
-    const readMock = {
-        execute: jest.fn(),
-    };
-    const addAdminMock = {
-        execute: jest.fn(),
-    };
-    const removeAdminMock = {
-        execute: jest.fn(),
-    };
+    const setMock = new MockUseCase();
+    const initMock = new MockUseCase();
+    const deleteMock = new MockUseCase();
+    const readMock = new MockUseCase();
+    const addAdminMock = new MockUseCase();
+    const removeAdminMock = new MockUseCase();
+    const mockLogger = new MockLogger();
     const errrorReporterMock = {
         sendCommunicationError: jest.fn(),
         sendError: jest.fn(),
     };
-    const controller = new CommunicationController();
+    const controller = new CommunicationController(mockLogger);
     controller.init({
         useCases: {
             config: {

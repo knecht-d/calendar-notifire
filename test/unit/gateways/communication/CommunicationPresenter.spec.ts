@@ -3,6 +3,7 @@
 import { CommunicationPresenter } from "../../../../src/gateways";
 import { CommunicationError } from "../../../../src/gateways/communication/CommunicationError";
 import { MessageKey } from "../../../../src/useCases";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/gateways/communication/Mappings", () => {
     // Works and lets you check for constructor calls:
@@ -39,6 +40,7 @@ describe("CommunicationPresenter", () => {
     const mockCommunicationOut = {
         send: jest.fn(),
     };
+    const mockLogger = new MockLogger();
     beforeEach(() => {
         mockCommunicationOut.send.mockClear();
     });
@@ -46,7 +48,7 @@ describe("CommunicationPresenter", () => {
     describe("send", () => {
         describe("READ_CONFIG", () => {
             it("should send the triggers", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 const mockTriggers = { trigger: { mock: "trigger" }, trigger2: { mock: "trigger2" } };
                 presenter.send("someChat", {
@@ -62,7 +64,7 @@ describe("CommunicationPresenter", () => {
 
         describe("DELETE_CONFIG", () => {
             it("should send a plain success message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.DELETE_CONFIG,
@@ -71,7 +73,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - DELETE_CONFIG someTrigger");
             });
             it("should add the additional message for succes", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.DELETE_CONFIG,
@@ -84,7 +86,7 @@ describe("CommunicationPresenter", () => {
                 );
             });
             it("should send a plain error message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.DELETE_CONFIG,
@@ -94,7 +96,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - DELETE_CONFIG someTrigger");
             });
             it("should add the additional message for error", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.DELETE_CONFIG,
@@ -110,7 +112,7 @@ describe("CommunicationPresenter", () => {
         });
         describe("SET_CONFIG", () => {
             it("should send a plain success message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.SET_CONFIG,
@@ -119,7 +121,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - SET_CONFIG someTrigger");
             });
             it("should add the additional message for success", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.SET_CONFIG,
@@ -132,7 +134,7 @@ describe("CommunicationPresenter", () => {
                 );
             });
             it("should send a plain error message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.SET_CONFIG,
@@ -142,7 +144,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - SET_CONFIG someTrigger");
             });
             it("should add the additional message for error", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.SET_CONFIG,
@@ -158,7 +160,7 @@ describe("CommunicationPresenter", () => {
         });
         describe("INITIALIZE_CHAT", () => {
             it("should send a plain success message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.INITIALIZE_CHAT,
@@ -166,7 +168,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - INITIALIZE_CHAT");
             });
             it("should add the additional message for success", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.INITIALIZE_CHAT,
@@ -175,7 +177,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - INITIALIZE_CHAT Details");
             });
             it("should send a plain error message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.INITIALIZE_CHAT,
@@ -184,7 +186,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - INITIALIZE_CHAT");
             });
             it("should add the additional message for error", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.INITIALIZE_CHAT,
@@ -196,7 +198,7 @@ describe("CommunicationPresenter", () => {
         });
         describe("EVENTS", () => {
             it("should send the events", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 const events = [
                     {
                         start: new Date(2020, 4, 1, 12, 0),
@@ -217,7 +219,7 @@ describe("CommunicationPresenter", () => {
         });
         describe("ADD_ADMIN", () => {
             it("should send a plain success message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.ADD_ADMIN,
@@ -226,7 +228,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - ADD_ADMIN admin");
             });
             it("should add the additional message for succes", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.ADD_ADMIN,
@@ -236,7 +238,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - ADD_ADMIN admin Details");
             });
             it("should send a plain error message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.ADD_ADMIN,
@@ -246,7 +248,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - ADD_ADMIN admin");
             });
             it("should add the additional message for error", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.ADD_ADMIN,
@@ -259,7 +261,7 @@ describe("CommunicationPresenter", () => {
         });
         describe("REMOVE_ADMIN", () => {
             it("should send a plain success message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.REMOVE_ADMIN,
@@ -268,7 +270,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - REMOVE_ADMIN admin");
             });
             it("should add the additional message for succes", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.REMOVE_ADMIN,
@@ -278,7 +280,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - REMOVE_ADMIN admin Details");
             });
             it("should send a plain error message to the chat", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.REMOVE_ADMIN,
@@ -288,7 +290,7 @@ describe("CommunicationPresenter", () => {
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - REMOVE_ADMIN admin");
             });
             it("should add the additional message for error", () => {
-                const presenter = new CommunicationPresenter();
+                const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 presenter.send("someChat", {
                     key: MessageKey.REMOVE_ADMIN,
@@ -302,7 +304,7 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendError", () => {
         it("should send error with 'Fehler:'", () => {
-            const presenter = new CommunicationPresenter();
+            const presenter = new CommunicationPresenter(mockLogger);
             presenter.init({ communication: mockCommunicationOut });
             presenter.sendError("someChat", "reason");
             expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Fehler: reason");
@@ -310,7 +312,7 @@ describe("CommunicationPresenter", () => {
     });
     describe("sendCommunicationError", () => {
         it("should replace all properties", () => {
-            const presenter = new CommunicationPresenter();
+            const presenter = new CommunicationPresenter(mockLogger);
             presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
@@ -322,7 +324,7 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should replace only given and expected", () => {
-            const presenter = new CommunicationPresenter();
+            const presenter = new CommunicationPresenter(mockLogger);
             presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
@@ -334,7 +336,7 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should only replace the placeholders", () => {
-            const presenter = new CommunicationPresenter();
+            const presenter = new CommunicationPresenter(mockLogger);
             presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
@@ -346,7 +348,7 @@ describe("CommunicationPresenter", () => {
             );
         });
         it("should only replace all duplicated placeholders", () => {
-            const presenter = new CommunicationPresenter();
+            const presenter = new CommunicationPresenter(mockLogger);
             presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",

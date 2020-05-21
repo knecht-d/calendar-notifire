@@ -1,5 +1,6 @@
 import { MessageKey, RemoveAdmin, RemoveAdminImpl } from "../../../../src/useCases";
 import { MockChatEntity, MockCommunicationPresenter, MockPersistence } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
     const MockChats = require("../../../mocks").MockChats;
@@ -10,11 +11,13 @@ jest.mock("../../../../src/entities/Chats", () => {
 describe("RemoveAdmin", () => {
     let mockCommunication: MockCommunicationPresenter;
     let mockPersistence: MockPersistence;
+    let mockLogger: MockLogger;
     let useCase: RemoveAdmin;
     beforeAll(() => {
-        mockCommunication = new MockCommunicationPresenter();
-        mockPersistence = new MockPersistence();
-        useCase = new RemoveAdminImpl(mockCommunication, mockPersistence);
+        mockCommunication = new MockCommunicationPresenter(mockLogger);
+        mockPersistence = new MockPersistence(mockLogger);
+        mockLogger = new MockLogger();
+        useCase = new RemoveAdminImpl(mockLogger, mockCommunication, mockPersistence);
     });
     describe("execute", () => {
         it("should remove an admin", async () => {

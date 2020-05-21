@@ -1,12 +1,13 @@
 import IcalExpander from "ical-expander";
 import { ICalendarEvent } from "../../gateways";
 import { get } from "../http";
+import { ILogger } from "../logging";
 import { AbstractCalendar } from "./AbstractCalendar";
 
 export class WebCalendar extends AbstractCalendar<{ url: string }> {
     private url: string;
-    constructor(setupData: { url: string }) {
-        super(setupData);
+    constructor(logger: ILogger, setupData: { url: string }) {
+        super(logger, setupData);
         this.url = setupData.url;
     }
     async getEvents(): Promise<ICalendarEvent[]> {

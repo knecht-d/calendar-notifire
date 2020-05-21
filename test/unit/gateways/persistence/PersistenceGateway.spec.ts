@@ -1,16 +1,18 @@
 import { PeristenceGateway } from "../../../../src/gateways";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 describe("PersistenceGateway", () => {
     const mockPersistence = {
         save: jest.fn(),
         readAll: jest.fn(),
     };
+    const mockLogger = new MockLogger();
     beforeEach(() => {
         mockPersistence.save.mockClear();
     });
     describe("saveChatConfig", () => {
         it("should save the updated config as a string", () => {
-            const gateway = new PeristenceGateway();
+            const gateway = new PeristenceGateway(mockLogger);
             gateway.init({ persistence: mockPersistence });
             gateway.saveChatConfig("chat", {
                 timeFrames: {
@@ -44,7 +46,7 @@ describe("PersistenceGateway", () => {
     });
     describe("readAllChats", () => {
         it("should read and parse the saved config", () => {
-            const gateway = new PeristenceGateway();
+            const gateway = new PeristenceGateway(mockLogger);
 
             mockPersistence.readAll.mockReturnValue({
                 chat:

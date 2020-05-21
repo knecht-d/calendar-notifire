@@ -1,6 +1,7 @@
 import { readFile } from "fs";
 import { normalize } from "path";
 import { get, WebCalendar } from "../../../../src/external";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/external/http", () => ({
     get: jest.fn(
@@ -13,6 +14,7 @@ jest.mock("../../../../src/external/http", () => ({
     ),
 }));
 describe("WebCalendar", () => {
+    const mockLogger = new MockLogger();
     const allEvents = [
         {
             start: new Date("2020-05-14T10:00:00.000Z"),
@@ -104,7 +106,7 @@ describe("WebCalendar", () => {
     });
     describe("getEventsBetween", () => {
         it("should return a subset of the events", async () => {
-            const calendar = new WebCalendar({ url: "example.com/calendar.ics" });
+            const calendar = new WebCalendar(mockLogger, { url: "example.com/calendar.ics" });
             const events = await calendar.getEventsBetween(
                 new Date("2020-05-22T15:00:00.000Z"),
                 new Date("2020-06-07T10:30:00.000Z"),
@@ -116,7 +118,7 @@ describe("WebCalendar", () => {
     });
     describe("getEvents", () => {
         it("should return the events passed into the constructor", async () => {
-            const calendar = new WebCalendar({ url: "example.com/calendar.ics" });
+            const calendar = new WebCalendar(mockLogger, { url: "example.com/calendar.ics" });
             const events = await calendar.getEvents();
             expect(events).toEqual(allEvents);
             expect(get).toHaveBeenCalledTimes(1);

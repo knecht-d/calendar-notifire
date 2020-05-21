@@ -1,5 +1,6 @@
 import { Chats } from "../../entities";
 import { ICommunication, IEvent, MessageKey } from "../interfaces";
+import { IUseCaseLogger } from "../logging";
 import { UseCase } from "../UseCase";
 import { UseCaseError, UseCaseErrorCode } from "../UseCaseError";
 
@@ -14,8 +15,8 @@ export interface IEventProvider {
 
 export abstract class Reminder extends UseCase<IReminderIn> {}
 export class ReminderImpl extends Reminder {
-    constructor(private eventProvider: IEventProvider, private communication: ICommunication) {
-        super();
+    constructor(logger: IUseCaseLogger, private eventProvider: IEventProvider, private communication: ICommunication) {
+        super(logger);
     }
     async execute({ chatId, triggerId }: IReminderIn) {
         const chat = Chats.instance.getChat(chatId);

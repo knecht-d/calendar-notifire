@@ -1,4 +1,4 @@
-import { AbstractStorage } from "../../../src/external";
+import { AbstractStorage, ILogger } from "../../../src/external";
 
 export class MockStorage extends AbstractStorage<{}> {
     public storedData: { [key: string]: string } = {};
@@ -10,7 +10,7 @@ export class MockStorage extends AbstractStorage<{}> {
         return (this.storedData[key] = value);
     });
 
-    constructor(setupData: {}) {
-        super(setupData);
+    constructor(logger: ILogger, setupData: {}) {
+        super(logger, setupData);
     }
 }

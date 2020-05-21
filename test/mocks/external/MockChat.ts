@@ -1,12 +1,12 @@
-import { AbstractChat } from "../../../src/external";
+import { AbstractChat, ILogger } from "../../../src/external";
 
 /* istanbul ignore file */
 export class MockChat extends AbstractChat<{}> {
     public send = jest.fn();
     public start = jest.fn();
 
-    constructor(setupData: {}) {
-        super(setupData);
+    constructor(logger: ILogger, setupData: {}) {
+        super(logger, setupData);
     }
 
     public async fireSet(chatId: string, userId: string, payload: string) {

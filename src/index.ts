@@ -1,5 +1,5 @@
 import { Builder, GenericFactory } from "./creation";
-import { CronTimer, SimpleFileStorage, TelegramChat, WebCalendar } from "./external";
+import { CronTimer, LogLevels, SimpleFileStorage, TelegramChat, WebCalendar } from "./external";
 
 const factory = new GenericFactory({
     calendar: WebCalendar,
@@ -69,6 +69,9 @@ const { chat } = builder.build({
     },
     chatData: {
         botToken: process.env.BOT_TOKEN || "",
+    },
+    loggger: {
+        level: LogLevels.debug,
     },
 });
 

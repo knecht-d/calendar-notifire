@@ -1,5 +1,6 @@
 import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
+import { IUseCaseLogger } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
 
@@ -12,8 +13,8 @@ export interface IRemoveAdminInput {
 export abstract class RemoveAdmin extends UseCase<IRemoveAdminInput> {}
 
 export class RemoveAdminImpl extends RemoveAdmin {
-    constructor(private communication: ICommunication, private persistence: IChatConfigSaver) {
-        super();
+    constructor(logger: IUseCaseLogger, private communication: ICommunication, private persistence: IChatConfigSaver) {
+        super(logger);
     }
 
     public execute({ chatId, userId, adminId }: IRemoveAdminInput) {

@@ -1,5 +1,6 @@
 import { StartAssistant, StartAssistantImpl } from "../../../../src/useCases";
 import { MockChatEntity, MockChats, MockPersistence, MockTriggerGateway } from "../../../mocks";
+import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
     const MockChats = require("../../../mocks/Entities").MockChats;
@@ -15,11 +16,13 @@ jest.mock("../../../../src/useCases/utils", () => {
 describe("StartAssistamt", () => {
     let mockTrigger: MockTriggerGateway;
     let mockPersistence: MockPersistence;
+    let mockLogger: MockLogger;
     let useCase: StartAssistant;
     beforeAll(() => {
-        mockTrigger = new MockTriggerGateway();
-        mockPersistence = new MockPersistence();
-        useCase = new StartAssistantImpl(mockTrigger, mockPersistence);
+        mockTrigger = new MockTriggerGateway(mockLogger);
+        mockPersistence = new MockPersistence(mockLogger);
+        mockLogger = new MockLogger();
+        useCase = new StartAssistantImpl(mockLogger, mockTrigger, mockPersistence);
     });
     beforeEach(() => {
         mockTrigger.set.mockClear();
