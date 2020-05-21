@@ -1,7 +1,7 @@
 import IcalExpander from "ical-expander";
 import { ICalendarEvent } from "../../gateways";
 import { get } from "../http";
-import { ILogger } from "../logging";
+import { ILogger, logCall, LogLevels, logTime } from "../logging";
 import { AbstractCalendar } from "./AbstractCalendar";
 
 export class WebCalendar extends AbstractCalendar<{ url: string }> {
@@ -10,6 +10,8 @@ export class WebCalendar extends AbstractCalendar<{ url: string }> {
         super(logger, setupData);
         this.url = setupData.url;
     }
+    @logCall({ level: LogLevels.info })
+    @logTime({ async: true })
     async getEvents(): Promise<ICalendarEvent[]> {
         const ics = await get<string>(this.url);
         const icalExpander = new IcalExpander({ ics, maxIterations: 100 });
@@ -33,6 +35,9 @@ export class WebCalendar extends AbstractCalendar<{ url: string }> {
             .sort((a, b) => a.start.getTime() - b.start.getTime());
         return allEvents;
     }
+
+    @logCall({ level: LogLevels.info })
+    @logTime({ async: true })
     async getEventsBetween(from: Date, to: Date): Promise<ICalendarEvent[]> {
         const ics = await get<string>(this.url);
         const icalExpander = new IcalExpander({ ics, maxIterations: 100 });

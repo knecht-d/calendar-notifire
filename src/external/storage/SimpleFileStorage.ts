@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { ILogger } from "../logging";
+import { ILogger, logCall, LogLevels, logTime } from "../logging";
 import { AbstractStorage } from "./AbstractStorage";
 
 export class SimpleFileStorage extends AbstractStorage<{ file: string }> {
@@ -12,6 +12,8 @@ export class SimpleFileStorage extends AbstractStorage<{ file: string }> {
         this.file = `${root}/${this.setupData.file}`;
     }
 
+    @logCall({ level: LogLevels.info })
+    @logTime({ async: false })
     readAll() {
         if (!existsSync(this.file)) {
             return {};
@@ -21,6 +23,8 @@ export class SimpleFileStorage extends AbstractStorage<{ file: string }> {
         return this.data;
     }
 
+    @logCall({ level: LogLevels.info })
+    @logTime({ async: false })
     save(key: string, value: string) {
         this.readAll();
         this.data[key] = value;
