@@ -1,5 +1,5 @@
-import { Builder, LocalFactory } from "./creation";
-import { LogLevels } from "./external";
+import { Builder, GenericFactory } from "./creation";
+import { ConsoleChat, LogLevels, SimpleFileStorage, TestSetIntervalTimer, WebCalendar } from "./external";
 
 // const factory = new GenericFactory({
 //     calendar: WebCalendar,
@@ -59,11 +59,18 @@ const _staticEvents = [
         end: new Date(2020, 4, 16, 22, 30, 0, 0),
     },
 ];
-const factory = new LocalFactory();
+_staticEvents.slice();
+// let factory = new LocalFactory();
+const factory = new GenericFactory({
+    calendar: WebCalendar,
+    storage: SimpleFileStorage,
+    chat: ConsoleChat,
+    timer: TestSetIntervalTimer,
+});
 const builder = new Builder(factory);
 const { chat } = builder.build({
     calendar: {
-        events: _staticEvents,
+        url: "***REMOVED***",
     },
     storage: {
         file: "data/chats.json",
@@ -73,7 +80,7 @@ const { chat } = builder.build({
         userId: "consoleUser",
     },
     loggger: {
-        level: LogLevels.debug,
+        level: LogLevels.info,
     },
 });
 

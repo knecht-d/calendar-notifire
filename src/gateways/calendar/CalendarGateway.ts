@@ -1,5 +1,6 @@
 import { IEvent, IEventProvider } from "../../useCases";
 import { GateWay } from "../GateWay";
+import { logCall, logTime } from "../logging";
 
 export interface ICalendarConnector {
     getEvents: () => Promise<ICalendarEvent[]>;
@@ -19,12 +20,16 @@ interface ICalendarGatewayDependencies {
 }
 
 export class CalendarGateway extends GateWay<ICalendarGatewayDependencies> implements IEventProvider {
+    @logCall()
+    @logTime({ async: true })
     async getEventsBetween(from: Date, to: Date): Promise<IEvent[]> {
         this.checkInitialized();
         let eventsFromSource: ICalendarEvent[] = [];
         if (this.dependencies!.calendarConnector.getEventsBetween) {
+            this.logger.debug("CalendarGateway", "using getEventsBetween of connector");
             eventsFromSource = await this.dependencies!.calendarConnector.getEventsBetween(from, to);
         } else {
+            this.logger.debug("CalendarGateway", "using getEvents of connector");
             eventsFromSource = await this.dependencies!.calendarConnector.getEvents();
             eventsFromSource = eventsFromSource.filter(event => event.start >= from && event.start <= to);
         }

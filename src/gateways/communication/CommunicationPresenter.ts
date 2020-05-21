@@ -1,5 +1,6 @@
 import { ICommunication, IMessage, MessageKey } from "../../useCases";
 import { GateWay } from "../GateWay";
+import { logCall } from "../logging";
 import { CommunicationError } from "./CommunicationError";
 import { Mappings } from "./Mappings";
 
@@ -26,10 +27,12 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
         this.sendError(chatId, message);
     }
 
+    @logCall()
     sendError(chatId: string, message: string) {
         this.dependencies!.communication.send(chatId, `Fehler: ${message}`);
     }
 
+    @logCall({ level: "verbose" })
     send(chatId: string, message: IMessage) {
         this.checkInitialized();
         const text = this.getText(message);
