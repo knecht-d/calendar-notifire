@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
 import { ICommunication, IEvent, MessageKey } from "../interfaces";
-import { IUseCaseLogger } from "../logging";
+import { IUseCaseLogger, logMethod } from "../logging";
 import { UseCase } from "../UseCase";
 import { UseCaseError, UseCaseErrorCode } from "../UseCaseError";
 
@@ -18,7 +18,9 @@ export class ReminderImpl extends Reminder {
     constructor(logger: IUseCaseLogger, private eventProvider: IEventProvider, private communication: ICommunication) {
         super(logger);
     }
-    protected async _execute({ chatId, triggerId }: IReminderIn) {
+
+    @logMethod()
+    async execute({ chatId, triggerId }: IReminderIn) {
         const chat = Chats.instance.getChat(chatId);
         const timeFrame = chat.getTimeFrame(triggerId)?.frame;
         if (!timeFrame) {

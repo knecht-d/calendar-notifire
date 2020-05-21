@@ -7,7 +7,7 @@ import {
     ITimerSetter,
     MessageKey,
 } from "../interfaces";
-import { IUseCaseLogger } from "../logging";
+import { IUseCaseLogger, logMethod } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence, createRecurrence } from "../utils";
 
@@ -33,7 +33,8 @@ export class SetConfigImpl extends SetConfig {
         super(logger);
     }
 
-    protected _execute({ chatId, userId, triggerId, config }: ISetConfigInput) {
+    @logMethod()
+    execute({ chatId, userId, triggerId, config }: ISetConfigInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             const timeFrame = new TimeFrame(config.frameStart, config.frameEnd);

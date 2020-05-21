@@ -17,17 +17,17 @@ export class Logger implements ILogger {
         this.timers = {};
     }
 
-    error(message: string | Error) {
-        console.error(message);
+    error(location: string, message: string | Error) {
+        console.error(location, message);
     }
-    warn(message: string | Error) {
+    warn(location: string, message: string | Error) {
         if (this.level >= LogLevels.warn) {
-            console.warn(message);
+            console.warn(location, message);
         }
     }
-    info(message: string | Error) {
+    info(location: string, message: string | Error) {
         if (this.level >= LogLevels.info) {
-            console.info(message);
+            console.info(location, message);
         }
     }
     timerStart() {
@@ -37,18 +37,18 @@ export class Logger implements ILogger {
         this.timers[key] = process.hrtime();
         return key;
     }
-    timerStop(key: string, message: string) {
+    timerStop(key: string, location: string, message: string) {
         const time = process.hrtime(this.timers[key]);
-        this.info(`Execution time [${message}]: ${time[0]}s ${time[1] / 1000000}ms`);
+        this.info(location, `Execution time [${message}]: ${time[0]}s ${time[1] / 1000000}ms`);
     }
-    verbose(message: string | Error) {
+    verbose(location: string, message: string | Error) {
         if (this.level >= LogLevels.verbose) {
-            console.log(message);
+            console.log(location, message);
         }
     }
-    debug(message: string | Error) {
+    debug(location: string, message: string | Error) {
         if (this.level >= LogLevels.debug) {
-            console.debug(message);
+            console.debug(location, message);
         }
     }
 }

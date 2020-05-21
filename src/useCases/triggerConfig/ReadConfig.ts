@@ -1,6 +1,6 @@
 import { Chats } from "../../entities";
 import { ICommunication, ISerializedTimeFrame, MessageKey } from "../interfaces";
-import { IUseCaseLogger } from "../logging";
+import { IUseCaseLogger, logMethod } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertRecurrence } from "../utils";
 
@@ -14,7 +14,8 @@ export class ReadConfigImpl extends ReadConfig {
         super(logger);
     }
 
-    protected _execute({ chatId }: IReadConfigInput) {
+    @logMethod()
+    execute({ chatId }: IReadConfigInput) {
         return new Promise<void>(resolve => {
             const chat = Chats.instance.getChat(chatId);
             const chatConfig = chat.getConfig();
