@@ -12,13 +12,13 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
     }
 
     @logCall({ level: LogLevels.info })
-    @logTime({ async: true })
+    @logTime({ async: false })
     public send(chatId: string, message: string) {
         this.bot.telegram.sendMessage(chatId, message);
     }
 
     @logCall({ level: LogLevels.info })
-    @logTime({ async: true })
+    @logTime({ async: false })
     public start() {
         if (!this.communication) {
             throw Error("Chat must be initialized!");
