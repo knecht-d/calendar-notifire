@@ -1,22 +1,18 @@
+import { getLogger, Logger as Logger4js } from "log4js";
 import { Logger, LogLevels } from "../../../../src/external";
 
+jest.mock("log4js");
 describe("Logger", () => {
+    let mockLoger: Partial<Logger4js>;
     beforeEach(() => {
-        jest.spyOn(global.console, "error")
-            .mockReturnValue()
-            .mockClear();
-        jest.spyOn(global.console, "warn")
-            .mockReturnValue()
-            .mockClear();
-        jest.spyOn(global.console, "info")
-            .mockReturnValue()
-            .mockClear();
-        jest.spyOn(global.console, "log")
-            .mockReturnValue()
-            .mockClear();
-        jest.spyOn(global.console, "debug")
-            .mockReturnValue()
-            .mockClear();
+        mockLoger = {
+            error: jest.fn(),
+            warn: jest.fn(),
+            info: jest.fn(),
+            log: jest.fn(),
+            debug: jest.fn(),
+        };
+        (getLogger as jest.Mock).mockReturnValue(mockLoger);
     });
     const cases: [LogLevels, string[]][] = [
         [LogLevels.error, ["error"]],
@@ -37,7 +33,7 @@ describe("Logger", () => {
         expect.assertions(level + 1);
         functionNames.forEach(logFunction => {
             // @ts-ignore
-            expect(console[logFunction]).toHaveBeenCalledWith("Test", logFunction);
+            expect(mockLoger[logFunction]).toHaveBeenCalledWith("Test", logFunction);
         });
     });
 
@@ -46,14 +42,14 @@ describe("Logger", () => {
         const key1 = logger.timerStart();
         const key2 = logger.timerStart();
         logger.timerStop(key1, "Test", "One");
-        expect(console.info).toHaveBeenNthCalledWith(
+        expect(mockLoger.info).toHaveBeenNthCalledWith(
             1,
             "Test",
             expect.stringMatching(/Execution time \[One\]: 0s [0-9]+\.[0-9]+ms/),
         );
         setTimeout(() => {
             logger.timerStop(key2, "Test", "Two");
-            expect(console.info).toHaveBeenNthCalledWith(
+            expect(mockLoger.info).toHaveBeenNthCalledWith(
                 2,
                 "Test",
                 expect.stringMatching(/Execution time \[Two\]: 1s [0-9]+\.[0-9]+ms/),

@@ -1,3 +1,5 @@
+import { existsSync, mkdirSync } from "fs";
+import { configure, getLogger, Logger as Logger4js } from "log4js";
 import { IGateWayLogger } from "../../gateways";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -13,21 +15,46 @@ export enum LogLevels {
 
 export class Logger implements ILogger {
     private timers: { [key: string]: [number, number] };
+    private logger: Logger4js;
     constructor(private level: LogLevels) {
         this.timers = {};
+        const logDir = `${__dirname}/../../../data/logs`;
+        if (!existsSync(logDir)) {
+            mkdirSync(logDir);
+        }
+        configure({
+            appenders: {
+                date: {
+                    type: "dateFile",
+                    filename: `${logDir}/calendar-notifire.log`,
+                    pattern: ".yyyy-MM-dd",
+                    daysToKeep: 21,
+                    alwaysIncludePattern: true,
+                    keepFileExt: true,
+                    layout: {
+                        type: "pattern",
+                        pattern: "[%d] [%p] %m",
+                    },
+                },
+            },
+            categories: {
+                default: { appenders: ["date"], level: "debug" },
+            },
+        });
+        this.logger = getLogger();
     }
 
     error(location: string, message: string | Error) {
-        console.error(location, message);
+        this.logger.error(location, message);
     }
     warn(location: string, message: string | Error) {
         if (this.level >= LogLevels.warn) {
-            console.warn(location, message);
+            this.logger.warn(location, message);
         }
     }
     info(location: string, message: string | Error) {
         if (this.level >= LogLevels.info) {
-            console.info(location, message);
+            this.logger.info(location, message);
         }
     }
     timerStart() {
@@ -43,12 +70,12 @@ export class Logger implements ILogger {
     }
     verbose(location: string, message: string | Error) {
         if (this.level >= LogLevels.verbose) {
-            console.log(location, message);
+            this.logger.log(location, message);
         }
     }
     debug(location: string, message: string | Error) {
         if (this.level >= LogLevels.debug) {
-            console.debug(location, message);
+            this.logger.debug(location, message);
         }
     }
 }
