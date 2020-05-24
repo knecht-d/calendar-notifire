@@ -1,6 +1,6 @@
 export class EntityError extends Error {
-    constructor(public key: EntityErrorCode, public data: { [key: string]: string } = {}) {
-        super(`${key}: ${JSON.stringify(data)}`);
+    constructor(public key: EntityErrorCode) {
+        super(`${key}`);
 
         // Set the prototype explicitly.
         Object.setPrototypeOf(this, EntityError.prototype);
@@ -13,4 +13,5 @@ export enum EntityErrorCode {
     MISSING_PRIVILEGES = "MISSING_PRIVILEGES",
     LAST_ADMIN = "LAST_ADMIN",
     NO_ADMIN = "NO_ADMIN",
+    TRIGGER_NOT_DEFINED = "TRIGGER_NOT_DEFINED",
 }

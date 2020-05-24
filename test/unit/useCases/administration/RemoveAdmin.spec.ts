@@ -1,5 +1,6 @@
+import { EntityError, EntityErrorCode } from "../../../../src/entities/EntityError";
 import { MessageKey, RemoveAdmin, RemoveAdminImpl } from "../../../../src/useCases";
-import { MockChatEntity, MockCommunicationPresenter, MockPersistence } from "../../../mocks";
+import { MockChatEntity, MockChats, MockCommunicationPresenter, MockPersistence } from "../../../mocks";
 import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
@@ -19,6 +20,9 @@ describe("RemoveAdmin", () => {
         mockLogger = new MockLogger();
         useCase = new RemoveAdminImpl(mockLogger, mockCommunication, mockPersistence);
     });
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
     describe("execute", () => {
         it("should remove an admin", async () => {
             await useCase.execute({ chatId: "chat", userId: "user", adminId: "admin" });
@@ -30,6 +34,20 @@ describe("RemoveAdmin", () => {
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
                 key: MessageKey.REMOVE_ADMIN,
                 oldAdmin: "admin",
+            });
+        });
+        it("should send an error if chat was not initialized", async () => {
+            MockChats.instance.getChat.mockImplementation(() => {
+                throw new EntityError(EntityErrorCode.CHAT_NOT_EXISTING);
+            });
+            await useCase.execute({ chatId: "chat", userId: "user", adminId: "admin" });
+            expect(MockChatEntity.addAdmin).not.toHaveBeenCalled();
+            expect(mockPersistence.saveChatConfig).not.toHaveBeenCalled();
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
+                hasError: true,
+                key: MessageKey.REMOVE_ADMIN,
+                oldAdmin: "admin",
+                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
             });
         });
     });

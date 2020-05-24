@@ -29,12 +29,14 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
     }) {
         // Create External
         const logger = new Logger(setupData.loggger.level);
+        logger.verbose("Builder", "Create external modules");
         const calendar = this.factory.createCalendar(logger, setupData.calendar);
         const chat = this.factory.createChat(logger, setupData.chatData);
         const storage = this.factory.createStorage(logger, setupData.storage);
         const timer = this.factory.createTimer(logger);
 
         // Create Gateways
+        logger.verbose("Builder", "Create gateways");
         const calendarGW = new CalendarGateway(logger);
         const communicationController = new CommunicationController(logger);
         const communicationPresenter = new CommunicationPresenter(logger);
@@ -42,6 +44,7 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         const triggerGW = new TriggerGateway(logger);
 
         // Create Use Cases
+        logger.verbose("Builder", "Create use cases");
         const deleteConfig = new DeleteConfigImpl(logger, communicationPresenter, triggerGW, persitenceGW);
         const initChat = new InitializeChatImpl(logger, communicationPresenter, persitenceGW);
         const read = new ReadConfigImpl(logger, communicationPresenter);
@@ -52,6 +55,7 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         const removeAdmin = new RemoveAdminImpl(logger, communicationPresenter, persitenceGW);
 
         // Initialize Gateways
+        logger.verbose("Builder", "Initialize gateways");
         calendarGW.init({ calendarConnector: calendar });
         communicationController.init({
             useCases: {
@@ -73,10 +77,12 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         triggerGW.init({ triggerConfig: timer, reminder: reminder });
 
         // Initialize External
+        logger.verbose("Builder", "Initialize external");
         chat.init(communicationController);
         timer.init(triggerGW);
 
         // Load persisted chats.
+        logger.verbose("Builder", "Load persisted chats");
         start.execute();
 
         return {

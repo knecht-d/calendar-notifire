@@ -1,5 +1,6 @@
 import MockDate from "mockdate";
-import { MessageKey, Reminder, ReminderImpl, UseCaseError, UseCaseErrorCode } from "../../../../src/useCases";
+import { EntityError, EntityErrorCode } from "../../../../src/entities/EntityError";
+import { MessageKey, Reminder, ReminderImpl } from "../../../../src/useCases";
 import { MockCalendarGateway, MockChatEntity, MockCommunicationPresenter, MockTimeFrame } from "../../../mocks";
 import { MockLogger } from "../../../mocks/external/MockLogger";
 
@@ -26,7 +27,7 @@ describe("Reminder", () => {
         mockCommunication.send.mockClear();
     });
     afterAll(() => {
-        MockDate.reset();
+        jest.clearAllMocks();
     });
     describe("execute", () => {
         it("should return the Events in the given timeframe", async () => {
@@ -46,16 +47,18 @@ describe("Reminder", () => {
                 events: [{ mocked: "Event" }],
             });
         });
-        it("should throw if the timeframe does not exist", async () => {
-            MockChatEntity.getTimeFrame.mockReturnValue(undefined);
-            expect.assertions(3);
-            try {
-                await useCase.execute({ chatId: "chat", triggerId: "trigger" });
-            } catch (error) {
-                expect(error).toEqual(new UseCaseError(UseCaseErrorCode.TRIGGER_NOT_DEFINED, { triggerId: "trigger" }));
-            }
+        it("should log an error if trigger was not defined", async () => {
+            MockChatEntity.getTimeFrame.mockImplementation(() => {
+                throw new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED);
+            });
+            await useCase.execute({ chatId: "chat", triggerId: "trigger" });
+            expect(MockChatEntity.addAdmin).not.toHaveBeenCalled();
             expect(mockCalendar.getEventsBetween).not.toHaveBeenCalled();
             expect(mockCommunication.send).not.toHaveBeenCalled();
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                "ReminderImpl",
+                new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED),
+            );
         });
     });
 });
