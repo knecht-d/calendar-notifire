@@ -20,10 +20,20 @@ export class AddAdminImpl extends AddAdmin {
     @logExecute()
     execute({ chatId, userId, adminId }: IAddAdminInput) {
         return new Promise<void>(resolve => {
-            const chat = Chats.instance.getChat(chatId);
-            chat.addAdmin(userId, adminId);
-            this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
-            this.communication.send(chatId, { key: MessageKey.ADD_ADMIN, newAdmin: adminId });
+            try {
+                const chat = Chats.instance.getChat(chatId);
+                chat.addAdmin(userId, adminId);
+                this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
+                this.communication.send(chatId, { key: MessageKey.ADD_ADMIN, newAdmin: adminId });
+            } catch (error) {
+                this.logger.warn("AddAdminImpl", error);
+                this.communication.send(chatId, {
+                    hasError: true,
+                    key: MessageKey.ADD_ADMIN,
+                    newAdmin: adminId,
+                    message: `{${error.key}}`,
+                });
+            }
             resolve();
         });
     }

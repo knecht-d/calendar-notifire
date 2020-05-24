@@ -36,13 +36,23 @@ export class SetConfigImpl extends SetConfig {
     @logExecute()
     execute({ chatId, userId, triggerId, config }: ISetConfigInput) {
         return new Promise<void>(resolve => {
-            const chat = Chats.instance.getChat(chatId);
-            const timeFrame = new TimeFrame(config.frameStart, config.frameEnd);
-            const recurrence = createRecurrence(config.recurrence);
-            chat.setTimeFrame(triggerId, { frame: timeFrame, recurrence: recurrence }, userId);
-            this.timerSettings.set(chatId, triggerId, config.recurrence);
-            this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
-            this.communication.send(chatId, { key: MessageKey.SET_CONFIG, triggerId });
+            try {
+                const chat = Chats.instance.getChat(chatId);
+                const timeFrame = new TimeFrame(config.frameStart, config.frameEnd);
+                const recurrence = createRecurrence(config.recurrence);
+                chat.setTimeFrame(triggerId, { frame: timeFrame, recurrence: recurrence }, userId);
+                this.timerSettings.set(chatId, triggerId, config.recurrence);
+                this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
+                this.communication.send(chatId, { key: MessageKey.SET_CONFIG, triggerId });
+            } catch (error) {
+                this.logger.warn("SetConfigImpl", error);
+                this.communication.send(chatId, {
+                    hasError: true,
+                    key: MessageKey.SET_CONFIG,
+                    triggerId,
+                    message: `{${error.key}}`,
+                });
+            }
             resolve();
         });
     }

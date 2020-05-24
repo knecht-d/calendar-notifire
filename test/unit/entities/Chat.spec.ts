@@ -53,7 +53,7 @@ describe("Chat", () => {
                 const chat = new Chat(["admin1", "admin2"]);
                 expect(() => {
                     chat.removeAdmin("admin1", "noAdmin");
-                }).toThrow(new EntityError(EntityErrorCode.NO_ADMIN, { user: "noAdmin" }));
+                }).toThrow(new EntityError(EntityErrorCode.NO_ADMIN));
             });
             it("should fail to remove a new admin if to be removed user is the last admin", () => {
                 const chat = new Chat(["admin1"]);
@@ -76,21 +76,24 @@ describe("Chat", () => {
             expect(() => {
                 chat.setTimeFrame("tf_not", baseSettings, "another user");
             }).toThrow(new EntityError(EntityErrorCode.MISSING_PRIVILEGES));
-            const tf = chat.getTimeFrame("tf_not");
-            expect(tf).not.toBeDefined();
+            expect(() => {
+                chat.getTimeFrame("tf_not");
+            }).toThrow(new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED));
         });
-        it("should return undefined for not exisiting timeframes", () => {
+        it("should throw for not exisiting timeframes", () => {
             const chat = new Chat(["admin"]);
             chat.setTimeFrame("tf", baseSettings, "admin");
-            const tf = chat.getTimeFrame("notDefined");
-            expect(tf).not.toBeDefined();
+            expect(() => {
+                chat.getTimeFrame("tf_not");
+            }).toThrow(new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED));
         });
         it("should remove a time frame", () => {
             const chat = new Chat(["admin"]);
             chat.setTimeFrame("tf", baseSettings, "admin");
             chat.removeTimeFrame("tf", "admin");
-            const tf = chat.getTimeFrame("tf");
-            expect(tf).not.toBeDefined();
+            expect(() => {
+                chat.getTimeFrame("tf");
+            }).toThrow(new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED));
         });
         it("should not remove a time frame if user has no privileges", () => {
             const chat = new Chat(["admin"]);

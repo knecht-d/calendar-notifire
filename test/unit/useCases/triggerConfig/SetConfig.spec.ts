@@ -1,5 +1,12 @@
+import { EntityError, EntityErrorCode } from "../../../../src/entities/EntityError";
 import { MessageKey, SetConfig, SetConfigImpl } from "../../../../src/useCases";
-import { MockChatEntity, MockCommunicationPresenter, MockPersistence, MockTriggerGateway } from "../../../mocks";
+import {
+    MockChatEntity,
+    MockChats,
+    MockCommunicationPresenter,
+    MockPersistence,
+    MockTriggerGateway,
+} from "../../../mocks";
 import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
@@ -24,6 +31,9 @@ describe("SetConfig", () => {
         mockPersistence = new MockPersistence(mockLogger);
         mockLogger = new MockLogger();
         useCase = new SetConfigImpl(mockLogger, mockCommunication, mockTrigger, mockPersistence);
+    });
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
     describe("execute", () => {
         it("should set a new time frame", async () => {
@@ -54,6 +64,30 @@ describe("SetConfig", () => {
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
                 key: MessageKey.SET_CONFIG,
                 triggerId: "trigger",
+            });
+        });
+        it("should send an error if chat was not initialized", async () => {
+            MockChats.instance.getChat.mockImplementation(() => {
+                throw new EntityError(EntityErrorCode.CHAT_NOT_EXISTING);
+            });
+            await useCase.execute({
+                chatId: "chat",
+                userId: "user",
+                triggerId: "trigger",
+                config: {
+                    frameStart: { mock: "frame start" },
+                    frameEnd: { mock: "frame end" },
+                    recurrence: { mock: "recurrence" },
+                },
+            } as any);
+            expect(MockChatEntity.setTimeFrame).not.toHaveBeenCalled();
+            expect(mockTrigger.set).not.toHaveBeenCalled();
+            expect(mockPersistence.saveChatConfig).not.toHaveBeenCalled();
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
+                hasError: true,
+                key: MessageKey.SET_CONFIG,
+                triggerId: "trigger",
+                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
             });
         });
     });

@@ -1,3 +1,4 @@
+import { EntityError, EntityErrorCode } from "../../../../src/entities/EntityError";
 import { StartAssistant, StartAssistantImpl } from "../../../../src/useCases";
 import { MockChatEntity, MockChats, MockPersistence, MockTriggerGateway } from "../../../mocks";
 import { MockLogger } from "../../../mocks/external/MockLogger";
@@ -25,8 +26,7 @@ describe("StartAssistamt", () => {
         useCase = new StartAssistantImpl(mockLogger, mockTrigger, mockPersistence);
     });
     beforeEach(() => {
-        mockTrigger.set.mockClear();
-        mockPersistence.readAllChats.mockClear();
+        jest.clearAllMocks();
     });
     describe("execute", () => {
         beforeAll(() => {
@@ -169,6 +169,18 @@ describe("StartAssistamt", () => {
             expect(mockTrigger.set).toHaveBeenCalledWith("chat", "frame", { type: "MockedRecurrence2" });
             expect(mockTrigger.set).toHaveBeenCalledWith("chat2", "some", { type: "MockedRecurrence3" });
             expect(mockTrigger.set).toHaveBeenCalledWith("chat2", "other", { type: "MockedRecurrence4" });
+        });
+        it("should log an error if trigger was not defined", async () => {
+            MockChats.instance.createChat.mockImplementation(() => {
+                throw new EntityError(EntityErrorCode.CHAT_ALREADY_EXISTING);
+            });
+            await useCase.execute();
+            expect(MockChatEntity.addAdmin).not.toHaveBeenCalled();
+            expect(mockTrigger.set).not.toHaveBeenCalled();
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                "StartAssistant",
+                new EntityError(EntityErrorCode.CHAT_ALREADY_EXISTING),
+            );
         });
     });
 });

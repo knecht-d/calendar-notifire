@@ -1,5 +1,6 @@
+import { EntityError, EntityErrorCode } from "../../../../src/entities/EntityError";
 import { MessageKey, ReadConfig, ReadConfigImpl } from "../../../../src/useCases";
-import { MockChatEntity, MockCommunicationPresenter } from "../../../mocks";
+import { MockChatEntity, MockChats, MockCommunicationPresenter } from "../../../mocks";
 import { MockLogger } from "../../../mocks/external/MockLogger";
 
 jest.mock("../../../../src/entities/Chats", () => {
@@ -59,6 +60,18 @@ describe("ReadConfig", () => {
                         recurrence: { mock: "recurrence" },
                     },
                 },
+            });
+        });
+        it("should send an error if chat was not initialized", async () => {
+            MockChats.instance.getChat.mockImplementation(() => {
+                throw new EntityError(EntityErrorCode.CHAT_NOT_EXISTING);
+            });
+            await useCase.execute({ chatId: "chat" });
+            expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
+                hasError: true,
+                key: MessageKey.READ_CONFIG,
+                timeFrames: {},
+                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
             });
         });
     });

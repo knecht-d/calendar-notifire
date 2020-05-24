@@ -31,7 +31,7 @@ export class Chat {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
         if (!this.administrators.has(toBeRemovedAdmin)) {
-            throw new EntityError(EntityErrorCode.NO_ADMIN, { user: toBeRemovedAdmin });
+            throw new EntityError(EntityErrorCode.NO_ADMIN);
         }
         if (this.administrators.size === 1) {
             throw new EntityError(EntityErrorCode.LAST_ADMIN);
@@ -47,7 +47,11 @@ export class Chat {
     }
 
     public getTimeFrame(key: string) {
-        return this.settings[key];
+        const timeFrame = this.settings[key];
+        if (!timeFrame) {
+            throw new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED);
+        }
+        return timeFrame;
     }
 
     public removeTimeFrame(key: string, userId: string) {

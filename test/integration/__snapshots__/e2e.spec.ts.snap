@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`End to end test trigger settings should read the config even if user is not an admin 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "chat1",
+      "Konfiguration: {
+  \\"trigger1\\": {
+    \\"begin\\": {
+      \\"month\\": {
+        \\"value\\": 1,
+        \\"fixed\\": false
+      },
+      \\"day\\": {
+        \\"value\\": 1,
+        \\"fixed\\": true
+      },
+      \\"hour\\": {
+        \\"value\\": 0,
+        \\"fixed\\": true
+      },
+      \\"minute\\": {
+        \\"value\\": 0,
+        \\"fixed\\": true
+      }
+    },
+    \\"end\\": {
+      \\"month\\": {
+        \\"value\\": 2,
+        \\"fixed\\": false
+      },
+      \\"day\\": {
+        \\"value\\": 1,
+        \\"fixed\\": true
+      },
+      \\"hour\\": {
+        \\"value\\": 0,
+        \\"fixed\\": true
+      },
+      \\"minute\\": {
+        \\"value\\": 0,
+        \\"fixed\\": true
+      }
+    },
+    \\"recurrence\\": {
+      \\"type\\": \\"m\\",
+      \\"day\\": 15,
+      \\"hour\\": 17,
+      \\"minute\\": 45
+    }
+  }
+}",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
