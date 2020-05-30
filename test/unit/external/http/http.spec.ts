@@ -17,7 +17,7 @@ describe("http", () => {
                 .get("/get")
                 .reply(404);
             await expect(get("https://example.com/get")).rejects.toEqual(
-                new Error("Request failed with status code 404"),
+                new Error("Request failed with status code 404: https://example.com/get"),
             );
         });
     });
@@ -36,7 +36,7 @@ describe("http", () => {
                 .post("/echo")
                 .reply(404);
             await expect(post("https://example.com/echo", { test: "data" })).rejects.toEqual(
-                new Error("Request failed with status code 404"),
+                new Error("Request failed with status code 404: https://example.com/echo"),
             );
         });
     });

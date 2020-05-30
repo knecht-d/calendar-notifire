@@ -22,6 +22,8 @@ module.exports = {
         "jest/no-identical-title": "error",
         "jest/prefer-to-have-length": "warn",
         "jest/valid-expect": "error",
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-misused-promises": ["error", { checksConditionals: true, checksVoidReturn: false }],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/explicit-function-return-type": "off",

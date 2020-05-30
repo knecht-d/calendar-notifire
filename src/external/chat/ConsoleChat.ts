@@ -14,6 +14,7 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
 
     public send(chatId: string, message: string) {
         console.log(chatId, message);
+        return Promise.resolve();
     }
 
     @logCall({ level: LogLevels.info })
@@ -26,7 +27,7 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
         standardInput.setEncoding("utf-8");
 
         console.log("Please input text in command line.");
-        standardInput.on("data", (data: string) => {
+        standardInput.on("data", async (data: string) => {
             try {
                 const parts = data.trim().split(" ");
                 const command = parts.shift();
@@ -36,22 +37,22 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
                         console.log("User input complete, program exit.");
                         process.exit();
                     case "/set":
-                        this.communication!.set(this.chatId, this.userId, payload);
+                        await this.communication!.set(this.chatId, this.userId, payload);
                         break;
                     case "/delete":
-                        this.communication!.delete(this.chatId, this.userId, payload);
+                        await this.communication!.delete(this.chatId, this.userId, payload);
                         break;
                     case "/read":
-                        this.communication!.read(this.chatId);
+                        await this.communication!.read(this.chatId);
                         break;
                     case "/start":
-                        this.communication!.initChat(this.chatId, this.userId);
+                        await this.communication!.initChat(this.chatId, this.userId);
                         break;
                     case "/addAdmin":
-                        this.communication!.addAdmin(this.chatId, this.userId, payload);
+                        await this.communication!.addAdmin(this.chatId, this.userId, payload);
                         break;
                     case "/removeAdmin":
-                        this.communication!.removeAdmin(this.chatId, this.userId, payload);
+                        await this.communication!.removeAdmin(this.chatId, this.userId, payload);
                         break;
                     default:
                         console.log("User Input Data : " + data);
@@ -61,5 +62,6 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
                 console.error(error);
             }
         });
+        return Promise.resolve();
     }
 }

@@ -6,6 +6,7 @@ import {
     Reminder,
 } from "../../useCases";
 import { GateWay } from "../GateWay";
+import { logCall } from "../logging";
 
 export interface ITriggerConfigure {
     setTrigger: (id: string, cron: string) => void;
@@ -28,11 +29,13 @@ export class TriggerGateway extends GateWay<IDependencies> implements ITimerStop
         await this.dependencies!.reminder.execute({ chatId, triggerId });
     }
 
+    @logCall()
     public stop(chatId: string, triggerId: string) {
         const id = this.encodeId(chatId, triggerId);
         this.dependencies!.triggerConfig.stopTrigger(id);
     }
 
+    @logCall()
     public set(chatId: string, triggerId: string, recurrence: IPersistedRecurrenceRule) {
         const id = this.encodeId(chatId, triggerId);
         const cron = this.buildCron(recurrence);

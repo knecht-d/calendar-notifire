@@ -5,7 +5,8 @@ export async function get<ResponseType>(url: string): Promise<ResponseType> {
         const response = await axios.get<ResponseType>(url);
         return response.data;
     } catch (error) {
-        throw new Error((error as AxiosError).message);
+        const e = error as AxiosError;
+        throw new Error(`${e.message}: ${url}`);
     }
 }
 
@@ -14,6 +15,7 @@ export async function post<ResponseType>(url: string, data: any): Promise<Respon
         const response = await axios.post<ResponseType>(url, data);
         return response.data;
     } catch (error) {
-        throw new Error((error as AxiosError).message);
+        const e = error as AxiosError;
+        throw new Error(`${e.message}: ${url}`);
     }
 }

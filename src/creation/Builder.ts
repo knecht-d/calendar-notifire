@@ -21,7 +21,7 @@ import { GenericFactory } from "./GenericFactory";
 export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
     constructor(private factory: GenericFactory<CalendarSetup, StorageSetup, ChatSetup>) {}
 
-    build(setupData: {
+    public async build(setupData: {
         calendar: CalendarSetup;
         storage: StorageSetup;
         chatData: ChatSetup;
@@ -83,7 +83,7 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
 
         // Load persisted chats.
         logger.verbose("Builder", "Load persisted chats");
-        start.execute();
+        await start.execute();
 
         return {
             calendar,

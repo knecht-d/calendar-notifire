@@ -12,6 +12,6 @@ export abstract class AbstractChat<ChatSetup> extends External implements ICommu
         this.communication = communication;
     }
 
-    abstract send(chatId: string, message: string): void;
-    abstract start(): void;
+    abstract send(chatId: string, message: string): Promise<void>;
+    abstract start(): Promise<void>;
 }

@@ -29,13 +29,11 @@ describe("TelegramChat", () => {
     });
     describe("start", () => {
         it("should fail if chat was not initialized", () => {
-            expect(() => {
-                chat.start();
-            }).toThrow(new Error("Chat must be initialized!"));
+            return expect(chat.start()).rejects.toEqual(new Error("Chat must be initialized!"));
         });
-        it("should initialize all commands", () => {
+        it("should initialize all commands", async () => {
             chat.init(communication);
-            chat.start();
+            await chat.start();
             expect(telegraf.start).toHaveBeenCalledWith(expect.any(Function));
             expect(telegraf.command).toHaveBeenCalledWith("set", expect.any(Function));
             expect(telegraf.command).toHaveBeenCalledWith("delete", expect.any(Function));
@@ -46,8 +44,8 @@ describe("TelegramChat", () => {
         });
     });
     describe("send", () => {
-        it("should send a message to the given chat", () => {
-            chat.send("chat", "message");
+        it("should send a message to the given chat", async () => {
+            await chat.send("chat", "message");
             expect(telegraf.telegram.sendMessage).toHaveBeenCalledWith("chat", "message");
         });
     });
@@ -63,9 +61,9 @@ describe("TelegramChat", () => {
         }>;
 
         let callbacks: Callbacks = {};
-        beforeEach(() => {
+        beforeEach(async () => {
             chat.init(communication);
-            chat.start();
+            await chat.start();
             callbacks = (telegraf.command as jest.Mock).mock.calls.reduce((callbacks, call) => {
                 callbacks[call[0]] = call[1];
                 return callbacks;

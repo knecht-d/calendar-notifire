@@ -37,8 +37,8 @@ describe("CommunicationController", () => {
         errrorReporterMock.sendError.mockReset();
     });
     describe("set", () => {
-        it("should send the basic information", () => {
-            controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+        it("should send the basic information", async () => {
+            await controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
             expect(setMock.execute).toHaveBeenCalledWith(
                 expect.objectContaining({
                     chatId: "chat",
@@ -49,8 +49,8 @@ describe("CommunicationController", () => {
         });
 
         describe("hourly", () => {
-            it("should reduce the end hours, the minutes are less then the minutes of start", () => {
-                controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:15 - s+1,m0");
+            it("should reduce the end hours, the minutes are less then the minutes of start", async () => {
+                await controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:15 - s+1,m0");
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -84,8 +84,8 @@ describe("CommunicationController", () => {
                     }),
                 );
             });
-            it("should keep the end hours, the minutes are more then the minutes of start", () => {
-                controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:45 - s+1,m0");
+            it("should keep the end hours, the minutes are more then the minutes of start", async () => {
+                await controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:45 - s+1,m0");
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -119,8 +119,8 @@ describe("CommunicationController", () => {
                     }),
                 );
             });
-            it("should keep the end hours, the minutes are eqial to the minutes of start", () => {
-                controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:30 - s+1,m0");
+            it("should keep the end hours, the minutes are eqial to the minutes of start", async () => {
+                await controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:30 - s+1,m0");
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -157,8 +157,8 @@ describe("CommunicationController", () => {
         });
 
         describe("daily", () => {
-            it("should work", () => {
-                controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+            it("should work", async () => {
+                await controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -211,8 +211,8 @@ describe("CommunicationController", () => {
         });
 
         describe("monthly", () => {
-            it("should work", () => {
-                controller.set("chat", "user", "trigger m 25 14:05 M+1,t0,s0,m0 M+2,t0,s0,m0");
+            it("should work", async () => {
+                await controller.set("chat", "user", "trigger m 25 14:05 M+1,t0,s0,m0 M+2,t0,s0,m0");
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -265,8 +265,8 @@ describe("CommunicationController", () => {
         });
 
         describe("validation", () => {
-            const testException = (
-                fn: () => void,
+            const testException = async (
+                fn: () => Promise<void>,
                 expected: {
                     key: string;
                     given?: string;
@@ -274,7 +274,7 @@ describe("CommunicationController", () => {
                     example?: string;
                 },
             ) => {
-                fn();
+                await fn();
                 expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(1);
                 const error = errrorReporterMock.sendCommunicationError.mock.calls[0][1];
                 expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${expected.key}`)));
@@ -284,21 +284,16 @@ describe("CommunicationController", () => {
                 expect(error.example).toEqual(expected.example);
             };
 
-            it("invalid recurrence", () => {
-                testException(
-                    () => {
-                        controller.set("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
-                    },
-                    {
-                        key: "INVALID_RECURRENCE_TYPE",
-                        given: "d",
-                        expected: "m,t,s",
-                    },
-                );
+            it("invalid recurrence", async () => {
+                await testException(() => controller.set("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0"), {
+                    key: "INVALID_RECURRENCE_TYPE",
+                    given: "d",
+                    expected: "m,t,s",
+                });
             });
 
-            it("other error", () => {
-                controller.set("chat", "user", undefined as any);
+            it("other error", async () => {
+                await controller.set("chat", "user", undefined as any);
                 expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
                 expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
                 const error = errrorReporterMock.sendError.mock.calls[0][1];
@@ -306,11 +301,9 @@ describe("CommunicationController", () => {
             });
 
             describe("hourly", () => {
-                it("mising argument", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger s mo,di 07:00 t+1,s0,m0 t+2,s0,m0");
-                        },
+                it("mising argument", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger s mo,di 07:00 t+1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_NUMBER_OF_ARGUMENTS",
                             given: "4",
@@ -319,11 +312,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid days", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger s mo,di, 07:00 17:00 t+1,s0,m0 t+2,s0,m0");
-                        },
+                it("invalid days", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger s mo,di, 07:00 17:00 t+1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_DAYS",
                             given: "mo,di,",
@@ -332,11 +323,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid start time", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger s mo,di 07:60 19:00 t+1,s0,m0 t+2,s0,m0");
-                        },
+                it("invalid start time", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger s mo,di 07:60 19:00 t+1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_TIME",
                             given: "07:60",
@@ -345,11 +334,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid end time", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger s mo,di 07:00 24:00 t+1,s0,m0 t+2,s0,m0");
-                        },
+                it("invalid end time", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger s mo,di 07:00 24:00 t+1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_TIME",
                             given: "24:00",
@@ -358,11 +345,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid start frame", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t*1,s0,m0 t+2,s0,m0");
-                        },
+                it("invalid start frame", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t*1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_FRAME_CONFIG",
                             given: "t*1,s0,m0",
@@ -371,11 +356,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid end frame", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t+1,s0,m0 *");
-                        },
+                it("invalid end frame", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t+1,s0,m0 *"),
                         {
                             key: "INVALID_FRAME_CONFIG",
                             given: "*",
@@ -387,24 +370,17 @@ describe("CommunicationController", () => {
             });
 
             describe("daily", () => {
-                it("mising argument", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger t mo,di t+1,s0,m0 t+2,s0,m0");
-                        },
-                        {
-                            key: "INVALID_NUMBER_OF_ARGUMENTS",
-                            given: "3",
-                            expected: "4 (t [days] [time] [start] [end])",
-                            example: "t mo,di,so 17:30 t+1,s0,m0 t+2,s0,m0",
-                        },
-                    );
+                it("mising argument", async () => {
+                    await testException(() => controller.set("chat", "user", "trigger t mo,di t+1,s0,m0 t+2,s0,m0"), {
+                        key: "INVALID_NUMBER_OF_ARGUMENTS",
+                        given: "3",
+                        expected: "4 (t [days] [time] [start] [end])",
+                        example: "t mo,di,so 17:30 t+1,s0,m0 t+2,s0,m0",
+                    });
                 });
-                it("invalid days", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger t mo,di, 17:00 t+1,s0,m0 t+2,s0,m0");
-                        },
+                it("invalid days", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger t mo,di, 17:00 t+1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_DAYS",
                             given: "mo,di,",
@@ -413,11 +389,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid time", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger t mo,di 24:00 t+1,s0,m0 t+2,s0,m0");
-                        },
+                it("invalid time", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger t mo,di 24:00 t+1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_TIME",
                             given: "24:00",
@@ -426,11 +400,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid start frame", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger t mo,di 17:00 t*1,s0,m0 t+2,s0,m0");
-                        },
+                it("invalid start frame", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger t mo,di 17:00 t*1,s0,m0 t+2,s0,m0"),
                         {
                             key: "INVALID_FRAME_CONFIG",
                             given: "t*1,s0,m0",
@@ -439,27 +411,20 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid end frame", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 *");
-                        },
-                        {
-                            key: "INVALID_FRAME_CONFIG",
-                            given: "*",
-                            expected: "[j|M|t|s|m](+|-)0-9 -",
-                            example: "t+1,s0,m0",
-                        },
-                    );
+                it("invalid end frame", async () => {
+                    await testException(() => controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 *"), {
+                        key: "INVALID_FRAME_CONFIG",
+                        given: "*",
+                        expected: "[j|M|t|s|m](+|-)0-9 -",
+                        example: "t+1,s0,m0",
+                    });
                 });
             });
 
             describe("monthly", () => {
-                it("mising argument", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger m 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
-                        },
+                it("mising argument", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger m 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0"),
                         {
                             key: "INVALID_NUMBER_OF_ARGUMENTS",
                             given: "3",
@@ -468,11 +433,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid day", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger m 40 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0");
-                        },
+                it("invalid day", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger m 40 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0"),
                         {
                             key: "INVALID_DAY_OF_MONTH",
                             given: "40",
@@ -481,11 +444,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid time", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger m 15 17:60 M+1,t1,s0,m0 M+2,t1,s0,m0");
-                        },
+                it("invalid time", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger m 15 17:60 M+1,t1,s0,m0 M+2,t1,s0,m0"),
                         {
                             key: "INVALID_TIME",
                             given: "17:60",
@@ -494,11 +455,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid start frame", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger m 15 17:00 M+1,T1,s0,m0 M+2,t1,s0,m0");
-                        },
+                it("invalid start frame", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger m 15 17:00 M+1,T1,s0,m0 M+2,t1,s0,m0"),
                         {
                             key: "INVALID_FRAME_CONFIG",
                             given: "M+1,T1,s0,m0",
@@ -507,11 +466,9 @@ describe("CommunicationController", () => {
                         },
                     );
                 });
-                it("invalid end frame", () => {
-                    testException(
-                        () => {
-                            controller.set("chat", "user", "trigger m 15 17:00 M+1,t1,s0,m0 M+2,t/1,s0,m0");
-                        },
+                it("invalid end frame", async () => {
+                    await testException(
+                        () => controller.set("chat", "user", "trigger m 15 17:00 M+1,t1,s0,m0 M+2,t/1,s0,m0"),
                         {
                             key: "INVALID_FRAME_CONFIG",
                             given: "M+2,t/1,s0,m0",
@@ -524,21 +481,21 @@ describe("CommunicationController", () => {
         });
     });
     describe("initChat", () => {
-        it("should pass the data to the use case", () => {
-            controller.initChat("chatId", "userId");
+        it("should pass the data to the use case", async () => {
+            await controller.initChat("chatId", "userId");
             expect(initMock.execute).toHaveBeenCalledWith({ chatId: "chatId", userId: "userId" });
         });
-        it("should send an error if the init fails", () => {
+        it("should send an error if the init fails", async () => {
             initMock.execute.mockImplementation(() => {
                 throw new Error("Failed");
             });
-            controller.initChat("chatId", "userId");
+            await controller.initChat("chatId", "userId");
             expect(errrorReporterMock.sendError).toHaveBeenCalledWith("chatId", "Error: Failed");
         });
     });
     describe("delete", () => {
-        it("should pass the data to the use case", () => {
-            controller.delete("chat", "user", "trigger");
+        it("should pass the data to the use case", async () => {
+            await controller.delete("chat", "user", "trigger");
             expect(deleteMock.execute).toHaveBeenCalledWith({
                 chatId: "chat",
                 userId: "user",
@@ -546,16 +503,16 @@ describe("CommunicationController", () => {
             });
         });
 
-        it("should handle missing triggers", () => {
-            controller.delete("chat", "user", "");
+        it("should handle missing triggers", async () => {
+            await controller.delete("chat", "user", "");
             expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(1);
             const error = errrorReporterMock.sendCommunicationError.mock.calls[0][1];
             expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${"MISSING_TRIGGER_ID"}`)));
             expect(error.key).toEqual("MISSING_TRIGGER_ID");
         });
 
-        it("should handle generic errors", () => {
-            controller.delete("chat", "user", undefined as any);
+        it("should handle generic errors", async () => {
+            await controller.delete("chat", "user", undefined as any);
             expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
             expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
             const error = errrorReporterMock.sendError.mock.calls[0][1];
@@ -563,20 +520,20 @@ describe("CommunicationController", () => {
         });
     });
     describe("read", () => {
-        it("should pass the data to the use case", () => {
-            controller.read("chat");
+        it("should pass the data to the use case", async () => {
+            await controller.read("chat");
             expect(readMock.execute).toHaveBeenCalledWith({ chatId: "chat" });
         });
     });
     describe("addAdmin", () => {
-        it("should pass the data to the use case", () => {
-            controller.addAdmin("chat", "user", " newAdmin ");
+        it("should pass the data to the use case", async () => {
+            await controller.addAdmin("chat", "user", " newAdmin ");
             expect(addAdminMock.execute).toHaveBeenCalledWith({ chatId: "chat", userId: "user", adminId: "newAdmin" });
         });
     });
     describe("removeadmin", () => {
-        it("should pass the data to the use case", () => {
-            controller.removeAdmin("chat", "user", " newAdmin ");
+        it("should pass the data to the use case", async () => {
+            await controller.removeAdmin("chat", "user", " newAdmin ");
             expect(removeAdminMock.execute).toHaveBeenCalledWith({
                 chatId: "chat",
                 userId: "user",
