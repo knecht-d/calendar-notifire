@@ -43,6 +43,9 @@ export class TriggerGateway extends GateWay<IDependencies> implements ITimerStop
     }
 
     private buildCron(recurrence: IPersistedRecurrenceRule) {
+        if (recurrence.type === PersistedRecurrenceType.cron) {
+            return recurrence.cron;
+        }
         const minute = `${recurrence.minute}`;
         const hour = (rec => {
             switch (rec.type) {

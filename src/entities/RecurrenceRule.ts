@@ -2,33 +2,57 @@ export enum RecurrenceType {
     hourly = "h",
     daily = "d",
     monthly = "m",
+    cron = "c",
 }
 type Days = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 type DayFlags = { [day in Days]?: boolean };
 
 interface IBaseRecurrenceSettings {
     type: RecurrenceType;
+}
+
+interface IManualRecurrenceSettings extends IBaseRecurrenceSettings {
     hour: number;
     minute: number;
 }
-interface IHourlyRecurrenceSettings extends IBaseRecurrenceSettings {
+interface IHourlyRecurrenceSettings extends IManualRecurrenceSettings {
     type: RecurrenceType.hourly;
     toHour: number;
     weekDays: DayFlags;
 }
-interface IDailyRecurrenceSettings extends IBaseRecurrenceSettings {
+interface IDailyRecurrenceSettings extends IManualRecurrenceSettings {
     type: RecurrenceType.daily;
     weekDays: DayFlags;
 }
-interface IMonthlyRecurrenceSettings extends IBaseRecurrenceSettings {
+interface IMonthlyRecurrenceSettings extends IManualRecurrenceSettings {
     type: RecurrenceType.monthly;
     dayOfMonth: number;
 }
-export type IRecurrenceSettings = IMonthlyRecurrenceSettings | IDailyRecurrenceSettings | IHourlyRecurrenceSettings;
+interface ICronRecurrenceSettings extends IBaseRecurrenceSettings {
+    type: RecurrenceType.cron;
+    cron: string;
+}
+export type IRecurrenceSettings =
+    | IMonthlyRecurrenceSettings
+    | IDailyRecurrenceSettings
+    | IHourlyRecurrenceSettings
+    | ICronRecurrenceSettings;
 
 export abstract class RecurrenceRule {
-    constructor(protected type: RecurrenceType, protected hour: number, protected minute: number) {}
+    constructor(protected type: RecurrenceType) {}
     protected getBaseSetting(): IBaseRecurrenceSettings {
+        return {
+            type: this.type,
+        };
+    }
+    abstract getSettings(): IRecurrenceSettings;
+}
+
+export abstract class ManualRecurrenceRule extends RecurrenceRule {
+    constructor(protected type: RecurrenceType, protected hour: number, protected minute: number) {
+        super(type);
+    }
+    protected getBaseSetting(): IManualRecurrenceSettings {
         return {
             type: this.type,
             hour: this.hour,
@@ -38,7 +62,7 @@ export abstract class RecurrenceRule {
     abstract getSettings(): IRecurrenceSettings;
 }
 
-export class HourlyRecurrenceRule extends RecurrenceRule {
+export class HourlyRecurrenceRule extends ManualRecurrenceRule {
     constructor(fromHour: number, private toHour: number, minute: number, private weekDays: DayFlags) {
         super(RecurrenceType.hourly, fromHour, minute);
     }
@@ -52,7 +76,7 @@ export class HourlyRecurrenceRule extends RecurrenceRule {
     }
 }
 
-export class DailyRecurrenceRule extends RecurrenceRule {
+export class DailyRecurrenceRule extends ManualRecurrenceRule {
     constructor(hour: number, minute: number, private weekDays: DayFlags) {
         super(RecurrenceType.daily, hour, minute);
     }
@@ -65,7 +89,7 @@ export class DailyRecurrenceRule extends RecurrenceRule {
     }
 }
 
-export class MonthlyRecurrenceRule extends RecurrenceRule {
+export class MonthlyRecurrenceRule extends ManualRecurrenceRule {
     constructor(hour: number, minute: number, private dayOfMonth: number) {
         super(RecurrenceType.monthly, hour, minute);
     }
@@ -74,6 +98,19 @@ export class MonthlyRecurrenceRule extends RecurrenceRule {
             ...super.getBaseSetting(),
             type: RecurrenceType.monthly,
             dayOfMonth: this.dayOfMonth,
+        };
+    }
+}
+
+export class CronRecurrenceRule extends RecurrenceRule {
+    constructor(private cron: string) {
+        super(RecurrenceType.cron);
+    }
+    getSettings(): ICronRecurrenceSettings {
+        return {
+            ...super.getBaseSetting(),
+            type: RecurrenceType.cron,
+            cron: this.cron,
         };
     }
 }

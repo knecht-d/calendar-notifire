@@ -30,6 +30,11 @@ export function convertRecurrence(settings: IRecurrenceSettings): IPersistedRecu
                 hour: settings.hour,
                 minute: settings.minute,
             };
+        case RecurrenceType.cron:
+            return {
+                type: PersistedRecurrenceType.cron,
+                cron: settings.cron,
+            };
     }
 }
 

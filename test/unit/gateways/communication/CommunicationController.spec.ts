@@ -48,6 +48,33 @@ describe("CommunicationController", () => {
             );
         });
 
+        describe("cron", () => {
+            it("should use the cron config as is ", async () => {
+                await controller.set("chat", "user", "trigger c 38 8-18 * * 6 - s+1,m0");
+                expect(setMock.execute).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        config: {
+                            recurrence: {
+                                type: PersistedRecurrenceType.cron,
+                                cron: "38 8-18 * * 6",
+                            },
+                            frameStart: {},
+                            frameEnd: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
+                                minute: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                            },
+                        },
+                    }),
+                );
+            });
+        });
+
         describe("hourly", () => {
             it("should reduce the end hours, the minutes are less then the minutes of start", async () => {
                 await controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:15 - s+1,m0");
@@ -288,7 +315,7 @@ describe("CommunicationController", () => {
                 await testException(() => controller.set("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0"), {
                     key: "INVALID_RECURRENCE_TYPE",
                     given: "d",
-                    expected: "m,t,s",
+                    expected: "m,t,s,c",
                 });
             });
 
@@ -298,6 +325,101 @@ describe("CommunicationController", () => {
                 expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
                 const error = errrorReporterMock.sendError.mock.calls[0][1];
                 expect(error).toEqual(expect.stringContaining("of undefined"));
+            });
+
+            describe("cron", () => {
+                describe("valid", () => {
+                    it.each([
+                        ["* * * * 0"],
+                        ["* * * * 1"],
+                        ["* * * * 2"],
+                        ["* * * * 3"],
+                        ["* * * * 4"],
+                        ["* * * * 6"],
+                        ["* * * * 1-4,5"],
+                        ["* * * * 0,2-4,2-6"],
+                        ["* * * 0,2-4,2-6 *"],
+                        ["* * * 0,3,9-11 *"],
+                        ["* * 1 * *"],
+                        ["* * 21 * *"],
+                        ["* * 31 * *"],
+                        ["* * 1,15 * *"],
+                        ["* 0 * * *"],
+                        ["* 13 * * *"],
+                        ["* 23 * * *"],
+                        ["0 * * * *"],
+                        ["3 * * * *"],
+                        ["59 * * * *"],
+                        ["2-26,42 * * * *"],
+                    ])("%s should be valid", async cron => {
+                        await controller.set("chat", "user", `trigger c ${cron} - -`);
+                        expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
+                    });
+                });
+                describe("invalid", () => {
+                    it.each([
+                        ["* * * * -0"],
+                        ["* * * * 1-"],
+                        ["* * * * 2,"],
+                        ["* * * * ,3"],
+                        ["* * * * 7"],
+                        ["* * * * 01"],
+                        ["* * * * 3,,4"],
+                        ["* * * 12 *"],
+                        ["* * * 01 *"],
+                        ["* * 01 * *"],
+                        ["* * 32 * *"],
+                        ["* -1 * * *"],
+                        ["* 24 * * *"],
+                        ["60 * * * *"],
+                        ["02 * * * *"],
+                    ])("%s should be valid", async cron => {
+                        await controller.set("chat", "user", `trigger c ${cron} - -`);
+                        expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(1);
+                    });
+                });
+                describe("specific", () => {
+                    it("mising argument", async () => {
+                        await testException(() => controller.set("chat", "user", "trigger c 38 8-18 * 6 - s+1,m0"), {
+                            key: "INVALID_NUMBER_OF_ARGUMENTS",
+                            given: "6",
+                            expected:
+                                "7 (c [minutes 0-59] [hours 0-23] [day of month 1-31] [month 0-11 (Jan - Dec)] [day of week 0-6 (Sun - Sat)] [start] [end])",
+                            example: "c 38 8-18 * * 6 M+1,t1,s0,m0 M+2,t1,s0,m",
+                        });
+                    });
+                    it("Invalid hour", async () => {
+                        await testException(() => controller.set("chat", "user", "trigger c 38 8-18 * * 7 - s+1,m0"), {
+                            key: "INVALID_CRON_SETTING",
+                            given: "7",
+                            expected: "0-6 (Sun - Sat)",
+                            example: "0,2-4",
+                        });
+                    });
+
+                    it("invalid start frame", async () => {
+                        await testException(
+                            () => controller.set("chat", "user", "trigger c 38 8-18 * * 6 t*1,s0,m0 t+2,s0,m0"),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "t*1,s0,m0",
+                                expected: "[j|M|t|s|m](+|-)0-9 -",
+                                example: "t+1,s0,m0",
+                            },
+                        );
+                    });
+                    it("invalid end frame", async () => {
+                        await testException(
+                            () => controller.set("chat", "user", "trigger c 38 8-18 * * 6 t+1,s0,m0 *"),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "*",
+                                expected: "[j|M|t|s|m](+|-)0-9 -",
+                                example: "t+1,s0,m0",
+                            },
+                        );
+                    });
+                });
             });
 
             describe("hourly", () => {

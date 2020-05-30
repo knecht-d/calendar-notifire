@@ -9,6 +9,7 @@ export enum PersistedRecurrenceType {
     hourly = "h",
     daily = "d",
     monthly = "m",
+    cron = "c",
 }
 
 export interface IChatPersistence {
@@ -77,7 +78,16 @@ interface IMonthlyRecurrenceRule extends IBaseRecurrenceRule {
     minute: number;
 }
 
-export type IPersistedRecurrenceRule = IHourlyRecurrenceRule | IDailyRecurrenceRule | IMonthlyRecurrenceRule;
+interface ICronRecurrenceRule extends IBaseRecurrenceRule {
+    type: PersistedRecurrenceType.cron;
+    cron: string;
+}
+
+export type IPersistedRecurrenceRule =
+    | IHourlyRecurrenceRule
+    | IDailyRecurrenceRule
+    | IMonthlyRecurrenceRule
+    | ICronRecurrenceRule;
 
 export interface ITimeFrameSettings {
     year?: ITimeCalc;
