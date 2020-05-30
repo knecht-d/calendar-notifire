@@ -1,4 +1,10 @@
-import { DailyRecurrenceRule, HourlyRecurrenceRule, MonthlyRecurrenceRule, RecurrenceRule } from "../../entities";
+import {
+    CronRecurrenceRule,
+    DailyRecurrenceRule,
+    HourlyRecurrenceRule,
+    MonthlyRecurrenceRule,
+    RecurrenceRule,
+} from "../../entities";
 import { IPersistedRecurrenceRule, PersistedRecurrenceType } from "../interfaces";
 
 // TODO Make this a factory
@@ -14,6 +20,9 @@ export function createRecurrence(config: IPersistedRecurrenceRule): RecurrenceRu
             break;
         case PersistedRecurrenceType.monthly:
             recurrence = new MonthlyRecurrenceRule(config.hour, config.minute, config.day);
+            break;
+        case PersistedRecurrenceType.cron:
+            recurrence = new CronRecurrenceRule(config.cron);
             break;
     }
     return recurrence;

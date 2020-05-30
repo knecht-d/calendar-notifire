@@ -16,6 +16,7 @@ export const Mappings: IMappings = {
         s: "h" as PersistedRecurrenceType,
         t: "d" as PersistedRecurrenceType,
         m: "m" as PersistedRecurrenceType,
+        c: "c" as PersistedRecurrenceType,
     },
     timeFrames: {
         j: "year",
@@ -41,6 +42,7 @@ export const Mappings: IMappings = {
         INVALID_DAY_OF_MONTH: "Falsche Eingabe für Tag des Monats [{given}]. Mögliche Werte: {expected}",
         INVALID_TIME: "Falsche Zeitangabe [{given}]. Mögliche Werte: {expected}",
         INVALID_FRAME_CONFIG: "Falsche Eingabe für den Betrachtungszeitraum [{given}]. Beispiel: {example}",
+        INVALID_CRON_SETTING: "Falscher Cron-Wert [{given}]. Mögliche Werte: {expected}",
     },
     successMessages: {
         ADD_ADMIN: "{newAdmin} erfolgreich zu Administratoren hinzugefügt.{message}",

@@ -48,6 +48,59 @@ function validateTimeFrame(timeFrameParameter: string) {
     }
 }
 
+function getCronRegex(numberSettings: string) {
+    return new RegExp(`^(((${numberSettings})([-,](${numberSettings}))*)|\\*)$`);
+}
+function validateCronMinutes(cronPart: string) {
+    const reCron = getCronRegex("[1-5]?[0-9]");
+    if (!reCron.exec(cronPart)) {
+        throw new CommunicationError(CommunicationErrorCode.INVALID_CRON_SETTING, cronPart, "0-59", "0,3,9-1,1");
+    }
+}
+function validateCronHours(cronPart: string) {
+    const reCron = getCronRegex("(1?[0-9])|(2[0-3])");
+    if (!reCron.exec(cronPart)) {
+        throw new CommunicationError(CommunicationErrorCode.INVALID_CRON_SETTING, cronPart, "0-59", "0,3,9-1,1");
+    }
+}
+function validateCronDayOfMonth(cronPart: string) {
+    const reCron = getCronRegex("([1-9])|([1-2][0-9])|(3[0-1])");
+    if (!reCron.exec(cronPart)) {
+        throw new CommunicationError(CommunicationErrorCode.INVALID_CRON_SETTING, cronPart, "0-31", "0,3,9-11,31");
+    }
+}
+function validateCronMonth(cronPart: string) {
+    const reCron = getCronRegex("([0-9])|(1[0-1])");
+    if (!reCron.exec(cronPart)) {
+        throw new CommunicationError(
+            CommunicationErrorCode.INVALID_CRON_SETTING,
+            cronPart,
+            "0-11 (Jan - Dec)",
+            "0,3,9-11",
+        );
+    }
+}
+function validateCronDayOfWeek(cronPart: string) {
+    const reCron = getCronRegex("[0-6]");
+    if (!reCron.exec(cronPart)) {
+        throw new CommunicationError(CommunicationErrorCode.INVALID_CRON_SETTING, cronPart, "0-6 (Sun - Sat)", "0,2-4");
+    }
+}
+
+export function validateCronConfig(parts: string[]) {
+    const schema =
+        "c [minutes 0-59] [hours 0-23] [day of month 1-31] [month 0-11 (Jan - Dec)] [day of week 0-6 (Sun - Sat)] [start] [end]";
+    const example = "c 38 8-18 * * 6 M+1,t1,s0,m0 M+2,t1,s0,m";
+    validateNumberOfArguments(parts, 7, schema, example);
+    validateCronMinutes(parts[0]);
+    validateCronHours(parts[1]);
+    validateCronDayOfMonth(parts[2]);
+    validateCronMonth(parts[3]);
+    validateCronDayOfWeek(parts[4]);
+    validateTimeFrame(parts[5]);
+    validateTimeFrame(parts[6]);
+}
+
 export function validateMonthlyConfig(parts: string[]) {
     const schema = "m [day of month] [time] [start] [end]";
     const example = "m 15 17:30 M+1,t1,s0,m0 M+2,t1,s0,m0";

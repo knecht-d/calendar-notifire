@@ -14,7 +14,7 @@ import { logCall } from "../logging";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { IErrorReporter } from "./CommunicationPresenter";
 import { Mappings } from "./Mappings";
-import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from "./validation";
+import { validateCronConfig, validateDailyConfig, validateHourlyConfig, validateMonthlyConfig } from "./validation";
 
 export interface ICommunicationIn {
     set: (chatId: string, userId: string, payload: string) => Promise<void>;
@@ -46,6 +46,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         [PersistedRecurrenceType.hourly]: this.extractHourlyConfig.bind(this),
         [PersistedRecurrenceType.daily]: this.extractDailyConfig.bind(this),
         [PersistedRecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
+        [PersistedRecurrenceType.cron]: this.extractCronConfig.bind(this),
     };
 
     @logCall()
@@ -103,7 +104,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
                 throw new CommunicationError(
                     CommunicationErrorCode.INVALID_RECURRENCE_TYPE,
                     recurrenceIdentifier,
-                    "m,t,s",
+                    "m,t,s,c",
                 );
             }
             const configExtractors = this.configExtractors;
@@ -140,6 +141,24 @@ export class CommunicationController extends GateWay<IDependencies> implements I
             .replace(/\s+/gm, " ")
             .split(" ")[0];
         await this.dependencies!.useCases.admin.remove.execute({ chatId, userId, adminId });
+    }
+    private extractCronConfig(parts: string[]): ISetConfigInput["config"] {
+        validateCronConfig(parts);
+        const minutes = parts[0];
+        const hours = parts[1];
+        const dayOfMonth = parts[2];
+        const month = parts[3];
+        const dayOfWeek = parts[4];
+        const startConfig = parts[5];
+        const endConfig = parts[6];
+        return {
+            recurrence: {
+                type: PersistedRecurrenceType.cron,
+                cron: `${minutes} ${hours} ${dayOfMonth} ${month} ${dayOfWeek}`,
+            },
+            frameStart: this.extractFrame(startConfig),
+            frameEnd: this.extractFrame(endConfig),
+        };
     }
 
     private extractMonthlyConfig(parts: string[]): ISetConfigInput["config"] {
