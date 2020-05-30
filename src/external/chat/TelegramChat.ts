@@ -9,44 +9,64 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
     constructor(logger: ILogger, setupData: { botToken: string }) {
         super(logger, setupData);
         this.bot = new Telegraf(setupData.botToken);
+        logger.info("TelegramChat", `Created with Token [${setupData.botToken}]`);
     }
 
     @logCall({ level: LogLevels.info })
     @logTime({ async: false })
-    public send(chatId: string, message: string) {
-        this.bot.telegram.sendMessage(chatId, message);
+    public async send(chatId: string, message: string) {
+        try {
+            await this.bot.telegram.sendMessage(chatId, message);
+        } catch (error) {
+            this.logger.error("TelegramChat", error);
+        }
     }
 
     @logCall({ level: LogLevels.info })
     @logTime({ async: false })
-    public start() {
+    public async start() {
         if (!this.communication) {
+            this.logger.error("TelegramChat", "Chat not initialized!");
             throw Error("Chat must be initialized!");
         }
-        this.bot.start(ctx => {
-            this.communication!.initChat(this.getChatId(ctx), this.getUser(ctx));
+        this.bot.start(async ctx => {
+            await this.wrapInTryCatch(() => this.communication!.initChat(this.getChatId(ctx), this.getUser(ctx)));
         });
-        this.bot.command("set", ctx => {
+        this.bot.command("set", async ctx => {
             const payload = this.getPayload(ctx, "set");
-            this.communication!.set(this.getChatId(ctx), this.getUser(ctx), payload);
+            await this.wrapInTryCatch(() => this.communication!.set(this.getChatId(ctx), this.getUser(ctx), payload));
         });
-        this.bot.command("delete", ctx => {
+        this.bot.command("delete", async ctx => {
             const payload = this.getPayload(ctx, "delete");
-            this.communication!.delete(this.getChatId(ctx), this.getUser(ctx), payload);
+            await this.wrapInTryCatch(() =>
+                this.communication!.delete(this.getChatId(ctx), this.getUser(ctx), payload),
+            );
         });
-        this.bot.command("read", ctx => {
-            this.communication!.read(this.getChatId(ctx));
+        this.bot.command("read", async ctx => {
+            await this.wrapInTryCatch(() => this.communication!.read(this.getChatId(ctx)));
         });
-        this.bot.command("addAdmin", ctx => {
+        this.bot.command("addAdmin", async ctx => {
             const payload = this.getPayload(ctx, "addAdmin");
-            this.communication!.addAdmin(this.getChatId(ctx), this.getUser(ctx), payload);
+            await this.wrapInTryCatch(() =>
+                this.communication!.addAdmin(this.getChatId(ctx), this.getUser(ctx), payload),
+            );
         });
-        this.bot.command("removeAdmin", ctx => {
+        this.bot.command("removeAdmin", async ctx => {
             const payload = this.getPayload(ctx, "removeAdmin");
-            this.communication!.removeAdmin(this.getChatId(ctx), this.getUser(ctx), payload);
+            await this.wrapInTryCatch(() =>
+                this.communication!.removeAdmin(this.getChatId(ctx), this.getUser(ctx), payload),
+            );
         });
 
-        this.bot.launch();
+        await this.wrapInTryCatch(() => this.bot.launch());
+    }
+
+    private async wrapInTryCatch(fn: () => Promise<void>): Promise<void> {
+        try {
+            await fn();
+        } catch (error) {
+            this.logger.error("TelegramChat", error);
+        }
     }
 
     private getChatId(ctx: TelegrafContext) {

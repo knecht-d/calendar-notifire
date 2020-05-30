@@ -34,10 +34,15 @@ jest.mock("../../mocks/external");
 
 describe("Builder", () => {
     describe("build", () => {
-        beforeAll(() => {
+        beforeAll(async () => {
             const mockFactory = new MockFactory();
             const builder = new Builder(mockFactory);
-            builder.build({ calendar: { events: [] }, chatData: {}, storage: {}, loggger: { level: LogLevels.error } });
+            await builder.build({
+                calendar: { events: [] },
+                chatData: {},
+                storage: {},
+                loggger: { level: LogLevels.error },
+            });
         });
         describe("external", () => {
             it("should create the external classes", () => {

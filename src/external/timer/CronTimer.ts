@@ -1,19 +1,31 @@
 import { CronJob } from "cron";
+import { logCall } from "../logging";
 import { AbstractTimer } from "./AbstractTimer";
 
 export class CronTimer extends AbstractTimer {
-    private triggers: { [id: string]: CronJob } = {};
+    private triggers: { [id: string]: { job: CronJob; cron: string } } = {};
+
+    @logCall()
     setTrigger(id: string, cron: string) {
-        const job = new CronJob(cron, () => {
+        const job = new CronJob(cron, async () => {
             if (this.triggerReceiver) {
-                this.triggerReceiver.trigger(id);
+                await this.triggerReceiver.trigger(id);
             }
         });
-        this.triggers[id] = job;
+        this.triggers[id] = { job, cron };
         job.start();
+        this.logCurrentTriggers();
     }
+
+    @logCall()
     stopTrigger(id: string) {
-        this.triggers[id].stop();
+        this.triggers[id].job.stop();
         delete this.triggers[id];
+        this.logCurrentTriggers();
+    }
+
+    private logCurrentTriggers() {
+        const printableTriggerInfo = Object.entries(this.triggers).map(([key, settings]) => [key, settings.cron]);
+        this.logger.info("CronTimer", `Current triggers: ${printableTriggerInfo}`);
     }
 }

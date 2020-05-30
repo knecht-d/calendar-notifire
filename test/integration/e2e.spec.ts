@@ -34,10 +34,15 @@ jest.mock("../mocks", () => {
 });
 jest.mock("../../src/external/logging");
 describe("End to end test", () => {
-    beforeAll(() => {
+    beforeAll(async () => {
         const mockFactory = new MockFactory();
         const builder = new Builder(mockFactory);
-        builder.build({ calendar: { events: [] }, chatData: {}, storage: {}, loggger: { level: LogLevels.error } });
+        await builder.build({
+            calendar: { events: [] },
+            chatData: {},
+            storage: {},
+            loggger: { level: LogLevels.error },
+        });
         logger = (Logger as jest.Mock<Logger>).mock.instances[0];
     });
     beforeEach(() => {
