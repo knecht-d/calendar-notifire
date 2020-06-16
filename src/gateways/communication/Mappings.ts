@@ -9,6 +9,7 @@ interface IMappings {
     errorCodes: { [key in CommunicationErrorCode]: string };
     successMessages: { [key in MessageKey]: string };
     errorMessages: { [key in MessageKey]: string };
+    elements: { [key: string]: string };
 }
 
 export const Mappings: IMappings = {
@@ -51,7 +52,7 @@ export const Mappings: IMappings = {
         DELETE_CONFIG: "Löschen von {triggerId} erfolgreich.{message}",
         READ_CONFIG: "Konfiguration: {timeFrames}{message}",
         INITIALIZE_CHAT: "Initialisierung des Chats erfolgreich.{message}",
-        EVENTS: "Termine: {events}{message}",
+        EVENTS: "Termine:\n{events}{message}",
     },
     errorMessages: {
         ADD_ADMIN: "Hinzufügen von {newAdmin} zu Administratoren fehlgeschlagen.{message}",
@@ -61,5 +62,8 @@ export const Mappings: IMappings = {
         READ_CONFIG: "Lesen der Konfiguration fehlgeschlagen.{message}",
         INITIALIZE_CHAT: "Initialisierung des Chats fehlgeschlagen.{message}",
         EVENTS: "Lesen der Termine fehlgeschlagen.{message}",
+    },
+    elements: {
+        EVENT: "{title}:\n  {start} - {end}{description}{location}",
     },
 };

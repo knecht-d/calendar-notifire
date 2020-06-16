@@ -40,7 +40,7 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
     }
 
     private getText(message: IMessage): string {
-        const mapping = message.hasError ? Mappings.errorMessages : Mappings.successMessages;
+        const messageMapping = message.hasError ? Mappings.errorMessages : Mappings.successMessages;
         let replacements: { [key: string]: string } = {};
         switch (message.key) {
             case MessageKey.SET_CONFIG:
@@ -54,7 +54,28 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
                 replacements = {};
                 break;
             case MessageKey.EVENTS:
-                replacements = { events: JSON.stringify(message.events, null, "  ") };
+                const eventsText = message.events
+                    .map(event => {
+                        const startDate = event.start.toLocaleDateString("de-DE");
+                        const startTime = event.start.toLocaleTimeString("de-DE", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        });
+                        const endDate = event.end.toLocaleDateString("de-DE");
+                        const endTime = event.end.toLocaleTimeString("de-DE", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        });
+                        return this.replacePlaceHolders(Mappings.elements.EVENT, {
+                            title: event.title,
+                            start: `${startDate} ${startTime}`,
+                            end: `${startDate !== endDate ? `${endDate} ` : ""}${endTime}`,
+                            description: event.description || "",
+                            location: event.location || "",
+                        });
+                    })
+                    .join("\n\n");
+                replacements = { events: eventsText };
                 break;
             case MessageKey.ADD_ADMIN:
                 replacements = { newAdmin: message.newAdmin };
@@ -67,7 +88,7 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
             message: message.message ? ` ${message.message}` : "",
             ...replacements,
         };
-        return this.replacePlaceHolders(mapping[message.key], replacements);
+        return this.replacePlaceHolders(messageMapping[message.key], replacements);
     }
 
     private replacePlaceHolders(message: string, replacements: { [key: string]: string }) {
