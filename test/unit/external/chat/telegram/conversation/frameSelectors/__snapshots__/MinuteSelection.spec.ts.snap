@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MinuteSelection requestInput should have the correct keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "0(FRAME_MINUTE|0)",
+        "15(FRAME_MINUTE|15)",
+        "30(FRAME_MINUTE|30)",
+        "45(FRAME_MINUTE|45)",
+        "59(FRAME_MINUTE|59)",
+      ],
+      Array [
+        "+15(FRAME_MINUTE|+15)",
+        "+30(FRAME_MINUTE|+30)",
+        "+45(FRAME_MINUTE|+45)",
+      ],
+      Array [
+        "Aktuelle Minute(FRAME_MINUTE|SKIP)",
+      ],
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;

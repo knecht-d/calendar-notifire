@@ -2,7 +2,6 @@ export enum RecurrenceType {
     hourly = "h",
     daily = "d",
     monthly = "m",
-    cron = "c",
 }
 type Days = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 type DayFlags = { [day in Days]?: boolean };
@@ -28,15 +27,8 @@ interface IMonthlyRecurrenceSettings extends IManualRecurrenceSettings {
     type: RecurrenceType.monthly;
     dayOfMonth: number;
 }
-interface ICronRecurrenceSettings extends IBaseRecurrenceSettings {
-    type: RecurrenceType.cron;
-    cron: string;
-}
-export type IRecurrenceSettings =
-    | IMonthlyRecurrenceSettings
-    | IDailyRecurrenceSettings
-    | IHourlyRecurrenceSettings
-    | ICronRecurrenceSettings;
+
+export type IRecurrenceSettings = IMonthlyRecurrenceSettings | IDailyRecurrenceSettings | IHourlyRecurrenceSettings;
 
 export abstract class RecurrenceRule {
     constructor(protected type: RecurrenceType) {}
@@ -98,19 +90,6 @@ export class MonthlyRecurrenceRule extends ManualRecurrenceRule {
             ...super.getBaseSetting(),
             type: RecurrenceType.monthly,
             dayOfMonth: this.dayOfMonth,
-        };
-    }
-}
-
-export class CronRecurrenceRule extends RecurrenceRule {
-    constructor(private cron: string) {
-        super(RecurrenceType.cron);
-    }
-    getSettings(): ICronRecurrenceSettings {
-        return {
-            ...super.getBaseSetting(),
-            type: RecurrenceType.cron,
-            cron: this.cron,
         };
     }
 }

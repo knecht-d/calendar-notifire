@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Telegraf, Telegram } from "telegraf";
 import { TelegrafContext } from "telegraf/typings/context";
-import { TelegramChat } from "../../../../src/external";
-import { ICommunicationIn } from "../../../../src/gateways";
-import { MockCommunicationController } from "../../../mocks";
-import { MockLogger } from "../../../mocks/external/MockLogger";
+import { TelegramChat } from "../../../../../src/external";
+import { FrameConfigBuilder, TriggerConfigBuilder } from "../../../../../src/external/chat/telegram/conversation";
+import { ICommunicationIn } from "../../../../../src/gateways";
+import { MockCommunicationController } from "../../../../mocks";
+import { MockLogger } from "../../../../mocks/external/MockLogger";
 
 const TelegrafMock = (Telegraf as unknown) as jest.Mock<Telegraf<TelegrafContext>>;
 jest.mock("telegraf");
+jest.mock("../../../../../src/external/chat/telegram/conversation/TriggerConfigBuilder");
+jest.mock("../../../../../src/external/chat/telegram/conversation/FrameConfigBuilder");
 describe("TelegramChat", () => {
     let chat: TelegramChat;
     let telegraf: Telegraf<TelegrafContext>;
@@ -52,12 +55,12 @@ describe("TelegramChat", () => {
     describe("command handlers", () => {
         type PartialContext = Partial<TelegrafContext>;
         type Callbacks = Partial<{
-            start: (ctx: PartialContext) => void;
-            set: (ctx: PartialContext) => void;
-            delete: (ctx: PartialContext) => void;
-            read: (ctx: PartialContext) => void;
-            addAdmin: (ctx: PartialContext) => void;
-            removeAdmin: (ctx: PartialContext) => void;
+            start: (ctx: PartialContext) => Promise<void>;
+            set: (ctx: PartialContext) => Promise<void>;
+            delete: (ctx: PartialContext) => Promise<void>;
+            read: (ctx: PartialContext) => Promise<void>;
+            addAdmin: (ctx: PartialContext) => Promise<void>;
+            removeAdmin: (ctx: PartialContext) => Promise<void>;
         }>;
 
         let callbacks: Callbacks = {};
@@ -83,71 +86,98 @@ describe("TelegramChat", () => {
                 chat: noChat ? undefined : chat,
                 from: noFrom ? undefined : from,
                 message: noMessage ? undefined : { message_id: 4711, date: new Date().getTime(), text: message, chat },
+                reply: jest.fn(() =>
+                    Promise.resolve({ message_id: 4711, date: new Date().getTime(), text: message, chat }),
+                ),
             };
         }
 
         describe("start", () => {
-            it("should initialize the chat", () => {
-                callbacks.start!(createContext());
+            it("should initialize the chat", async () => {
+                await callbacks.start!(createContext());
                 expect(communication.initChat).toHaveBeenCalledWith("42", "johnny");
             });
         });
         describe("set", () => {
-            it("should set a trigger", () => {
-                callbacks.set!(createContext({ message: "/set someTriggerPayload" }));
-                expect(communication.set).toHaveBeenCalledWith("42", "johnny", "someTriggerPayload");
+            beforeEach(() => {
+                const triggerBuilder = (TriggerConfigBuilder as unknown) as jest.Mock;
+                triggerBuilder.mockImplementation(() => ({
+                    requestConfig: jest.fn(() => Promise.resolve({ trigger: "config" })),
+                    getConfig: jest.fn(() => ({ trigger: "config" })),
+                }));
+                const frameConfigBuilder = (FrameConfigBuilder as unknown) as jest.Mock;
+                frameConfigBuilder.mockImplementation(() => ({
+                    requestConfig: jest.fn(() => Promise.resolve({ frame: "config" })),
+                    getConfig: jest.fn(() => ({ frame: "config" })),
+                }));
+            });
+            it("should set a trigger", async done => {
+                (communication.set as jest.Mock).mockImplementationOnce(() => {
+                    expect(communication.set).toHaveBeenCalledWith("42", "johnny", "someTriggerPayload", {
+                        recurrence: { trigger: "config" },
+                        frameStart: {},
+                        frameEnd: { frame: "config" },
+                    });
+                    done();
+                });
+                await callbacks.set!(createContext({ message: "/set someTriggerPayload" }));
+            });
+            it("should send an error if trigger id is missing", async () => {
+                const ctx = createContext({ message: "/set " });
+                await callbacks.set!(ctx);
+                expect(ctx.reply).toHaveBeenCalledWith("Trigger Id fehlt!");
             });
         });
         describe("delete", () => {
-            it("should delete a trigger", () => {
-                callbacks.delete!(createContext({ message: "/delete someTriggerPayload" }));
+            it("should delete a trigger", async () => {
+                await callbacks.delete!(createContext({ message: "/delete someTriggerPayload" }));
                 expect(communication.delete).toHaveBeenCalledWith("42", "johnny", "someTriggerPayload");
             });
         });
         describe("read", () => {
-            it("should read the triggers", () => {
-                callbacks.read!(createContext({ message: "/read" }));
+            it("should read the triggers", async () => {
+                await callbacks.read!(createContext({ message: "/read" }));
                 expect(communication.read).toHaveBeenCalledWith("42");
             });
         });
         describe("addAdmin", () => {
-            it("should add an admin", () => {
-                callbacks.addAdmin!(createContext({ message: "/addAdmin someUser" }));
+            it("should add an admin", async () => {
+                await callbacks.addAdmin!(createContext({ message: "/addAdmin someUser" }));
                 expect(communication.addAdmin).toHaveBeenCalledWith("42", "johnny", "someUser");
             });
         });
         describe("removeAdmin", () => {
-            it("should remove an admin", () => {
-                callbacks.removeAdmin!(createContext({ message: "/removeAdmin someUser" }));
+            it("should remove an admin", async () => {
+                await callbacks.removeAdmin!(createContext({ message: "/removeAdmin someUser" }));
                 expect(communication.removeAdmin).toHaveBeenCalledWith("42", "johnny", "someUser");
             });
         });
         describe("fallbacks", () => {
-            it("should use a fallback for the chatId if chatId is not given", () => {
-                callbacks.start!(createContext({ chat: { type: "private", id: 0 } }));
+            it("should use a fallback for the chatId if chatId is not given", async () => {
+                await callbacks.start!(createContext({ chat: { type: "private", id: 0 } }));
                 expect(communication.initChat).toHaveBeenCalledWith("noChat", "johnny");
             });
-            it("should use a fallback for the chatId if chat is not given", () => {
-                callbacks.start!(createContext({ noChat: true }));
+            it("should use a fallback for the chatId if chat is not given", async () => {
+                await callbacks.start!(createContext({ noChat: true }));
                 expect(communication.initChat).toHaveBeenCalledWith("noChat", "johnny");
             });
-            it("should use a fallback for the user if username is not given", () => {
-                callbacks.start!(
+            it("should use a fallback for the user if username is not given", async () => {
+                await callbacks.start!(
                     createContext({ from: { first_name: "John", id: 1337, is_bot: false, username: "" } }),
                 );
                 expect(communication.initChat).toHaveBeenCalledWith("42", "noUser");
             });
-            it("should use a fallback for the user if from is not given", () => {
-                callbacks.start!(createContext({ noFrom: true }));
+            it("should use a fallback for the user if from is not given", async () => {
+                await callbacks.start!(createContext({ noFrom: true }));
                 expect(communication.initChat).toHaveBeenCalledWith("42", "noUser");
             });
-            it("should use a fallback for the message if text is not given", () => {
-                callbacks.addAdmin!(createContext({ message: "" }));
+            it("should use a fallback for the message if text is not given", async () => {
+                await callbacks.addAdmin!(createContext({ message: "" }));
                 expect(communication.addAdmin).toHaveBeenCalledWith("42", "johnny", "");
             });
 
-            it("should use a fallback for the message if message is not given", () => {
-                callbacks.addAdmin!(createContext({ noMessage: true }));
+            it("should use a fallback for the message if message is not given", async () => {
+                await callbacks.addAdmin!(createContext({ noMessage: true }));
                 expect(communication.addAdmin).toHaveBeenCalledWith("42", "johnny", "");
             });
         });

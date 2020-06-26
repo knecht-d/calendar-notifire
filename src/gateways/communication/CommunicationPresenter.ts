@@ -53,7 +53,7 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
             case MessageKey.INITIALIZE_CHAT:
                 replacements = {};
                 break;
-            case MessageKey.EVENTS:
+            case MessageKey.EVENTS: {
                 const eventsText = message.events
                     .map(event => {
                         const startDate = event.start.toLocaleDateString("de-DE");
@@ -66,17 +66,15 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
                             hour: "2-digit",
                             minute: "2-digit",
                         });
-                        return this.replacePlaceHolders(Mappings.elements.EVENT, {
-                            title: event.title,
-                            start: `${startDate} ${startTime}`,
-                            end: `${startDate !== endDate ? `${endDate} ` : ""}${endTime}`,
-                            description: event.description || "",
-                            location: event.location || "",
-                        });
+                        return `
+${event.title}:
+${startDate} ${startTime} - ${`${startDate !== endDate ? `${endDate} ` : ""}${endTime}`}${event.description ||
+                            ""}${event.location || ""}`.trim();
                     })
                     .join("\n\n");
                 replacements = { events: eventsText };
                 break;
+            }
             case MessageKey.ADD_ADMIN:
                 replacements = { newAdmin: message.newAdmin };
                 break;

@@ -1,0 +1,589 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 0 1`] = `
+Array [
+  Array [
+    Array [
+      "0(TRIGGER_TO_HOUR-0)",
+      "1(TRIGGER_TO_HOUR-1)",
+      "2(TRIGGER_TO_HOUR-2)",
+      "3(TRIGGER_TO_HOUR-3)",
+      "4(TRIGGER_TO_HOUR-4)",
+      "5(TRIGGER_TO_HOUR-5)",
+      "6(TRIGGER_TO_HOUR-6)",
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 1 1`] = `
+Array [
+  Array [
+    Array [
+      "1(TRIGGER_TO_HOUR-1)",
+      "2(TRIGGER_TO_HOUR-2)",
+      "3(TRIGGER_TO_HOUR-3)",
+      "4(TRIGGER_TO_HOUR-4)",
+      "5(TRIGGER_TO_HOUR-5)",
+      "6(TRIGGER_TO_HOUR-6)",
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 2 1`] = `
+Array [
+  Array [
+    Array [
+      "2(TRIGGER_TO_HOUR-2)",
+      "3(TRIGGER_TO_HOUR-3)",
+      "4(TRIGGER_TO_HOUR-4)",
+      "5(TRIGGER_TO_HOUR-5)",
+      "6(TRIGGER_TO_HOUR-6)",
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 3 1`] = `
+Array [
+  Array [
+    Array [
+      "3(TRIGGER_TO_HOUR-3)",
+      "4(TRIGGER_TO_HOUR-4)",
+      "5(TRIGGER_TO_HOUR-5)",
+      "6(TRIGGER_TO_HOUR-6)",
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 4 1`] = `
+Array [
+  Array [
+    Array [
+      "4(TRIGGER_TO_HOUR-4)",
+      "5(TRIGGER_TO_HOUR-5)",
+      "6(TRIGGER_TO_HOUR-6)",
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 5 1`] = `
+Array [
+  Array [
+    Array [
+      "5(TRIGGER_TO_HOUR-5)",
+      "6(TRIGGER_TO_HOUR-6)",
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 6 1`] = `
+Array [
+  Array [
+    Array [
+      "6(TRIGGER_TO_HOUR-6)",
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 7 1`] = `
+Array [
+  Array [
+    Array [
+      "7(TRIGGER_TO_HOUR-7)",
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 8 1`] = `
+Array [
+  Array [
+    Array [
+      "8(TRIGGER_TO_HOUR-8)",
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 9 1`] = `
+Array [
+  Array [
+    Array [
+      "9(TRIGGER_TO_HOUR-9)",
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 10 1`] = `
+Array [
+  Array [
+    Array [
+      "10(TRIGGER_TO_HOUR-10)",
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 11 1`] = `
+Array [
+  Array [
+    Array [
+      "11(TRIGGER_TO_HOUR-11)",
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 12 1`] = `
+Array [
+  Array [
+    Array [
+      "12(TRIGGER_TO_HOUR-12)",
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 13 1`] = `
+Array [
+  Array [
+    Array [
+      "13(TRIGGER_TO_HOUR-13)",
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 14 1`] = `
+Array [
+  Array [
+    Array [
+      "14(TRIGGER_TO_HOUR-14)",
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 15 1`] = `
+Array [
+  Array [
+    Array [
+      "15(TRIGGER_TO_HOUR-15)",
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 16 1`] = `
+Array [
+  Array [
+    Array [
+      "16(TRIGGER_TO_HOUR-16)",
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 17 1`] = `
+Array [
+  Array [
+    Array [
+      "17(TRIGGER_TO_HOUR-17)",
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 18 1`] = `
+Array [
+  Array [
+    Array [
+      "18(TRIGGER_TO_HOUR-18)",
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 19 1`] = `
+Array [
+  Array [
+    Array [
+      "19(TRIGGER_TO_HOUR-19)",
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 20 1`] = `
+Array [
+  Array [
+    Array [
+      "20(TRIGGER_TO_HOUR-20)",
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 21 1`] = `
+Array [
+  Array [
+    Array [
+      "21(TRIGGER_TO_HOUR-21)",
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 22 1`] = `
+Array [
+  Array [
+    Array [
+      "22(TRIGGER_TO_HOUR-22)",
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
+
+exports[`ToHourSelection requestInput keyboard should have only values >= 23 1`] = `
+Array [
+  Array [
+    Array [
+      "23(TRIGGER_TO_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;

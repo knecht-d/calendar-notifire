@@ -1,0 +1,98 @@
+
+> calendar-notifire@0.0.1 cover C:\dev\calendar-notifire
+> jest --coverage
+
+------------------------------------------------------|---------|----------|---------|---------|-------------------
+File                                                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------------------------------------------------|---------|----------|---------|---------|-------------------
+All files                                             |   82.46 |    72.46 |   71.51 |   83.36 |                   
+ creation                                             |     100 |      100 |     100 |     100 |                   
+  Builder.ts                                          |     100 |      100 |     100 |     100 |                   
+  GenericFactory.ts                                   |     100 |      100 |     100 |     100 |                   
+  LocalFactory.ts                                     |     100 |      100 |     100 |     100 |                   
+ entities                                             |   99.17 |      100 |   97.37 |   99.14 |                   
+  Chat.ts                                             |     100 |      100 |     100 |     100 |                   
+  Chats.ts                                            |     100 |      100 |     100 |     100 |                   
+  EntityError.ts                                      |     100 |      100 |     100 |     100 |                   
+  RecurrenceRule.ts                                   |   96.15 |      100 |   90.91 |   95.65 | 36                
+  TimeFrame.ts                                        |     100 |      100 |     100 |     100 |                   
+ external                                             |     100 |      100 |     100 |     100 |                   
+  External.ts                                         |     100 |      100 |     100 |     100 |                   
+ external/calendar                                    |     100 |      100 |     100 |     100 |                   
+  AbstractCalendar.ts                                 |     100 |      100 |     100 |     100 |                   
+  StaticCalendar.ts                                   |     100 |      100 |     100 |     100 |                   
+  WebCalendar.ts                                      |     100 |      100 |     100 |     100 |                   
+ external/chat                                        |     100 |      100 |     100 |     100 |                   
+  AbstractChat.ts                                     |     100 |      100 |     100 |     100 |                   
+ external/chat/telegram                               |   66.67 |    76.92 |   73.08 |   64.71 |                   
+  TelegramChat.ts                                     |   66.67 |    76.92 |   73.08 |   64.71 | 25,40-66,96,106   
+ external/chat/telegram/conversation                  |   24.05 |        0 |      25 |   22.08 |                   
+  AbstractSelection.ts                                |      25 |      100 |       0 |      25 | 7-11              
+  FrameConfigBuilder.ts                               |   21.43 |        0 |   27.27 |   19.51 | 17-24,35-81       
+  TriggerConfigBuilder.ts                             |   27.27 |        0 |   27.27 |      25 | 24-31,49-89       
+ external/chat/telegram/conversation/frameSelectors   |   50.63 |        0 |   28.95 |   54.41 |                   
+  DaySelection.ts                                     |      55 |        0 |   33.33 |   58.82 | 19-41             
+  HourSelection.ts                                    |      55 |        0 |      40 |   56.25 | 18-41             
+  MinuteSelection.ts                                  |   42.86 |        0 |   18.18 |   47.37 | 18-51             
+  MonthSelection.ts                                   |      50 |        0 |      25 |   56.25 | 18-37             
+ external/chat/telegram/conversation/triggerSelectors |   46.62 |        0 |   21.43 |   51.72 |                   
+  DayOfMonthSelection.ts                              |   53.33 |      100 |    37.5 |   53.85 | 16-30             
+  DayOfWeekSelection.ts                               |   41.07 |        0 |   10.53 |   46.81 | 19-31,46-94       
+  HourSelection.ts                                    |      50 |        0 |   28.57 |   53.85 | 16-27             
+  MinuteSelection.ts                                  |      50 |      100 |   28.57 |   53.85 | 16-27             
+  RecurrenceTypeSelection.ts                          |   55.56 |      100 |   14.29 |   66.67 | 18-42             
+  ToHourSelection.ts                                  |   43.75 |      100 |      25 |   46.67 | 16-30             
+ external/chat/telegram/conversation/utils            |    12.5 |        0 |       0 |    12.5 |                   
+  builderFunctions.ts                                 |   11.11 |        0 |       0 |   11.11 | 14-24             
+  splitInChunks.ts                                    |   14.29 |        0 |       0 |   14.29 | 3-9               
+ external/http                                        |     100 |      100 |     100 |     100 |                   
+  http.ts                                             |     100 |      100 |     100 |     100 |                   
+ external/logging                                     |   98.31 |       80 |     100 |   98.28 |                   
+  Logger.ts                                           |   98.31 |       80 |     100 |   98.28 | 23                
+ external/storage                                     |     100 |      100 |     100 |     100 |                   
+  AbstractStorage.ts                                  |     100 |      100 |     100 |     100 |                   
+  SimpleFileStorage.ts                                |     100 |      100 |     100 |     100 |                   
+ external/timer                                       |     100 |      100 |     100 |     100 |                   
+  AbstractTimer.ts                                    |     100 |      100 |     100 |     100 |                   
+  CronTimer.ts                                        |     100 |      100 |     100 |     100 |                   
+  TestSetIntervalTimer.ts                             |     100 |      100 |     100 |     100 |                   
+ gateways                                             |     100 |      100 |     100 |     100 |                   
+  GateWay.ts                                          |     100 |      100 |     100 |     100 |                   
+ gateways/calendar                                    |     100 |      100 |     100 |     100 |                   
+  CalendarGateway.ts                                  |     100 |      100 |     100 |     100 |                   
+ gateways/communication                               |   94.89 |    78.13 |   95.83 |   94.81 |                   
+  CommunicationController.ts                          |   91.03 |    71.83 |   92.86 |   90.91 | 100,147,179-186   
+  CommunicationError.ts                               |     100 |      100 |     100 |     100 |                   
+  CommunicationPresenter.ts                           |     100 |    94.74 |     100 |     100 | 71                
+  Mappings.ts                                         |     100 |      100 |     100 |     100 |                   
+ gateways/communication/validation                    |   96.77 |    96.15 |     100 |   96.67 |                   
+  UpdateValidation.ts                                 |   96.77 |    96.15 |     100 |   96.67 | 36                
+ gateways/logging                                     |     100 |    78.57 |     100 |     100 |                   
+  GateWayLogger.ts                                    |     100 |    78.57 |     100 |     100 | 18,37-47          
+ gateways/persistence                                 |     100 |      100 |     100 |     100 |                   
+  PersistenceGateway.ts                               |     100 |      100 |     100 |     100 |                   
+ gateways/trigger                                     |     100 |      100 |     100 |     100 |                   
+  TriggerGateway.ts                                   |     100 |      100 |     100 |     100 |                   
+ useCases                                             |     100 |      100 |     100 |     100 |                   
+  UseCase.ts                                          |     100 |      100 |     100 |     100 |                   
+ useCases/administration                              |     100 |      100 |     100 |     100 |                   
+  AddAdmin.ts                                         |     100 |      100 |     100 |     100 |                   
+  InitializeChat.ts                                   |     100 |      100 |     100 |     100 |                   
+  RemoveAdmin.ts                                      |     100 |      100 |     100 |     100 |                   
+ useCases/interfaces                                  |     100 |      100 |     100 |     100 |                   
+  Communication.ts                                    |     100 |      100 |     100 |     100 |                   
+  Persistence.ts                                      |     100 |      100 |     100 |     100 |                   
+ useCases/logging                                     |     100 |       75 |     100 |     100 |                   
+  UseCaseLogger.ts                                    |     100 |       75 |     100 |     100 | 22-27             
+ useCases/reminder                                    |     100 |      100 |     100 |     100 |                   
+  Reminder.ts                                         |     100 |      100 |     100 |     100 |                   
+ useCases/startAssistant                              |     100 |      100 |     100 |     100 |                   
+  StartAssistant.ts                                   |     100 |      100 |     100 |     100 |                   
+ useCases/triggerConfig                               |     100 |      100 |     100 |     100 |                   
+  DeleteConfig.ts                                     |     100 |      100 |     100 |     100 |                   
+  ReadConfig.ts                                       |     100 |      100 |     100 |     100 |                   
+  SetConfig.ts                                        |     100 |      100 |     100 |     100 |                   
+ useCases/utils                                       |     100 |      100 |     100 |     100 |                   
+  Persistence.ts                                      |     100 |      100 |     100 |     100 |                   
+  TimeFrame.ts                                        |     100 |      100 |     100 |     100 |                   
+------------------------------------------------------|---------|----------|---------|---------|-------------------

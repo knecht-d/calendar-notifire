@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RecurrenceTypeSelection requestInput should have the correct keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      "Stündlich(TRIGGER_REC_TYPE-h)",
+      "Täglich(TRIGGER_REC_TYPE-d)",
+      "Monatlich(TRIGGER_REC_TYPE-m)",
+    ],
+    Object {
+      "columns": 1,
+    },
+  ],
+]
+`;

@@ -100,7 +100,50 @@ describe("End to end test", () => {
                     expect(storage.storedData).toEqual({});
                 });
                 it("set trigger should fail if chat is not initialized", async () => {
-                    await chat.fireSet("chat1", "user1", "trigger1 m 15 17:30 M+1,t1,s0,m0 M+2,t1,s0,m0");
+                    await chat.fireSet("chat1", "user1", "trigger1", {
+                        recurrence: {
+                            type: "m",
+                            dayOfMonth: 15,
+                            hour: 17,
+                            minute: 30,
+                        },
+                        frameStart: {
+                            month: {
+                                value: 1,
+                                fixed: false,
+                            },
+                            day: {
+                                value: 1,
+                                fixed: true,
+                            },
+                            hour: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            minute: {
+                                value: 0,
+                                fixed: true,
+                            },
+                        },
+                        frameEnd: {
+                            month: {
+                                value: 2,
+                                fixed: false,
+                            },
+                            day: {
+                                value: 1,
+                                fixed: true,
+                            },
+                            hour: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            minute: {
+                                value: 0,
+                                fixed: true,
+                            },
+                        },
+                    });
                     expect(chat.send).toHaveBeenCalledTimes(1);
                     expect(chat.send).toHaveBeenCalledWith(
                         "chat1",
@@ -193,7 +236,50 @@ describe("End to end test", () => {
 
     describe("trigger settings", () => {
         it("should set a new trigger", async () => {
-            await chat.fireSet("chat1", "user1", "trigger1 m 15 17:30 M+1,t1,s0,m0 M+2,t1,s0,m0");
+            await chat.fireSet("chat1", "user1", "trigger1", {
+                recurrence: {
+                    type: "m",
+                    dayOfMonth: 15,
+                    hour: 17,
+                    minute: 30,
+                },
+                frameStart: {
+                    month: {
+                        value: 1,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+                frameEnd: {
+                    month: {
+                        value: 2,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+            });
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith("chat1", "Setzen von trigger1 erfolgreich.");
             expect(timer.triggers["chat1|trigger1"]).toEqual("30 17 15 * *");
@@ -203,7 +289,50 @@ describe("End to end test", () => {
             });
         });
         it("should fail to set a new trigger if user is not an admin", async () => {
-            await chat.fireSet("chat1", "noAdmin", "trigger2 m 15 17:30 M+1,t1,s0,m0 M+2,t1,s0,m0");
+            await chat.fireSet("chat1", "noAdmin", "trigger2", {
+                recurrence: {
+                    type: "m",
+                    dayOfMonth: 15,
+                    hour: 17,
+                    minute: 30,
+                },
+                frameStart: {
+                    month: {
+                        value: 1,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+                frameEnd: {
+                    month: {
+                        value: 2,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+            });
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith("chat1", "Setzen von trigger2 fehlgeschlagen. {MISSING_PRIVILEGES}");
             expect(timer.triggers["chat1|trigger2"]).toBeUndefined();
@@ -213,7 +342,50 @@ describe("End to end test", () => {
             });
         });
         it("should update an existing trigger", async () => {
-            await chat.fireSet("chat1", "user1", "trigger1 m 15 17:45 M+1,t1,s0,m0 M+2,t1,s0,m0");
+            await chat.fireSet("chat1", "user1", "trigger1", {
+                recurrence: {
+                    type: "m",
+                    dayOfMonth: 15,
+                    hour: 17,
+                    minute: 45,
+                },
+                frameStart: {
+                    month: {
+                        value: 1,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+                frameEnd: {
+                    month: {
+                        value: 2,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+            });
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith("chat1", "Setzen von trigger1 erfolgreich.");
             expect(timer.triggers["chat1|trigger1"]).toEqual("45 17 15 * *");
@@ -223,7 +395,50 @@ describe("End to end test", () => {
             });
         });
         it("should add a additional trigger", async () => {
-            await chat.fireSet("chat1", "user1", "trigger2 m 15 17:30 M+1,t1,s0,m0 M+2,t1,s0,m0");
+            await chat.fireSet("chat1", "user1", "trigger2", {
+                recurrence: {
+                    type: "m",
+                    dayOfMonth: 15,
+                    hour: 17,
+                    minute: 30,
+                },
+                frameStart: {
+                    month: {
+                        value: 1,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+                frameEnd: {
+                    month: {
+                        value: 2,
+                        fixed: false,
+                    },
+                    day: {
+                        value: 1,
+                        fixed: true,
+                    },
+                    hour: {
+                        value: 0,
+                        fixed: true,
+                    },
+                    minute: {
+                        value: 0,
+                        fixed: true,
+                    },
+                },
+            });
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith("chat1", "Setzen von trigger2 erfolgreich.");
             expect(timer.triggers["chat1|trigger1"]).toEqual("45 17 15 * *");
@@ -268,7 +483,7 @@ describe("End to end test", () => {
         it("should send the events if a trigger fires", async () => {
             await timer.fireTrigger("chat1|trigger1");
             expect(chat.send).toHaveBeenCalledTimes(1);
-            expect(chat.send).toHaveBeenCalledWith("chat1", "Termine: []");
+            expect(chat.send).toHaveBeenCalledWith("chat1", "Termine:\n");
             expect(storage.storedData).toEqual({
                 chat1:
                     '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',

@@ -1,3 +1,4 @@
+import { RecurrenceType } from "../../../../src/entities";
 import { CommunicationController } from "../../../../src/gateways";
 import { PersistedRecurrenceType } from "../../../../src/useCases";
 import { MockUseCase } from "../../../mocks";
@@ -38,7 +39,17 @@ describe("CommunicationController", () => {
     });
     describe("set", () => {
         it("should send the basic information", async () => {
-            await controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+            await controller.set("chat", "user", "trigger", {
+                recurrence: {
+                    type: RecurrenceType.daily,
+                    daysOfWeek: {
+                        monday: true,
+                        tuesday: true,
+                    },
+                    hour: 17,
+                    minute: 0,
+                },
+            });
             expect(setMock.execute).toHaveBeenCalledWith(
                 expect.objectContaining({
                     chatId: "chat",
@@ -48,71 +59,25 @@ describe("CommunicationController", () => {
             );
         });
 
-        describe("cron", () => {
-            it("should use the cron config as is ", async () => {
-                await controller.set("chat", "user", "trigger c 38 8-18 * * 6 - s+1,m0");
-                expect(setMock.execute).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        config: {
-                            recurrence: {
-                                type: PersistedRecurrenceType.cron,
-                                cron: "38 8-18 * * 6",
-                            },
-                            frameStart: {},
-                            frameEnd: {
-                                hour: {
-                                    value: 1,
-                                    fixed: false,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
-                        },
-                    }),
-                );
-            });
-        });
-
         describe("hourly", () => {
-            it("should reduce the end hours, the minutes are less then the minutes of start", async () => {
-                await controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:15 - s+1,m0");
-                expect(setMock.execute).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        config: {
-                            recurrence: {
-                                type: PersistedRecurrenceType.hourly,
-                                days: {
-                                    monday: true,
-                                    tuesday: true,
-                                    wednesday: true,
-                                    thursday: true,
-                                    friday: true,
-                                    saturday: true,
-                                    sunday: true,
-                                },
-                                fromHour: 7,
-                                toHour: 19,
-                                minute: 30,
-                            },
-                            frameStart: {},
-                            frameEnd: {
-                                hour: {
-                                    value: 1,
-                                    fixed: false,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
+            it("should work", async () => {
+                await controller.set("chat", "user", "trigger", {
+                    recurrence: {
+                        type: PersistedRecurrenceType.hourly,
+                        daysOfWeek: {
+                            monday: true,
+                            tuesday: true,
+                            wednesday: true,
+                            thursday: true,
+                            friday: true,
+                            saturday: true,
+                            sunday: true,
                         },
-                    }),
-                );
-            });
-            it("should keep the end hours, the minutes are more then the minutes of start", async () => {
-                await controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:45 - s+1,m0");
+                        hour: 7,
+                        hourEnd: 20,
+                        minute: 30,
+                    },
+                });
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -132,51 +97,7 @@ describe("CommunicationController", () => {
                                 minute: 30,
                             },
                             frameStart: {},
-                            frameEnd: {
-                                hour: {
-                                    value: 1,
-                                    fixed: false,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
-                        },
-                    }),
-                );
-            });
-            it("should keep the end hours, the minutes are eqial to the minutes of start", async () => {
-                await controller.set("chat", "user", "trigger s mo,di,mi,do,fr,sa,so 07:30 20:30 - s+1,m0");
-                expect(setMock.execute).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        config: {
-                            recurrence: {
-                                type: PersistedRecurrenceType.hourly,
-                                days: {
-                                    monday: true,
-                                    tuesday: true,
-                                    wednesday: true,
-                                    thursday: true,
-                                    friday: true,
-                                    saturday: true,
-                                    sunday: true,
-                                },
-                                fromHour: 7,
-                                toHour: 20,
-                                minute: 30,
-                            },
-                            frameStart: {},
-                            frameEnd: {
-                                hour: {
-                                    value: 1,
-                                    fixed: false,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
+                            frameEnd: {},
                         },
                     }),
                 );
@@ -185,7 +106,17 @@ describe("CommunicationController", () => {
 
         describe("daily", () => {
             it("should work", async () => {
-                await controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 t+2,s0,m0");
+                await controller.set("chat", "user", "trigger", {
+                    recurrence: {
+                        type: PersistedRecurrenceType.daily,
+                        daysOfWeek: {
+                            monday: true,
+                            tuesday: true,
+                        },
+                        hour: 17,
+                        minute: 0,
+                    },
+                });
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -194,43 +125,12 @@ describe("CommunicationController", () => {
                                 days: {
                                     monday: true,
                                     tuesday: true,
-                                    wednesday: false,
-                                    thursday: false,
-                                    friday: false,
-                                    saturday: false,
-                                    sunday: false,
                                 },
                                 hour: 17,
                                 minute: 0,
                             },
-                            frameStart: {
-                                day: {
-                                    value: 1,
-                                    fixed: false,
-                                },
-                                hour: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
-                            frameEnd: {
-                                day: {
-                                    value: 2,
-                                    fixed: false,
-                                },
-                                hour: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
+                            frameStart: {},
+                            frameEnd: {},
                         },
                     }),
                 );
@@ -239,7 +139,14 @@ describe("CommunicationController", () => {
 
         describe("monthly", () => {
             it("should work", async () => {
-                await controller.set("chat", "user", "trigger m 25 14:05 M+1,t0,s0,m0 M+2,t0,s0,m0");
+                await controller.set("chat", "user", "trigger", {
+                    recurrence: {
+                        type: PersistedRecurrenceType.monthly,
+                        dayOfMonth: 25,
+                        hour: 14,
+                        minute: 5,
+                    },
+                });
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: {
@@ -249,6 +156,63 @@ describe("CommunicationController", () => {
                                 hour: 14,
                                 minute: 5,
                             },
+                            frameStart: {},
+                            frameEnd: {},
+                        },
+                    }),
+                );
+            });
+        });
+
+        describe("frames", () => {
+            it("should work", async () => {
+                await controller.set("chat", "user", "trigger", {
+                    recurrence: {
+                        type: PersistedRecurrenceType.monthly,
+                        dayOfMonth: 25,
+                        hour: 14,
+                        minute: 5,
+                    },
+                    frameStart: {
+                        month: {
+                            value: 1,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
+                    },
+                    frameEnd: {
+                        month: {
+                            value: 2,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
+                    },
+                });
+                expect(setMock.execute).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        config: expect.objectContaining({
                             frameStart: {
                                 month: {
                                     value: 1,
@@ -285,7 +249,7 @@ describe("CommunicationController", () => {
                                     fixed: true,
                                 },
                             },
-                        },
+                        }),
                     }),
                 );
             });
@@ -306,298 +270,489 @@ describe("CommunicationController", () => {
                 const error = errrorReporterMock.sendCommunicationError.mock.calls[0][1];
                 expect(error.message).toEqual(expect.stringMatching(new RegExp(`^${expected.key}`)));
                 expect(error.key).toEqual(expected.key);
-                expect(error.given).toEqual(expected.given);
-                expect(error.expected).toEqual(expected.expected);
-                expect(error.example).toEqual(expected.example);
+                if (expected.given) {
+                    expect(error.given).toEqual(expected.given);
+                }
+                if (expected.expected) {
+                    expect(error.expected).toEqual(expected.expected);
+                }
+                if (expected.example) {
+                    expect(error.example).toEqual(expected.example);
+                }
             };
 
             it("invalid recurrence", async () => {
-                await testException(() => controller.set("chat", "user", "trigger d mo,di 17:00 t+1,s0,m0 t+2,s0,m0"), {
-                    key: "INVALID_RECURRENCE_TYPE",
-                    given: "d",
-                    expected: "m,t,s,c",
-                });
+                await testException(
+                    () =>
+                        controller.set("chat", "user", "trigger", {
+                            recurrence: {
+                                type: "None" as any,
+                                dayOfMonth: 25,
+                                hour: 14,
+                                minute: 5,
+                            },
+                        }),
+                    {
+                        key: "INVALID_RECURRENCE_TYPE",
+                        given: "None",
+                    },
+                );
             });
 
             it("other error", async () => {
-                await controller.set("chat", "user", undefined as any);
+                await controller.set("chat", "user", "trigger", undefined as any);
                 expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
                 expect(errrorReporterMock.sendError).toHaveBeenCalledTimes(1);
                 const error = errrorReporterMock.sendError.mock.calls[0][1];
                 expect(error).toEqual(expect.stringContaining("of undefined"));
             });
 
-            describe("cron", () => {
-                describe("valid", () => {
-                    it.each([
-                        ["* * * * 0"],
-                        ["* * * * 1"],
-                        ["* * * * 2"],
-                        ["* * * * 3"],
-                        ["* * * * 4"],
-                        ["* * * * 6"],
-                        ["* * * * 1-4,5"],
-                        ["* * * * 0,2-4,2-6"],
-                        ["* * * 0,2-4,2-6 *"],
-                        ["* * * 0,3,9-11 *"],
-                        ["* * 1 * *"],
-                        ["* * 21 * *"],
-                        ["* * 31 * *"],
-                        ["* * 1,15 * *"],
-                        ["* 0 * * *"],
-                        ["* 13 * * *"],
-                        ["* 23 * * *"],
-                        ["0 * * * *"],
-                        ["3 * * * *"],
-                        ["59 * * * *"],
-                        ["2-26,42 * * * *"],
-                    ])("%s should be valid", async cron => {
-                        await controller.set("chat", "user", `trigger c ${cron} - -`);
-                        expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(0);
-                    });
-                });
-                describe("invalid", () => {
-                    it.each([
-                        ["* * * * -0"],
-                        ["* * * * 1-"],
-                        ["* * * * 2,"],
-                        ["* * * * ,3"],
-                        ["* * * * 7"],
-                        ["* * * * 01"],
-                        ["* * * * 3,,4"],
-                        ["* * * 12 *"],
-                        ["* * * 01 *"],
-                        ["* * 01 * *"],
-                        ["* * 32 * *"],
-                        ["* -1 * * *"],
-                        ["* 24 * * *"],
-                        ["60 * * * *"],
-                        ["02 * * * *"],
-                    ])("%s should be valid", async cron => {
-                        await controller.set("chat", "user", `trigger c ${cron} - -`);
-                        expect(errrorReporterMock.sendCommunicationError).toHaveBeenCalledTimes(1);
-                    });
-                });
-                describe("specific", () => {
-                    it("mising argument", async () => {
-                        await testException(() => controller.set("chat", "user", "trigger c 38 8-18 * 6 - s+1,m0"), {
-                            key: "INVALID_NUMBER_OF_ARGUMENTS",
-                            given: "6",
-                            expected:
-                                "7 (c [minutes 0-59] [hours 0-23] [day of month 1-31] [month 0-11 (Jan - Dec)] [day of week 0-6 (Sun - Sat)] [start] [end])",
-                            example: "c 38 8-18 * * 6 M+1,t1,s0,m0 M+2,t1,s0,m",
-                        });
-                    });
-                    it("Invalid hour", async () => {
-                        await testException(() => controller.set("chat", "user", "trigger c 38 8-18 * * 7 - s+1,m0"), {
-                            key: "INVALID_CRON_SETTING",
-                            given: "7",
-                            expected: "0-6 (Sun - Sat)",
-                            example: "0,2-4",
-                        });
-                    });
-
-                    it("invalid start frame", async () => {
-                        await testException(
-                            () => controller.set("chat", "user", "trigger c 38 8-18 * * 6 t*1,s0,m0 t+2,s0,m0"),
-                            {
-                                key: "INVALID_FRAME_CONFIG",
-                                given: "t*1,s0,m0",
-                                expected: "[j|M|t|s|m](+|-)0-9 -",
-                                example: "t+1,s0,m0",
-                            },
-                        );
-                    });
-                    it("invalid end frame", async () => {
-                        await testException(
-                            () => controller.set("chat", "user", "trigger c 38 8-18 * * 6 t+1,s0,m0 *"),
-                            {
-                                key: "INVALID_FRAME_CONFIG",
-                                given: "*",
-                                expected: "[j|M|t|s|m](+|-)0-9 -",
-                                example: "t+1,s0,m0",
-                            },
-                        );
-                    });
-                });
-            });
-
             describe("hourly", () => {
-                it("mising argument", async () => {
+                it("missing days", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger s mo,di 07:00 t+1,s0,m0 t+2,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.hourly,
+                                    hour: 7,
+                                    hourEnd: 20,
+                                    minute: 30,
+                                },
+                            }),
                         {
-                            key: "INVALID_NUMBER_OF_ARGUMENTS",
-                            given: "4",
-                            expected: "5 (s [days] [start time] [end time] [start] [end])",
-                            example: "s mo,di,so 07:30 19:30 t+1,s0,m0 t+2,s0,m0",
+                            key: "INVALID_DAYS",
+                            given: "Missing",
+                            expected: "0-6",
+                            example: "2",
                         },
                     );
                 });
-                it("invalid days", async () => {
+                it("empty days", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger s mo,di, 07:00 17:00 t+1,s0,m0 t+2,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.hourly,
+                                    daysOfWeek: {},
+                                    hour: 7,
+                                    hourEnd: 20,
+                                    minute: 30,
+                                },
+                            }),
                         {
                             key: "INVALID_DAYS",
-                            given: "mo,di,",
-                            expected: "mo|di|mi|do|fr|sa|so",
-                            example: "mo,di,so",
+                            given: "None Set",
+                            expected: "0-6",
+                            example: "2",
                         },
                     );
                 });
                 it("invalid start time", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger s mo,di 07:60 19:00 t+1,s0,m0 t+2,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.hourly,
+                                    daysOfWeek: {
+                                        monday: true,
+                                    },
+                                    hour: 36,
+                                    hourEnd: 20,
+                                    minute: 30,
+                                },
+                            }),
                         {
                             key: "INVALID_TIME",
-                            given: "07:60",
-                            expected: "0:0 - 23:59",
-                            example: "17:23",
+                            given: "36",
+                            expected: "0-23",
+                            example: "17",
                         },
                     );
                 });
                 it("invalid end time", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger s mo,di 07:00 24:00 t+1,s0,m0 t+2,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.hourly,
+                                    daysOfWeek: {
+                                        monday: true,
+                                    },
+                                    hour: 10,
+                                    hourEnd: 24,
+                                    minute: 30,
+                                },
+                            }),
                         {
                             key: "INVALID_TIME",
-                            given: "24:00",
-                            expected: "0:0 - 23:59",
-                            example: "17:23",
+                            given: "24",
+                            expected: "10-23",
+                            example: "11",
                         },
                     );
                 });
-                it("invalid start frame", async () => {
+                it("invalid end time (lower than start)", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t*1,s0,m0 t+2,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.hourly,
+                                    daysOfWeek: {
+                                        monday: true,
+                                    },
+                                    hour: 10,
+                                    hourEnd: 8,
+                                    minute: 30,
+                                },
+                            }),
                         {
-                            key: "INVALID_FRAME_CONFIG",
-                            given: "t*1,s0,m0",
-                            expected: "[j|M|t|s|m](+|-)0-9 -",
-                            example: "t+1,s0,m0",
+                            key: "INVALID_TIME",
+                            given: "8",
+                            expected: "10-23",
+                            example: "11",
                         },
                     );
                 });
-                it("invalid end frame", async () => {
+                it("invalid end time (lower than start - 23)", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger s mo,di 07:00 20:00 t+1,s0,m0 *"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.hourly,
+                                    daysOfWeek: {
+                                        monday: true,
+                                    },
+                                    hour: 23,
+                                    hourEnd: 20,
+                                    minute: 30,
+                                },
+                            }),
                         {
-                            key: "INVALID_FRAME_CONFIG",
-                            given: "*",
-                            expected: "[j|M|t|s|m](+|-)0-9 -",
-                            example: "t+1,s0,m0",
+                            key: "INVALID_TIME",
+                            given: "20",
+                            expected: "23-23",
+                            example: "23",
                         },
                     );
                 });
             });
 
             describe("daily", () => {
-                it("mising argument", async () => {
-                    await testException(() => controller.set("chat", "user", "trigger t mo,di t+1,s0,m0 t+2,s0,m0"), {
-                        key: "INVALID_NUMBER_OF_ARGUMENTS",
-                        given: "3",
-                        expected: "4 (t [days] [time] [start] [end])",
-                        example: "t mo,di,so 17:30 t+1,s0,m0 t+2,s0,m0",
-                    });
-                });
-                it("invalid days", async () => {
+                it("missing days", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger t mo,di, 17:00 t+1,s0,m0 t+2,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.daily,
+                                    hour: 7,
+                                    minute: 30,
+                                },
+                            }),
                         {
                             key: "INVALID_DAYS",
-                            given: "mo,di,",
-                            expected: "mo|di|mi|do|fr|sa|so",
-                            example: "mo,di,so",
+                            given: "Missing",
+                            expected: "0-6",
+                            example: "2",
+                        },
+                    );
+                });
+                it("empty days", async () => {
+                    await testException(
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.daily,
+                                    daysOfWeek: {},
+                                    hour: 7,
+                                    minute: 30,
+                                },
+                            }),
+                        {
+                            key: "INVALID_DAYS",
+                            given: "None Set",
+                            expected: "0-6",
+                            example: "2",
                         },
                     );
                 });
                 it("invalid time", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger t mo,di 24:00 t+1,s0,m0 t+2,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.daily,
+                                    daysOfWeek: {
+                                        monday: true,
+                                    },
+                                    hour: 36,
+                                    minute: 30,
+                                },
+                            }),
                         {
                             key: "INVALID_TIME",
-                            given: "24:00",
-                            expected: "0:0 - 23:59",
-                            example: "17:23",
+                            given: "36",
+                            expected: "0-23",
+                            example: "17",
                         },
                     );
-                });
-                it("invalid start frame", async () => {
-                    await testException(
-                        () => controller.set("chat", "user", "trigger t mo,di 17:00 t*1,s0,m0 t+2,s0,m0"),
-                        {
-                            key: "INVALID_FRAME_CONFIG",
-                            given: "t*1,s0,m0",
-                            expected: "[j|M|t|s|m](+|-)0-9 -",
-                            example: "t+1,s0,m0",
-                        },
-                    );
-                });
-                it("invalid end frame", async () => {
-                    await testException(() => controller.set("chat", "user", "trigger t mo,di 17:00 t+1,s0,m0 *"), {
-                        key: "INVALID_FRAME_CONFIG",
-                        given: "*",
-                        expected: "[j|M|t|s|m](+|-)0-9 -",
-                        example: "t+1,s0,m0",
-                    });
                 });
             });
 
             describe("monthly", () => {
-                it("mising argument", async () => {
-                    await testException(
-                        () => controller.set("chat", "user", "trigger m 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0"),
-                        {
-                            key: "INVALID_NUMBER_OF_ARGUMENTS",
-                            given: "3",
-                            expected: "4 (m [day of month] [time] [start] [end])",
-                            example: "m 15 17:30 M+1,t1,s0,m0 M+2,t1,s0,m0",
-                        },
-                    );
-                });
                 it("invalid day", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger m 40 17:00 M+1,t1,s0,m0 M+2,t1,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.monthly,
+                                    dayOfMonth: 42,
+                                    hour: 36,
+                                    minute: 30,
+                                },
+                            }),
                         {
                             key: "INVALID_DAY_OF_MONTH",
-                            given: "40",
+                            given: "42",
                             expected: "1-31",
-                            example: "13",
+                            example: "17",
                         },
                     );
                 });
                 it("invalid time", async () => {
                     await testException(
-                        () => controller.set("chat", "user", "trigger m 15 17:60 M+1,t1,s0,m0 M+2,t1,s0,m0"),
+                        () =>
+                            controller.set("chat", "user", "trigger", {
+                                recurrence: {
+                                    type: PersistedRecurrenceType.daily,
+                                    dayOfMonth: 10,
+                                    hour: 36,
+                                    minute: 30,
+                                },
+                            }),
                         {
                             key: "INVALID_TIME",
-                            given: "17:60",
-                            expected: "0:0 - 23:59",
-                            example: "17:23",
+                            given: "36",
+                            expected: "0-23",
+                            example: "17",
                         },
                     );
                 });
-                it("invalid start frame", async () => {
-                    await testException(
-                        () => controller.set("chat", "user", "trigger m 15 17:00 M+1,T1,s0,m0 M+2,t1,s0,m0"),
-                        {
-                            key: "INVALID_FRAME_CONFIG",
-                            given: "M+1,T1,s0,m0",
-                            expected: "[j|M|t|s|m](+|-)0-9 -",
-                            example: "t+1,s0,m0",
-                        },
-                    );
+            });
+
+            describe("frames", () => {
+                describe("start", () => {
+                    it("no value for year", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {
+                                        year: {},
+                                    },
+                                    frameEnd: {},
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for year missing",
+                            },
+                        );
+                    });
+                    it("no value for month", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {
+                                        month: {},
+                                    },
+                                    frameEnd: {},
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for month missing",
+                            },
+                        );
+                    });
+                    it("no value for day", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {
+                                        day: {},
+                                    },
+                                    frameEnd: {},
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for day missing",
+                            },
+                        );
+                    });
+                    it("no value for hour", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {
+                                        hour: {},
+                                    },
+                                    frameEnd: {},
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for hour missing",
+                            },
+                        );
+                    });
+                    it("no value for minute", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {
+                                        minute: {},
+                                    },
+                                    frameEnd: {},
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for minute missing",
+                            },
+                        );
+                    });
                 });
-                it("invalid end frame", async () => {
-                    await testException(
-                        () => controller.set("chat", "user", "trigger m 15 17:00 M+1,t1,s0,m0 M+2,t/1,s0,m0"),
-                        {
-                            key: "INVALID_FRAME_CONFIG",
-                            given: "M+2,t/1,s0,m0",
-                            expected: "[j|M|t|s|m](+|-)0-9 -",
-                            example: "t+1,s0,m0",
-                        },
-                    );
+                describe("end", () => {
+                    it("no value for year", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {},
+                                    frameEnd: {
+                                        year: {},
+                                    },
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for year missing",
+                            },
+                        );
+                    });
+                    it("no value for month", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {},
+                                    frameEnd: {
+                                        month: {},
+                                    },
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for month missing",
+                            },
+                        );
+                    });
+                    it("no value for day", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {},
+                                    frameEnd: {
+                                        day: {},
+                                    },
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for day missing",
+                            },
+                        );
+                    });
+                    it("no value for hour", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {},
+                                    frameEnd: {
+                                        hour: {},
+                                    },
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for hour missing",
+                            },
+                        );
+                    });
+                    it("no value for minute", async () => {
+                        await testException(
+                            () =>
+                                controller.set("chat", "user", "trigger", {
+                                    recurrence: {
+                                        type: PersistedRecurrenceType.monthly,
+                                        dayOfMonth: 25,
+                                        hour: 14,
+                                        minute: 5,
+                                    },
+                                    frameStart: {},
+                                    frameEnd: {
+                                        minute: {},
+                                    },
+                                }),
+                            {
+                                key: "INVALID_FRAME_CONFIG",
+                                given: "Value for minute missing",
+                            },
+                        );
+                    });
                 });
             });
         });

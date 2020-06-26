@@ -213,7 +213,8 @@ describe("CommunicationPresenter", () => {
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    `Succ - EVENTS ${JSON.stringify(events, null, "  ")}`,
+                    `Succ - EVENTS Event:
+1.5.2020 12:00 - 12:00`,
                 );
             });
         });

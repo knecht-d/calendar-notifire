@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HourSelection requestInput should have the correct keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      "0(TRIGGER_HOUR-0)",
+      "1(TRIGGER_HOUR-1)",
+      "2(TRIGGER_HOUR-2)",
+      "3(TRIGGER_HOUR-3)",
+      "4(TRIGGER_HOUR-4)",
+      "5(TRIGGER_HOUR-5)",
+      "6(TRIGGER_HOUR-6)",
+      "7(TRIGGER_HOUR-7)",
+      "8(TRIGGER_HOUR-8)",
+      "9(TRIGGER_HOUR-9)",
+      "10(TRIGGER_HOUR-10)",
+      "11(TRIGGER_HOUR-11)",
+      "12(TRIGGER_HOUR-12)",
+      "13(TRIGGER_HOUR-13)",
+      "14(TRIGGER_HOUR-14)",
+      "15(TRIGGER_HOUR-15)",
+      "16(TRIGGER_HOUR-16)",
+      "17(TRIGGER_HOUR-17)",
+      "18(TRIGGER_HOUR-18)",
+      "19(TRIGGER_HOUR-19)",
+      "20(TRIGGER_HOUR-20)",
+      "21(TRIGGER_HOUR-21)",
+      "22(TRIGGER_HOUR-22)",
+      "23(TRIGGER_HOUR-23)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;
