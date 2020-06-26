@@ -77,7 +77,7 @@ import { CronTimer, LogLevels, SimpleFileStorage, TelegramChat, WebCalendar } fr
             file: "data/chats.json",
         },
         chatData: {
-            botToken: process.env.BOT_TOKEN || "",
+            botToken: process.env.BOT_TOKEN || "***REMOVED***",
         },
         loggger: {
             level: LogLevels.info,

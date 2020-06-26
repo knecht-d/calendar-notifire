@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MonthSelection requestInput should have the correct keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "+1(FRAME_MONTH|+1)",
+        "+2(FRAME_MONTH|+2)",
+        "+3(FRAME_MONTH|+3)",
+      ],
+      Array [
+        "Aktueller Monat(FRAME_MONTH|SKIP)",
+      ],
+    ],
+    Object {
+      "columns": 2,
+    },
+  ],
+]
+`;

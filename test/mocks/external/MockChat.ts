@@ -1,4 +1,5 @@
 import { AbstractChat, ILogger } from "../../../src/external";
+import { IGenericConfig } from "../../../src/gateways";
 
 /* istanbul ignore file */
 export class MockChat extends AbstractChat<{}> {
@@ -9,8 +10,8 @@ export class MockChat extends AbstractChat<{}> {
         super(logger, setupData);
     }
 
-    public async fireSet(chatId: string, userId: string, payload: string) {
-        await this.communication!.set(chatId, userId, payload);
+    public async fireSet(chatId: string, userId: string, triggerId: string, config: IGenericConfig) {
+        await this.communication!.set(chatId, userId, triggerId, config);
     }
     public async fireInitChat(chatId: string, userId: string) {
         await this.communication!.initChat(chatId, userId);

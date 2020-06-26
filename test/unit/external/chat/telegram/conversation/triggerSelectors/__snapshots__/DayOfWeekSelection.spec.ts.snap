@@ -1,0 +1,293 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-friday: daysofweek 1`] = `
+Object {
+  "friday": false,
+  "monday": true,
+  "saturday": true,
+  "sunday": true,
+  "thursday": true,
+  "tuesday": true,
+  "wednesday": true,
+}
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-friday: keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "✓Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        " Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        "✓Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        "✓Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        "✓Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        "✓Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        "✓Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-monday: daysofweek 1`] = `
+Object {
+  "friday": true,
+  "monday": false,
+  "saturday": true,
+  "sunday": true,
+  "thursday": true,
+  "tuesday": true,
+  "wednesday": true,
+}
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-monday: keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        " Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        "✓Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        "✓Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        "✓Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        "✓Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        "✓Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        "✓Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-saturday: daysofweek 1`] = `
+Object {
+  "friday": true,
+  "monday": true,
+  "saturday": false,
+  "sunday": true,
+  "thursday": true,
+  "tuesday": true,
+  "wednesday": true,
+}
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-saturday: keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "✓Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        "✓Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        "✓Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        " Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        "✓Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        "✓Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        "✓Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-sunday: daysofweek 1`] = `
+Object {
+  "friday": true,
+  "monday": true,
+  "saturday": true,
+  "sunday": false,
+  "thursday": true,
+  "tuesday": true,
+  "wednesday": true,
+}
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-sunday: keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "✓Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        "✓Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        "✓Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        "✓Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        "✓Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        " Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        "✓Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-thursday: daysofweek 1`] = `
+Object {
+  "friday": true,
+  "monday": true,
+  "saturday": true,
+  "sunday": true,
+  "thursday": false,
+  "tuesday": true,
+  "wednesday": true,
+}
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-thursday: keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "✓Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        "✓Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        "✓Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        "✓Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        "✓Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        "✓Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        " Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-tuesday: daysofweek 1`] = `
+Object {
+  "friday": true,
+  "monday": true,
+  "saturday": true,
+  "sunday": true,
+  "thursday": true,
+  "tuesday": false,
+  "wednesday": true,
+}
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-tuesday: keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "✓Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        "✓Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        " Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        "✓Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        "✓Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        "✓Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        "✓Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-wednesday: daysofweek 1`] = `
+Object {
+  "friday": true,
+  "monday": true,
+  "saturday": true,
+  "sunday": true,
+  "thursday": true,
+  "tuesday": true,
+  "wednesday": false,
+}
+`;
+
+exports[`DayOfWeekSelection handler should handle TRIGGER_DAYS_OF_WEEK-wednesday: keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "✓Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        "✓Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        "✓Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        "✓Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        " Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        "✓Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        "✓Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;
+
+exports[`DayOfWeekSelection requestInput should have the correct keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "✓Montag (TRIGGER_DAYS_OF_WEEK-monday)",
+        "✓Freitag (TRIGGER_DAYS_OF_WEEK-friday)",
+      ],
+      Array [
+        "✓Dienstag (TRIGGER_DAYS_OF_WEEK-tuesday)",
+        "✓Samstag (TRIGGER_DAYS_OF_WEEK-saturday)",
+      ],
+      Array [
+        "✓Mittwoch (TRIGGER_DAYS_OF_WEEK-wednesday)",
+        "✓Sonntag (TRIGGER_DAYS_OF_WEEK-sunday)",
+      ],
+      Array [
+        "✓Donnerstag (TRIGGER_DAYS_OF_WEEK-thursday)",
+        "Fertig(TRIGGER_DAYS_OF_WEEK-DONE)",
+      ],
+    ],
+    Object {},
+  ],
+]
+`;

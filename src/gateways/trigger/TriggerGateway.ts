@@ -43,9 +43,6 @@ export class TriggerGateway extends GateWay<IDependencies> implements ITimerStop
     }
 
     private buildCron(recurrence: IPersistedRecurrenceRule) {
-        if (recurrence.type === PersistedRecurrenceType.cron) {
-            return recurrence.cron;
-        }
         const minute = `${recurrence.minute}`;
         const hour = (rec => {
             switch (rec.type) {
@@ -69,7 +66,7 @@ export class TriggerGateway extends GateWay<IDependencies> implements ITimerStop
         const dayWeek = (rec => {
             switch (rec.type) {
                 case PersistedRecurrenceType.daily:
-                case PersistedRecurrenceType.hourly:
+                case PersistedRecurrenceType.hourly: {
                     const days = [
                         rec.days.sunday ? "0" : "",
                         rec.days.monday ? "1" : "",
@@ -82,6 +79,7 @@ export class TriggerGateway extends GateWay<IDependencies> implements ITimerStop
                         .filter(value => !!value)
                         .join(",");
                     return days;
+                }
                 case PersistedRecurrenceType.monthly:
                     return "*";
             }

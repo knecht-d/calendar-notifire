@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MinuteSelection requestInput should have the correct keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      "0(TRIGGER_MINUTE-0)",
+      "10(TRIGGER_MINUTE-10)",
+      "15(TRIGGER_MINUTE-15)",
+      "20(TRIGGER_MINUTE-20)",
+      "30(TRIGGER_MINUTE-30)",
+      "40(TRIGGER_MINUTE-40)",
+      "45(TRIGGER_MINUTE-45)",
+      "50(TRIGGER_MINUTE-50)",
+    ],
+    Object {
+      "columns": 4,
+    },
+  ],
+]
+`;

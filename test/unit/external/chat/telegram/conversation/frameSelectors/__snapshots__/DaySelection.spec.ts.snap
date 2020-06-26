@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DaySelection requestInput should have the correct keyboard 1`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        "+1(FRAME_DAY|+1)",
+        "+2(FRAME_DAY|+2)",
+        "+3(FRAME_DAY|+3)",
+        "+4(FRAME_DAY|+4)",
+        "+5(FRAME_DAY|+5)",
+      ],
+      Array [
+        "+6(FRAME_DAY|+6)",
+        "+7(FRAME_DAY|+7)",
+        "+8(FRAME_DAY|+8)",
+        "+9(FRAME_DAY|+9)",
+        "+10(FRAME_DAY|+10)",
+      ],
+      Array [
+        "Aktueller Tag(FRAME_DAY|SKIP)",
+      ],
+    ],
+    Object {
+      "columns": 5,
+    },
+  ],
+]
+`;

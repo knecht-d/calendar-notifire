@@ -9,13 +9,12 @@ interface IMappings {
     errorCodes: { [key in CommunicationErrorCode]: string };
     successMessages: { [key in MessageKey]: string };
     errorMessages: { [key in MessageKey]: string };
-    elements: { [key: string]: string };
 }
 
 export const Mappings: IMappings = {
     recurrence: {
-        s: "h" as PersistedRecurrenceType,
-        t: "d" as PersistedRecurrenceType,
+        h: "h" as PersistedRecurrenceType,
+        d: "d" as PersistedRecurrenceType,
         m: "m" as PersistedRecurrenceType,
         c: "c" as PersistedRecurrenceType,
     },
@@ -62,8 +61,5 @@ export const Mappings: IMappings = {
         READ_CONFIG: "Lesen der Konfiguration fehlgeschlagen.{message}",
         INITIALIZE_CHAT: "Initialisierung des Chats fehlgeschlagen.{message}",
         EVENTS: "Lesen der Termine fehlgeschlagen.{message}",
-    },
-    elements: {
-        EVENT: "{title}:\n  {start} - {end}{description}{location}",
     },
 };
