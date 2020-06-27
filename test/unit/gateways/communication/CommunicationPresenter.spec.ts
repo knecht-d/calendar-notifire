@@ -1,41 +1,10 @@
 // import { Mappings } from "./Mappings";
 
 import { CommunicationPresenter } from "../../../../src/gateways";
-import { CommunicationError } from "../../../../src/gateways/communication/CommunicationError";
+import { CommunicationError, CommunicationErrorCode } from "../../../../src/gateways/communication/CommunicationError";
 import { MessageKey } from "../../../../src/useCases";
 import { MockLogger } from "../../../mocks/external/MockLogger";
 
-jest.mock("../../../../src/gateways/communication/Mappings", () => {
-    // Works and lets you check for constructor calls:
-    return {
-        Mappings: {
-            errorCodes: {
-                GIVEN_EXPECTED_EXAMPLE: "Some Code: Given [{given}] Expected: {expected} Example: {example}",
-                NO_EXAMPLE: "Some Code: Given [{given}] Expected: {expected}",
-                NO_EXPECTED: "Some Code: Given [{given}] Example: {example}",
-                DUPLICATE_GIVEN: "Some Code: Given [{given}] Expected: {expected} Given [{given}]",
-            },
-            successMessages: {
-                ADD_ADMIN: "Succ - ADD_ADMIN {newAdmin}{message}",
-                REMOVE_ADMIN: "Succ - REMOVE_ADMIN {oldAdmin}{message}",
-                SET_CONFIG: "Succ - SET_CONFIG {triggerId}{message}",
-                DELETE_CONFIG: "Succ - DELETE_CONFIG {triggerId}{message}",
-                READ_CONFIG: "Succ - READ_CONFIG {timeFrames}{message}",
-                INITIALIZE_CHAT: "Succ - INITIALIZE_CHAT{message}",
-                EVENTS: "Succ - EVENTS {events}{message}",
-            },
-            errorMessages: {
-                ADD_ADMIN: "Err - ADD_ADMIN {newAdmin}{message}",
-                REMOVE_ADMIN: "Err - REMOVE_ADMIN {oldAdmin}{message}",
-                SET_CONFIG: "Err - SET_CONFIG {triggerId}{message}",
-                DELETE_CONFIG: "Err - DELETE_CONFIG {triggerId}{message}",
-                READ_CONFIG: "Err - READ_CONFIG {timeFrames}{message}",
-                INITIALIZE_CHAT: "Err - INITIALIZE_CHAT{message}",
-                EVENTS: "Err - EVENTS {events}{message}",
-            },
-        },
-    };
-});
 describe("CommunicationPresenter", () => {
     const mockCommunicationOut = {
         send: jest.fn(),
@@ -57,7 +26,7 @@ describe("CommunicationPresenter", () => {
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    `Succ - READ_CONFIG ${JSON.stringify(mockTriggers, null, "  ")}`,
+                    `Konfiguration: ${JSON.stringify(mockTriggers, null, "  ")}`,
                 );
             });
         });
@@ -70,7 +39,10 @@ describe("CommunicationPresenter", () => {
                     key: MessageKey.DELETE_CONFIG,
                     triggerId: "someTrigger",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - DELETE_CONFIG someTrigger");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Löschen von someTrigger erfolgreich.",
+                );
             });
             it("should add the additional message for succes", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -82,7 +54,7 @@ describe("CommunicationPresenter", () => {
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Succ - DELETE_CONFIG someTrigger Details",
+                    "Löschen von someTrigger erfolgreich. Details",
                 );
             });
             it("should send a plain error message to the chat", () => {
@@ -93,7 +65,10 @@ describe("CommunicationPresenter", () => {
                     hasError: true,
                     triggerId: "someTrigger",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - DELETE_CONFIG someTrigger");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Löschen von someTrigger fehlgeschlagen.",
+                );
             });
             it("should add the additional message for error", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -106,7 +81,7 @@ describe("CommunicationPresenter", () => {
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Err - DELETE_CONFIG someTrigger Details",
+                    "Löschen von someTrigger fehlgeschlagen. Details",
                 );
             });
         });
@@ -118,7 +93,10 @@ describe("CommunicationPresenter", () => {
                     key: MessageKey.SET_CONFIG,
                     triggerId: "someTrigger",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - SET_CONFIG someTrigger");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Setzen von someTrigger erfolgreich.",
+                );
             });
             it("should add the additional message for success", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -130,7 +108,7 @@ describe("CommunicationPresenter", () => {
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Succ - SET_CONFIG someTrigger Details",
+                    "Setzen von someTrigger erfolgreich. Details",
                 );
             });
             it("should send a plain error message to the chat", () => {
@@ -141,7 +119,10 @@ describe("CommunicationPresenter", () => {
                     hasError: true,
                     triggerId: "someTrigger",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - SET_CONFIG someTrigger");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Setzen von someTrigger fehlgeschlagen.",
+                );
             });
             it("should add the additional message for error", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -154,7 +135,7 @@ describe("CommunicationPresenter", () => {
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Err - SET_CONFIG someTrigger Details",
+                    "Setzen von someTrigger fehlgeschlagen. Details",
                 );
             });
         });
@@ -165,7 +146,10 @@ describe("CommunicationPresenter", () => {
                 presenter.send("someChat", {
                     key: MessageKey.INITIALIZE_CHAT,
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - INITIALIZE_CHAT");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Initialisierung des Chats erfolgreich.",
+                );
             });
             it("should add the additional message for success", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -174,7 +158,10 @@ describe("CommunicationPresenter", () => {
                     key: MessageKey.INITIALIZE_CHAT,
                     message: "Details",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - INITIALIZE_CHAT Details");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Initialisierung des Chats erfolgreich. Details",
+                );
             });
             it("should send a plain error message to the chat", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -183,7 +170,10 @@ describe("CommunicationPresenter", () => {
                     key: MessageKey.INITIALIZE_CHAT,
                     hasError: true,
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - INITIALIZE_CHAT");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Initialisierung des Chats fehlgeschlagen.",
+                );
             });
             it("should add the additional message for error", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -193,7 +183,10 @@ describe("CommunicationPresenter", () => {
                     hasError: true,
                     message: "Details",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - INITIALIZE_CHAT Details");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Initialisierung des Chats fehlgeschlagen. Details",
+                );
             });
         });
         describe("EVENTS", () => {
@@ -213,8 +206,9 @@ describe("CommunicationPresenter", () => {
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    `Succ - EVENTS Event:
-1.5.2020 12:00 - 12:00`,
+                    `Termine:
+Event:
+    1.5.2020 12:00 - 12:00`,
                 );
             });
         });
@@ -226,7 +220,10 @@ describe("CommunicationPresenter", () => {
                     key: MessageKey.ADD_ADMIN,
                     newAdmin: "admin",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - ADD_ADMIN admin");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "admin erfolgreich zu Administratoren hinzugefügt.",
+                );
             });
             it("should add the additional message for succes", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -236,7 +233,10 @@ describe("CommunicationPresenter", () => {
                     newAdmin: "admin",
                     message: "Details",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - ADD_ADMIN admin Details");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "admin erfolgreich zu Administratoren hinzugefügt. Details",
+                );
             });
             it("should send a plain error message to the chat", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -246,7 +246,10 @@ describe("CommunicationPresenter", () => {
                     hasError: true,
                     newAdmin: "admin",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - ADD_ADMIN admin");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Hinzufügen von admin zu Administratoren fehlgeschlagen.",
+                );
             });
             it("should add the additional message for error", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -257,7 +260,10 @@ describe("CommunicationPresenter", () => {
                     newAdmin: "admin",
                     message: "Details",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - ADD_ADMIN admin Details");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Hinzufügen von admin zu Administratoren fehlgeschlagen. Details",
+                );
             });
         });
         describe("REMOVE_ADMIN", () => {
@@ -268,7 +274,10 @@ describe("CommunicationPresenter", () => {
                     key: MessageKey.REMOVE_ADMIN,
                     oldAdmin: "admin",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - REMOVE_ADMIN admin");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "admin erfolgreich von Administratoren entfernt.",
+                );
             });
             it("should add the additional message for succes", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -278,7 +287,10 @@ describe("CommunicationPresenter", () => {
                     oldAdmin: "admin",
                     message: "Details",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Succ - REMOVE_ADMIN admin Details");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "admin erfolgreich von Administratoren entfernt. Details",
+                );
             });
             it("should send a plain error message to the chat", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -288,7 +300,10 @@ describe("CommunicationPresenter", () => {
                     hasError: true,
                     oldAdmin: "admin",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - REMOVE_ADMIN admin");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Entfernen von admin aus Administratoren fehlgeschlagen.",
+                );
             });
             it("should add the additional message for error", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
@@ -299,7 +314,10 @@ describe("CommunicationPresenter", () => {
                     oldAdmin: "admin",
                     message: "Details",
                 });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Err - REMOVE_ADMIN admin Details");
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Entfernen von admin aus Administratoren fehlgeschlagen. Details",
+                );
             });
         });
     });
@@ -312,53 +330,46 @@ describe("CommunicationPresenter", () => {
         });
     });
     describe("sendCommunicationError", () => {
-        it("should replace all properties", () => {
+        const error = {
+            given: "given",
+            expected: "expected",
+            example: "example",
+        };
+        const cases = [
+            [CommunicationErrorCode.MISSING_TRIGGER_ID, "Trigger ID Fehlt"],
+            [
+                CommunicationErrorCode.INVALID_RECURRENCE_TYPE,
+                `Falscher Typ für Wiederholungen [${error.given}]. Mögliche Werte: ${error.expected}`,
+            ],
+            [
+                CommunicationErrorCode.INVALID_NUMBER_OF_ARGUMENTS,
+                `Falsche Anzahl an Argumenten [${error.given}]. Beispiel: {example}`,
+            ],
+            [
+                CommunicationErrorCode.INVALID_DAYS,
+                `Falsche Eingabe für Wochentage [${error.given}]. Mögliche Werte: ${error.expected}`,
+            ],
+            [
+                CommunicationErrorCode.INVALID_DAY_OF_MONTH,
+                `Falsche Eingabe für Tag des Monats [${error.given}]. Mögliche Werte: ${error.expected}`,
+            ],
+            [
+                CommunicationErrorCode.INVALID_TIME,
+                `Falsche Zeitangabe [${error.given}]. Mögliche Werte: ${error.expected}`,
+            ],
+            [
+                CommunicationErrorCode.INVALID_FRAME_CONFIG,
+                `Falsche Eingabe für den Betrachtungszeitraum [${error.given}]. Beispiel: ${error.example}`,
+            ],
+        ];
+        it.each(cases)("%s should result in %s", (code, message) => {
             const presenter = new CommunicationPresenter(mockLogger);
             presenter.init({ communication: mockCommunicationOut });
             presenter.sendCommunicationError(
                 "someChat",
-                new CommunicationError("GIVEN_EXPECTED_EXAMPLE" as any, "-given-", "-expected-", "-example-"),
+                new CommunicationError(code as CommunicationErrorCode, error.given, error.expected, error.example),
             );
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Some Code: Given [-given-] Expected: -expected- Example: -example-",
-            );
-        });
-        it("should replace only given and expected", () => {
-            const presenter = new CommunicationPresenter(mockLogger);
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendCommunicationError(
-                "someChat",
-                new CommunicationError("NO_EXAMPLE" as any, "-given-", "-expected-"),
-            );
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Some Code: Given [-given-] Expected: -expected-",
-            );
-        });
-        it("should only replace the placeholders", () => {
-            const presenter = new CommunicationPresenter(mockLogger);
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendCommunicationError(
-                "someChat",
-                new CommunicationError("NO_EXPECTED" as any, "-given-", "-expected-", "-example-"),
-            );
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Some Code: Given [-given-] Example: -example-",
-            );
-        });
-        it("should only replace all duplicated placeholders", () => {
-            const presenter = new CommunicationPresenter(mockLogger);
-            presenter.init({ communication: mockCommunicationOut });
-            presenter.sendCommunicationError(
-                "someChat",
-                new CommunicationError("DUPLICATE_GIVEN" as any, "-given-", "-expected-", "-example-"),
-            );
-            expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                "someChat",
-                "Fehler: Some Code: Given [-given-] Expected: -expected- Given [-given-]",
-            );
+            expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", `Fehler: ${message}`);
         });
     });
 });

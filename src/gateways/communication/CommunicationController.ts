@@ -16,8 +16,7 @@ import { GateWay } from "../GateWay";
 import { logCall } from "../logging";
 import { CommunicationError, CommunicationErrorCode } from "./CommunicationError";
 import { IErrorReporter } from "./CommunicationPresenter";
-import { GenericDaysDaysOfWeek, IGenericConfig, IGenericFrame } from "./interfaces";
-import { Mappings } from "./Mappings";
+import { IGenericConfig, IGenericFrame } from "./interfaces";
 import { validateDailyConfig, validateHourlyConfig, validateMonthlyConfig, validateTimeFrame } from "./validation";
 
 export interface ICommunicationIn {
@@ -47,9 +46,9 @@ interface IDependencies {
 
 export class CommunicationController extends GateWay<IDependencies> implements ICommunicationIn {
     private readonly configExtractors = {
-        [PersistedRecurrenceType.hourly]: this.extractHourlyConfig.bind(this),
-        [PersistedRecurrenceType.daily]: this.extractDailyConfig.bind(this),
-        [PersistedRecurrenceType.monthly]: this.extractMonthlyConfig.bind(this),
+        [PersistedRecurrenceType.hourly]: this.extractAndValidateHourlyConfig.bind(this),
+        [PersistedRecurrenceType.daily]: this.extractAndValidateDailyConfig.bind(this),
+        [PersistedRecurrenceType.monthly]: this.extractAndValidateMonthlyConfig.bind(this),
     };
 
     @logCall()
@@ -99,17 +98,16 @@ export class CommunicationController extends GateWay<IDependencies> implements I
             if (!triggerId) {
                 throw new CommunicationError(CommunicationErrorCode.MISSING_TRIGGER_ID);
             }
-            const recurrenceIdentifier = config.recurrence?.type || "";
-            const reccurenceType = Mappings.recurrence[recurrenceIdentifier];
-            if (!reccurenceType) {
+            const recurrenceIdentifier = config.recurrence?.type;
+            const reccurenceTypes = Object.keys(this.configExtractors);
+            if (!recurrenceIdentifier || !reccurenceTypes.includes(recurrenceIdentifier)) {
                 throw new CommunicationError(CommunicationErrorCode.INVALID_RECURRENCE_TYPE, recurrenceIdentifier);
             }
-            const configExtractors = this.configExtractors;
             await this.dependencies!.useCases.config.set.execute({
                 chatId,
                 userId,
                 triggerId,
-                config: configExtractors[reccurenceType](config),
+                config: this.configExtractors[recurrenceIdentifier](config),
             });
             await Promise.resolve();
         } catch (error) {
@@ -141,95 +139,59 @@ export class CommunicationController extends GateWay<IDependencies> implements I
         await this.dependencies!.useCases.admin.remove.execute({ chatId, userId, adminId });
     }
 
-    private toInt(value?: string | number) {
-        if (value !== undefined) {
-            if (typeof value === "string") {
-                return parseInt(value);
-            } else {
-                return value;
-            }
-        }
-    }
-
-    private extractMonthlyConfig(configIn: IGenericConfig): ISetConfigInput["config"] {
+    private extractAndValidateMonthlyConfig(configIn: IGenericConfig): ISetConfigInput["config"] {
         const recurrence: Partial<IMonthlyRecurrenceRule> = {
             type: PersistedRecurrenceType.monthly,
-            day: this.toInt(configIn.recurrence?.dayOfMonth),
-            hour: this.toInt(configIn.recurrence?.hour),
-            minute: this.toInt(configIn.recurrence?.minute),
+            day: configIn.recurrence?.dayOfMonth,
+            hour: configIn.recurrence?.hour,
+            minute: configIn.recurrence?.minute,
         };
         validateMonthlyConfig(recurrence);
 
         const configOut: ISetConfigInput["config"] = {
             recurrence: recurrence as IMonthlyRecurrenceRule,
-            frameStart: this.extractFrame(configIn.frameStart),
-            frameEnd: this.extractFrame(configIn.frameEnd),
+            frameStart: this.extractAndValidateFrame(configIn.frameStart),
+            frameEnd: this.extractAndValidateFrame(configIn.frameEnd),
         };
         return configOut;
     }
 
-    private toDays(value?: string | string[] | number[] | GenericDaysDaysOfWeek) {
-        if (!value) {
-            return;
-        }
-        if (typeof value === "object" && !Array.isArray(value)) {
-            return value;
-        }
-        function includes(values: string[] | number[], searched: { string: string; int: number }) {
-            if (typeof values[0] === "string") {
-                return (values as string[]).includes(searched.string);
-            } else {
-                return (values as number[]).includes(searched.int);
-            }
-        }
-        const values = Array.isArray(value) ? value : value.split(",");
-        return {
-            sunday: includes(values, { string: Mappings.days.sunday, int: 0 }),
-            monday: includes(values, { string: Mappings.days.monday, int: 1 }),
-            tuesday: includes(values, { string: Mappings.days.tuesday, int: 2 }),
-            wednesday: includes(values, { string: Mappings.days.wednesday, int: 3 }),
-            thursday: includes(values, { string: Mappings.days.thursday, int: 4 }),
-            friday: includes(values, { string: Mappings.days.friday, int: 5 }),
-            saturday: includes(values, { string: Mappings.days.saturday, int: 6 }),
-        };
-    }
-
-    private extractDailyConfig(configIn: IGenericConfig): ISetConfigInput["config"] {
+    private extractAndValidateDailyConfig(configIn: IGenericConfig): ISetConfigInput["config"] {
         const recurrence: Partial<IDailyRecurrenceRule> = {
             type: PersistedRecurrenceType.daily,
-            days: this.toDays(configIn.recurrence?.daysOfWeek),
-            hour: this.toInt(configIn.recurrence?.hour),
-            minute: this.toInt(configIn.recurrence?.minute),
+            days: configIn.recurrence?.daysOfWeek,
+            hour: configIn.recurrence?.hour,
+            minute: configIn.recurrence?.minute,
         };
         validateDailyConfig(recurrence);
 
         const configOut: ISetConfigInput["config"] = {
             recurrence: recurrence as IDailyRecurrenceRule,
-            frameStart: this.extractFrame(configIn.frameStart),
-            frameEnd: this.extractFrame(configIn.frameEnd),
+            frameStart: this.extractAndValidateFrame(configIn.frameStart),
+            frameEnd: this.extractAndValidateFrame(configIn.frameEnd),
         };
         return configOut;
     }
 
-    private extractHourlyConfig(configIn: IGenericConfig): ISetConfigInput["config"] {
+    private extractAndValidateHourlyConfig(configIn: IGenericConfig): ISetConfigInput["config"] {
         const recurrence: Partial<IHourlyRecurrenceRule> = {
             type: PersistedRecurrenceType.hourly,
-            days: this.toDays(configIn.recurrence?.daysOfWeek),
-            fromHour: this.toInt(configIn.recurrence?.hour),
-            toHour: this.toInt(configIn.recurrence?.hourEnd),
-            minute: this.toInt(configIn.recurrence?.minute),
+            days: configIn.recurrence?.daysOfWeek,
+            fromHour: configIn.recurrence?.hour,
+            toHour: configIn.recurrence?.hourEnd,
+            minute: configIn.recurrence?.minute,
         };
         validateHourlyConfig(recurrence);
 
         const configOut: ISetConfigInput["config"] = {
             recurrence: recurrence as IHourlyRecurrenceRule,
-            frameStart: this.extractFrame(configIn.frameStart),
-            frameEnd: this.extractFrame(configIn.frameEnd),
+            frameStart: this.extractAndValidateFrame(configIn.frameStart),
+            frameEnd: this.extractAndValidateFrame(configIn.frameEnd),
         };
         return configOut;
     }
 
-    private extractFrame(frameConfig: IGenericFrame = {}): ITimeFrameSettings {
+    private extractAndValidateFrame(frameConfig: IGenericFrame = {}): ITimeFrameSettings {
         validateTimeFrame(frameConfig);
         return frameConfig as ITimeFrameSettings;
     }

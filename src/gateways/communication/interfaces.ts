@@ -1,10 +1,10 @@
 export interface IGenericRecurrence {
     type?: RecurrenceType;
-    dayOfMonth?: string | number;
-    hour?: string | number;
-    hourEnd?: string | number;
-    minute?: string | number;
-    daysOfWeek?: string | string[] | number[] | GenericDaysDaysOfWeek;
+    dayOfMonth?: number;
+    hour?: number;
+    hourEnd?: number;
+    minute?: number;
+    daysOfWeek?: GenericDaysDaysOfWeek;
 }
 
 export interface IGenericFrame {
@@ -34,4 +34,4 @@ export type GenericDaysDaysOfWeek = {
     friday?: boolean;
     saturday?: boolean;
 };
-export type RecurrenceType = "h" | "d" | "m" | "c";
+export type RecurrenceType = "h" | "d" | "m";
