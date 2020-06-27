@@ -47,7 +47,7 @@ export class Builder<CalendarSetup, StorageSetup, ChatSetup> {
         logger.verbose("Builder", "Create use cases");
         const deleteConfig = new DeleteConfigImpl(logger, communicationPresenter, triggerGW, persitenceGW);
         const initChat = new InitializeChatImpl(logger, communicationPresenter, persitenceGW);
-        const read = new ReadConfigImpl(logger, communicationPresenter);
+        const read = new ReadConfigImpl(logger, communicationPresenter, triggerGW);
         const reminder = new ReminderImpl(logger, calendarGW, communicationPresenter);
         const start = new StartAssistantImpl(logger, triggerGW, persitenceGW);
         const setConfig = new SetConfigImpl(logger, communicationPresenter, triggerGW, persitenceGW);

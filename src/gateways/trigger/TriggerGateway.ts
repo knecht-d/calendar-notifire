@@ -1,5 +1,6 @@
 import {
     IPersistedRecurrenceRule,
+    ITimerRead,
     ITimerSetter,
     ITimerStopper,
     PersistedRecurrenceType,
@@ -11,6 +12,7 @@ import { logCall } from "../logging";
 export interface ITriggerConfigure {
     setTrigger: (id: string, cron: string) => void;
     stopTrigger: (id: string) => void;
+    getNextExecution: (id: string) => Date;
 }
 
 export interface ITriggerReceiver {
@@ -22,11 +24,18 @@ interface IDependencies {
     reminder: Reminder;
 }
 
-export class TriggerGateway extends GateWay<IDependencies> implements ITimerStopper, ITriggerReceiver, ITimerSetter {
+export class TriggerGateway extends GateWay<IDependencies>
+    implements ITimerStopper, ITriggerReceiver, ITimerSetter, ITimerRead {
     async trigger(id: string) {
         this.checkInitialized();
         const { chatId, triggerId } = this.decodeId(id);
         await this.dependencies!.reminder.execute({ chatId, triggerId });
+    }
+
+    @logCall()
+    public getNext(chatId: string, triggerId: string) {
+        const id = this.encodeId(chatId, triggerId);
+        return this.dependencies!.triggerConfig.getNextExecution(id);
     }
 
     @logCall()

@@ -8,4 +8,5 @@ export abstract class AbstractTimer extends External implements ITriggerConfigur
     }
     abstract setTrigger(id: string, cron: string): void;
     abstract stopTrigger(id: string): void;
+    abstract getNextExecution(id: string): Date;
 }

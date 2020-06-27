@@ -13,7 +13,7 @@ export class ToHourSelection extends AbstractSelection<IGenericRecurrence> {
     }
 
     async requestInput(buildingObject: IGenericRecurrence): Promise<(selection: string) => IGenericRecurrence> {
-        const fromHour = parseInt(buildingObject.hour as string | "0");
+        const fromHour = buildingObject.hour || 0;
         await this.editMessage(
             "Bis zu welcher Stunde soll die Erinnerung erfolgen?",
             Extra.HTML().markup(() =>
