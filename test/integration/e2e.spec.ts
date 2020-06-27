@@ -62,7 +62,7 @@ describe("End to end test", () => {
                     expect(chat.send).toHaveBeenCalledTimes(1);
                     expect(chat.send).toHaveBeenCalledWith(
                         "chat1",
-                        "Hinzufügen von user2 zu Administratoren fehlgeschlagen. {CHAT_NOT_EXISTING}",
+                        "Hinzufügen von user2 zu Administratoren fehlgeschlagen.\n{CHAT_NOT_EXISTING}",
                     );
                     expect(storage.storedData).toEqual({});
                 });
@@ -71,7 +71,7 @@ describe("End to end test", () => {
                     expect(chat.send).toHaveBeenCalledTimes(1);
                     expect(chat.send).toHaveBeenCalledWith(
                         "chat1",
-                        "Entfernen von user2 aus Administratoren fehlgeschlagen. {CHAT_NOT_EXISTING}",
+                        "Entfernen von user2 aus Administratoren fehlgeschlagen.\n{CHAT_NOT_EXISTING}",
                     );
                     expect(storage.storedData).toEqual({});
                 });
@@ -92,7 +92,7 @@ describe("End to end test", () => {
                     expect(chat.send).toHaveBeenCalledTimes(1);
                     expect(chat.send).toHaveBeenCalledWith(
                         "chat1",
-                        "Löschen von trigger1 fehlgeschlagen. {CHAT_NOT_EXISTING}",
+                        "Löschen von trigger1 fehlgeschlagen.\n{CHAT_NOT_EXISTING}",
                     );
                     expect(storage.storedData).toEqual({});
                 });
@@ -101,7 +101,7 @@ describe("End to end test", () => {
                     expect(chat.send).toHaveBeenCalledTimes(1);
                     expect(chat.send).toHaveBeenCalledWith(
                         "chat1",
-                        "Lesen der Konfiguration fehlgeschlagen. {CHAT_NOT_EXISTING}",
+                        "Lesen der Konfiguration fehlgeschlagen.\n{CHAT_NOT_EXISTING}",
                     );
                     expect(storage.storedData).toEqual({});
                 });
@@ -153,7 +153,7 @@ describe("End to end test", () => {
                     expect(chat.send).toHaveBeenCalledTimes(1);
                     expect(chat.send).toHaveBeenCalledWith(
                         "chat1",
-                        "Setzen von trigger1 fehlgeschlagen. {CHAT_NOT_EXISTING}",
+                        "Setzen von trigger1 fehlgeschlagen.\n{CHAT_NOT_EXISTING}",
                     );
                     expect(storage.storedData).toEqual({});
                 });
@@ -171,7 +171,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith(
                 "chat1",
-                "Initialisierung des Chats fehlgeschlagen. {CHAT_ALREADY_EXISTING}",
+                "Initialisierung des Chats fehlgeschlagen.\n{CHAT_ALREADY_EXISTING}",
             );
             expect(storage.storedData).toEqual({ chat1: '{"administrators":["user1"],"timeFrames":{}}' });
         });
@@ -191,7 +191,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith(
                 "chat1",
-                "Hinzufügen von user3 zu Administratoren fehlgeschlagen. {MISSING_PRIVILEGES}",
+                "Hinzufügen von user3 zu Administratoren fehlgeschlagen.\n{MISSING_PRIVILEGES}",
             );
             expect(storage.storedData).toEqual({
                 chat1: '{"administrators":["user1","user2"],"timeFrames":{}}',
@@ -202,7 +202,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith(
                 "chat1",
-                "Entfernen von user1 aus Administratoren fehlgeschlagen. {MISSING_PRIVILEGES}",
+                "Entfernen von user1 aus Administratoren fehlgeschlagen.\n{MISSING_PRIVILEGES}",
             );
             expect(storage.storedData).toEqual({
                 chat1: '{"administrators":["user1","user2"],"timeFrames":{}}',
@@ -213,7 +213,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith(
                 "chat1",
-                "Entfernen von noAdmin aus Administratoren fehlgeschlagen. {NO_ADMIN}",
+                "Entfernen von noAdmin aus Administratoren fehlgeschlagen.\n{NO_ADMIN}",
             );
             expect(storage.storedData).toEqual({
                 chat1: '{"administrators":["user1","user2"],"timeFrames":{}}',
@@ -232,7 +232,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith(
                 "chat1",
-                "Entfernen von user1 aus Administratoren fehlgeschlagen. {LAST_ADMIN}",
+                "Entfernen von user1 aus Administratoren fehlgeschlagen.\n{LAST_ADMIN}",
             );
             expect(storage.storedData).toEqual({
                 chat1: '{"administrators":["user1"],"timeFrames":{}}',
@@ -340,7 +340,10 @@ describe("End to end test", () => {
                 },
             });
             expect(chat.send).toHaveBeenCalledTimes(1);
-            expect(chat.send).toHaveBeenCalledWith("chat1", "Setzen von trigger2 fehlgeschlagen. {MISSING_PRIVILEGES}");
+            expect(chat.send).toHaveBeenCalledWith(
+                "chat1",
+                "Setzen von trigger2 fehlgeschlagen.\n{MISSING_PRIVILEGES}",
+            );
             expect(timer.triggers["chat1|trigger2"]).toBeUndefined();
             expect(storage.storedData).toEqual({
                 chat1:
@@ -470,7 +473,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith(
                 "chat1",
-                "Löschen von trigger1 fehlgeschlagen. {MISSING_PRIVILEGES}",
+                "Löschen von trigger1 fehlgeschlagen.\n{MISSING_PRIVILEGES}",
             );
             expect(timer.triggers["chat1|trigger1"]).toEqual("45 17 15 * *");
             expect(storage.storedData).toEqual({
