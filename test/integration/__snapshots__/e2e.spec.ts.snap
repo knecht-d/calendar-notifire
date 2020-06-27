@@ -5,52 +5,9 @@ exports[`End to end test trigger settings should read the config even if user is
   "calls": Array [
     Array [
       "chat1",
-      "Konfiguration: {
-  \\"trigger1\\": {
-    \\"begin\\": {
-      \\"month\\": {
-        \\"value\\": 1,
-        \\"fixed\\": false
-      },
-      \\"day\\": {
-        \\"value\\": 1,
-        \\"fixed\\": true
-      },
-      \\"hour\\": {
-        \\"value\\": 0,
-        \\"fixed\\": true
-      },
-      \\"minute\\": {
-        \\"value\\": 0,
-        \\"fixed\\": true
-      }
-    },
-    \\"end\\": {
-      \\"month\\": {
-        \\"value\\": 2,
-        \\"fixed\\": false
-      },
-      \\"day\\": {
-        \\"value\\": 1,
-        \\"fixed\\": true
-      },
-      \\"hour\\": {
-        \\"value\\": 0,
-        \\"fixed\\": true
-      },
-      \\"minute\\": {
-        \\"value\\": 0,
-        \\"fixed\\": true
-      }
-    },
-    \\"recurrence\\": {
-      \\"type\\": \\"m\\",
-      \\"day\\": 15,
-      \\"hour\\": 17,
-      \\"minute\\": 45
-    }
-  }
-}",
+      "trigger1:
+    Jeden Monat am 15. um 17:45
+    Nächte Erinnerung am 15.8.2020 um 17:45 zeigt Termine von 1.9.2020 00:00 bis 1.10.2020 00:00",
     ],
   ],
   "results": Array [

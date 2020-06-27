@@ -11,6 +11,16 @@ export enum PersistedRecurrenceType {
     monthly = "m",
 }
 
+export interface IDaysOfWeekConfig {
+    monday?: boolean;
+    tuesday?: boolean;
+    wednesday?: boolean;
+    thursday?: boolean;
+    friday?: boolean;
+    saturday?: boolean;
+    sunday?: boolean;
+}
+
 export interface IChatPersistence {
     timeFrames: { [frameKey: string]: ISerializedTimeFrame };
     administrators: string[];
@@ -20,6 +30,9 @@ export interface ISerializedTimeFrame {
     begin: ITimeFrameSettings;
     end: ITimeFrameSettings;
     recurrence: IPersistedRecurrenceRule;
+    next?: Date;
+    nextEventsFrom?: Date;
+    nextEventsTo?: Date;
 }
 
 export interface ITimeFrameSettings {
@@ -44,30 +57,14 @@ export interface IHourlyRecurrenceRule extends IBaseRecurrenceRule {
     fromHour: number;
     toHour: number;
     minute: number;
-    days: {
-        monday?: boolean;
-        tuesday?: boolean;
-        wednesday?: boolean;
-        thursday?: boolean;
-        friday?: boolean;
-        saturday?: boolean;
-        sunday?: boolean;
-    };
+    days: IDaysOfWeekConfig;
 }
 
 export interface IDailyRecurrenceRule extends IBaseRecurrenceRule {
     type: PersistedRecurrenceType.daily;
     hour: number;
     minute: number;
-    days: {
-        monday?: boolean;
-        tuesday?: boolean;
-        wednesday?: boolean;
-        thursday?: boolean;
-        friday?: boolean;
-        saturday?: boolean;
-        sunday?: boolean;
-    };
+    days: IDaysOfWeekConfig;
 }
 
 export interface IMonthlyRecurrenceRule extends IBaseRecurrenceRule {

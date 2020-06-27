@@ -43,7 +43,7 @@ interface IDeleteConfigMessage extends IBaseMessage {
 }
 interface IReadConfigMessage extends IBaseMessage {
     key: MessageKey.READ_CONFIG;
-    timeFrames: ITriggers;
+    triggers: ITriggers;
 }
 
 interface IInitializeChatMessage extends IBaseMessage {

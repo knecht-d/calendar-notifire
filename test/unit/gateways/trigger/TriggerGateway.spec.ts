@@ -7,6 +7,7 @@ describe("TriggerGateway", () => {
     const mockTriggerConfigure = {
         setTrigger: jest.fn(),
         stopTrigger: jest.fn(),
+        getNextExecution: jest.fn(),
     };
     const mockReminder = new MockUseCase();
     const mockLogger = new MockLogger();

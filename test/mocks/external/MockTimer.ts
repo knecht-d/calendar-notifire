@@ -8,6 +8,9 @@ export class MockTimer extends AbstractTimer {
     stopTrigger = jest.fn((id: string) => {
         delete this.triggers[id];
     });
+    getNextExecution = jest.fn((_id: string) => {
+        return new Date();
+    });
 
     async fireTrigger(id: string) {
         await this.triggerReceiver!.trigger(id);

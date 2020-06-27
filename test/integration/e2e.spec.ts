@@ -47,6 +47,12 @@ describe("End to end test", () => {
     });
     beforeEach(() => {
         jest.clearAllMocks();
+        timer.getNextExecution.mockImplementation((id: string) => {
+            const defaultValues: { [id: string]: Date } = {
+                "chat1|trigger1": new Date(2020, 7, 15, 17, 45),
+            };
+            return defaultValues[id] || new Date(2020, 0, 1, 12, 30);
+        });
     });
     describe("initialization", () => {
         describe("Not initialized", () => {

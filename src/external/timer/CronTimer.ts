@@ -6,6 +6,11 @@ export class CronTimer extends AbstractTimer {
     private triggers: { [id: string]: { job: CronJob; cron: string } } = {};
 
     @logCall()
+    getNextExecution(id: string): Date {
+        return this.triggers[id].job.nextDate().toDate();
+    }
+
+    @logCall()
     setTrigger(id: string, cron: string) {
         const job = new CronJob(cron, async () => {
             if (this.triggerReceiver) {

@@ -7,3 +7,7 @@ export interface ITimerSetter {
 export interface ITimerStopper {
     stop: (chatId: string, triggerId: string) => void;
 }
+
+export interface ITimerRead {
+    getNext: (chatId: string, triggerId: string) => Date;
+}

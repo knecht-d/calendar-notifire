@@ -2,7 +2,7 @@
 
 import { CommunicationPresenter } from "../../../../src/gateways";
 import { CommunicationError, CommunicationErrorCode } from "../../../../src/gateways/communication/CommunicationError";
-import { MessageKey } from "../../../../src/useCases";
+import { ITriggers, MessageKey, PersistedRecurrenceType } from "../../../../src/useCases";
 import { MockLogger } from "../../../mocks/external/MockLogger";
 
 describe("CommunicationPresenter", () => {
@@ -19,14 +19,80 @@ describe("CommunicationPresenter", () => {
             it("should send the triggers", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
-                const mockTriggers = { trigger: { mock: "trigger" }, trigger2: { mock: "trigger2" } };
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.monthly,
+                            day: 25,
+                            hour: 14,
+                            minute: 5,
+                        },
+                        next: new Date(2020, 5, 25, 14, 5),
+                        nextEventsFrom: new Date(2020, 5, 25, 14, 5),
+                        nextEventsTo: new Date(2020, 7, 0, 0, 0),
+                        begin: {},
+                        end: {
+                            month: {
+                                value: 2,
+                                fixed: false,
+                            },
+                            day: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            hour: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            minute: {
+                                value: 0,
+                                fixed: true,
+                            },
+                        },
+                    },
+                    trigger2: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.daily,
+                            hour: 14,
+                            minute: 5,
+                            days: {
+                                saturday: true,
+                                sunday: true,
+                            },
+                        },
+                        begin: {
+                            month: {
+                                value: 1,
+                                fixed: false,
+                            },
+                            day: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            hour: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            minute: {
+                                value: 0,
+                                fixed: true,
+                            },
+                        },
+                        end: {},
+                    },
+                };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    timeFrames: mockTriggers as any,
+                    triggers: mockTriggers as any,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    `Konfiguration: ${JSON.stringify(mockTriggers, null, "  ")}`,
+                    `trigger:
+    Jeden Monat am 25. um 14:05
+    Nächte Erinnerung am 25.6.2020 um 14:05 zeigt Termine von 25.6.2020 14:05 bis 31.7.2020 00:00
+
+trigger2:
+    Einmal täglich um 14:05 am Wochenende`,
                 );
             });
         });
