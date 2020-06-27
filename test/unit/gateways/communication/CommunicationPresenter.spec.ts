@@ -2,7 +2,7 @@
 
 import { CommunicationPresenter } from "../../../../src/gateways";
 import { CommunicationError, CommunicationErrorCode } from "../../../../src/gateways/communication/CommunicationError";
-import { ITriggers, MessageKey, PersistedRecurrenceType } from "../../../../src/useCases";
+import { IDaysOfWeekConfig, ITriggers, MessageKey, PersistedRecurrenceType } from "../../../../src/useCases";
 import { MockLogger } from "../../../mocks/external/MockLogger";
 
 describe("CommunicationPresenter", () => {
@@ -95,6 +95,275 @@ trigger2:
     Einmal täglich um 14:05 am Wochenende`,
                 );
             });
+
+            it("should not send the end date if it is on same day", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.hourly,
+                            fromHour: 14,
+                            toHour: 20,
+                            days: { monday: true },
+                            minute: 0,
+                        },
+                        next: new Date(2020, 5, 25, 15, 0),
+                        nextEventsFrom: new Date(2020, 5, 25, 15, 0),
+                        nextEventsTo: new Date(2020, 5, 25, 16, 0),
+                        begin: {},
+                        end: {
+                            hour: {
+                                value: 1,
+                                fixed: false,
+                            },
+                        },
+                    },
+                };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    triggers: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `trigger:
+    Stündlich von 14:00 bis 20:00 am Montag
+    Nächte Erinnerung am 25.6.2020 um 15:00 zeigt Termine von 25.6.2020 15:00 bis 16:00`,
+                );
+            });
+
+            it("should not send the next events if nextEventsFrom is not given", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.hourly,
+                            fromHour: 14,
+                            toHour: 20,
+                            days: { monday: true },
+                            minute: 0,
+                        },
+                        next: new Date(2020, 5, 25, 15, 0),
+                        nextEventsTo: new Date(2020, 5, 25, 16, 0),
+                        begin: {},
+                        end: {
+                            hour: {
+                                value: 1,
+                                fixed: false,
+                            },
+                        },
+                    },
+                };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    triggers: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `trigger:
+    Stündlich von 14:00 bis 20:00 am Montag
+    Nächte Erinnerung am 25.6.2020 um 15:00`,
+                );
+            });
+            it("should not send the next events if nextEventsTo is not given", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.hourly,
+                            fromHour: 14,
+                            toHour: 20,
+                            days: { monday: true },
+                            minute: 0,
+                        },
+                        next: new Date(2020, 5, 25, 15, 0),
+                        nextEventsFrom: new Date(2020, 5, 25, 15, 0),
+                        begin: {},
+                        end: {
+                            hour: {
+                                value: 1,
+                                fixed: false,
+                            },
+                        },
+                    },
+                };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    triggers: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `trigger:
+    Stündlich von 14:00 bis 20:00 am Montag
+    Nächte Erinnerung am 25.6.2020 um 15:00`,
+                );
+            });
+            it("should send the text for weekdays", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.daily,
+                            hour: 17,
+                            days: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true },
+                            minute: 0,
+                        },
+                        begin: {},
+                        end: {
+                            hour: {
+                                value: 1,
+                                fixed: false,
+                            },
+                        },
+                    },
+                };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    triggers: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `trigger:
+    Einmal täglich um 17:00 an allen Wochentagen`,
+                );
+            });
+            it("should send the text for weekends", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.daily,
+                            hour: 17,
+                            days: { saturday: true, sunday: true },
+                            minute: 0,
+                        },
+                        begin: {},
+                        end: {
+                            hour: {
+                                value: 1,
+                                fixed: false,
+                            },
+                        },
+                    },
+                };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    triggers: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `trigger:
+    Einmal täglich um 17:00 am Wochenende`,
+                );
+            });
+            it("should send the text for all days", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.daily,
+                            hour: 17,
+                            days: {
+                                monday: true,
+                                tuesday: true,
+                                wednesday: true,
+                                thursday: true,
+                                friday: true,
+                                saturday: true,
+                                sunday: true,
+                            },
+                            minute: 0,
+                        },
+                        begin: {},
+                        end: {
+                            hour: {
+                                value: 1,
+                                fixed: false,
+                            },
+                        },
+                    },
+                };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    triggers: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `trigger:
+    Einmal täglich um 17:00 an allen Tagen`,
+                );
+            });
+
+            const dayCombinations: Array<[string, IDaysOfWeekConfig]> = [
+                [
+                    "Montag, Dienstag, Mittwoch, Donnerstag, Freitag und Samstag",
+                    {
+                        monday: true,
+                        tuesday: true,
+                        wednesday: true,
+                        thursday: true,
+                        friday: true,
+                        saturday: true,
+                    },
+                ],
+                [
+                    "Dienstag, Donnerstag und Sonntag",
+                    {
+                        tuesday: true,
+                        thursday: true,
+                        sunday: true,
+                    },
+                ],
+                [
+                    "Montag und Sonntag",
+                    {
+                        monday: true,
+                        sunday: true,
+                    },
+                ],
+                [
+                    "Dienstag",
+                    {
+                        tuesday: true,
+                    },
+                ],
+            ];
+
+            it.each(dayCombinations)("should send the text for %s", (text, days) => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                const mockTriggers: ITriggers = {
+                    trigger: {
+                        recurrence: {
+                            type: PersistedRecurrenceType.daily,
+                            hour: 17,
+                            days,
+                            minute: 0,
+                        },
+                        begin: {},
+                        end: {
+                            hour: {
+                                value: 1,
+                                fixed: false,
+                            },
+                        },
+                    },
+                };
+                presenter.send("someChat", {
+                    key: MessageKey.READ_CONFIG,
+                    triggers: mockTriggers as any,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `trigger:
+    Einmal täglich um 17:00 am ${text}`,
+                );
+            });
         });
 
         describe("DELETE_CONFIG", () => {
@@ -120,7 +389,7 @@ trigger2:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Löschen von someTrigger erfolgreich. Details",
+                    "Löschen von someTrigger erfolgreich.\nDetails",
                 );
             });
             it("should send a plain error message to the chat", () => {
@@ -147,7 +416,7 @@ trigger2:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Löschen von someTrigger fehlgeschlagen. Details",
+                    "Löschen von someTrigger fehlgeschlagen.\nDetails",
                 );
             });
         });
@@ -174,7 +443,7 @@ trigger2:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Setzen von someTrigger erfolgreich. Details",
+                    "Setzen von someTrigger erfolgreich.\nDetails",
                 );
             });
             it("should send a plain error message to the chat", () => {
@@ -201,7 +470,7 @@ trigger2:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Setzen von someTrigger fehlgeschlagen. Details",
+                    "Setzen von someTrigger fehlgeschlagen.\nDetails",
                 );
             });
         });
@@ -226,7 +495,7 @@ trigger2:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Initialisierung des Chats erfolgreich. Details",
+                    "Initialisierung des Chats erfolgreich.\nDetails",
                 );
             });
             it("should send a plain error message to the chat", () => {
@@ -251,7 +520,7 @@ trigger2:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Initialisierung des Chats fehlgeschlagen. Details",
+                    "Initialisierung des Chats fehlgeschlagen.\nDetails",
                 );
             });
         });
@@ -275,6 +544,74 @@ trigger2:
                     `Termine:
 Event:
     1.5.2020 12:00 - 12:00`,
+                );
+            });
+            it("should send the events with different end date", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                const events = [
+                    {
+                        start: new Date(2020, 4, 1, 12, 0),
+                        end: new Date(2020, 4, 2, 12, 0),
+                        title: "Event",
+                    },
+                ];
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.EVENTS,
+                    events,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `Termine:
+Event:
+    1.5.2020 12:00 - 2.5.2020 12:00`,
+                );
+            });
+            it("should add the additional message for success", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                const events = [
+                    {
+                        start: new Date(2020, 4, 1, 12, 0),
+                        end: new Date(2020, 4, 1, 12, 0),
+                        title: "Event",
+                    },
+                ];
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.EVENTS,
+                    events,
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    `Termine:
+Event:
+    1.5.2020 12:00 - 12:00
+Details`,
+                );
+            });
+            it("should send a plain error message to the chat", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.EVENTS,
+                    events: [],
+                    hasError: true,
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith("someChat", "Lesen der Termine fehlgeschlagen.");
+            });
+            it("should add the additional message for error", () => {
+                const presenter = new CommunicationPresenter(mockLogger);
+                presenter.init({ communication: mockCommunicationOut });
+                presenter.send("someChat", {
+                    key: MessageKey.EVENTS,
+                    events: [],
+                    hasError: true,
+                    message: "Details",
+                });
+                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
+                    "someChat",
+                    "Lesen der Termine fehlgeschlagen.\nDetails",
                 );
             });
         });
@@ -301,7 +638,7 @@ Event:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "admin erfolgreich zu Administratoren hinzugefügt. Details",
+                    "admin erfolgreich zu Administratoren hinzugefügt.\nDetails",
                 );
             });
             it("should send a plain error message to the chat", () => {
@@ -328,7 +665,7 @@ Event:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Hinzufügen von admin zu Administratoren fehlgeschlagen. Details",
+                    "Hinzufügen von admin zu Administratoren fehlgeschlagen.\nDetails",
                 );
             });
         });
@@ -355,7 +692,7 @@ Event:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "admin erfolgreich von Administratoren entfernt. Details",
+                    "admin erfolgreich von Administratoren entfernt.\nDetails",
                 );
             });
             it("should send a plain error message to the chat", () => {
@@ -382,7 +719,7 @@ Event:
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
-                    "Entfernen von admin aus Administratoren fehlgeschlagen. Details",
+                    "Entfernen von admin aus Administratoren fehlgeschlagen.\nDetails",
                 );
             });
         });

@@ -85,7 +85,7 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
                     text = "Initialisierung des Chats fehlgeschlagen.";
                     break;
                 case MessageKey.EVENTS: {
-                    text = "Lesen der Termine fehlgeschlagen";
+                    text = "Lesen der Termine fehlgeschlagen.";
                     break;
                 }
                 case MessageKey.ADD_ADMIN:
@@ -125,7 +125,7 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
                     break;
             }
         }
-        return `${text}${message.message ? ` ${message.message}` : ""}`;
+        return `${text}${message.message ? `\n${message.message}` : ""}`;
     }
 
     private getDateTimeString(date: Date) {
