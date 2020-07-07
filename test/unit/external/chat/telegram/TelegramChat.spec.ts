@@ -85,17 +85,15 @@ describe("TelegramChat", () => {
             return {
                 chat: noChat ? undefined : chat,
                 from: noFrom ? undefined : from,
-                message: noMessage ? undefined : { message_id: 4711, date: new Date().getTime(), text: message, chat },
-                reply: jest.fn(() =>
-                    Promise.resolve({ message_id: 4711, date: new Date().getTime(), text: message, chat }),
-                ),
+                message: noMessage ? undefined : { message_id: 4711, date: 1594157543675, text: message, chat },
+                reply: jest.fn(() => Promise.resolve({ message_id: 4711, date: 1594157543675, text: message, chat })),
             };
         }
 
         describe("start", () => {
             it("should initialize the chat", async () => {
                 await callbacks.start!(createContext());
-                expect(communication.initChat).toHaveBeenCalledWith("42", "johnny");
+                expect(communication.initChat).toHaveBeenCalledWith("42", "1337");
             });
         });
         describe("set", () => {
@@ -113,7 +111,7 @@ describe("TelegramChat", () => {
             });
             it("should set a trigger", async done => {
                 (communication.set as jest.Mock).mockImplementationOnce(() => {
-                    expect(communication.set).toHaveBeenCalledWith("42", "johnny", "someTriggerPayload", {
+                    expect(communication.set).toHaveBeenCalledWith("42", "1337", "someTriggerPayload", {
                         recurrence: { trigger: "config" },
                         frame: {
                             begin: {},
@@ -133,7 +131,7 @@ describe("TelegramChat", () => {
         describe("delete", () => {
             it("should delete a trigger", async () => {
                 await callbacks.delete!(createContext({ message: "/delete someTriggerPayload" }));
-                expect(communication.delete).toHaveBeenCalledWith("42", "johnny", "someTriggerPayload");
+                expect(communication.delete).toHaveBeenCalledWith("42", "1337", "someTriggerPayload");
             });
         });
         describe("read", () => {
@@ -145,42 +143,73 @@ describe("TelegramChat", () => {
         describe("addAdmin", () => {
             it("should add an admin", async () => {
                 await callbacks.addAdmin!(createContext({ message: "/addAdmin someUser" }));
-                expect(communication.addAdmin).toHaveBeenCalledWith("42", "johnny", "someUser");
+                expect(communication.addAdmin).toHaveBeenCalledWith("42", "1337", "someUser");
             });
         });
         describe("removeAdmin", () => {
             it("should remove an admin", async () => {
                 await callbacks.removeAdmin!(createContext({ message: "/removeAdmin someUser" }));
-                expect(communication.removeAdmin).toHaveBeenCalledWith("42", "johnny", "someUser");
+                expect(communication.removeAdmin).toHaveBeenCalledWith("42", "1337", "someUser");
             });
         });
-        describe("fallbacks", () => {
-            it("should use a fallback for the chatId if chatId is not given", async () => {
-                await callbacks.start!(createContext({ chat: { type: "private", id: 0 } }));
-                expect(communication.initChat).toHaveBeenCalledWith("noChat", "johnny");
-            });
-            it("should use a fallback for the chatId if chat is not given", async () => {
-                await callbacks.start!(createContext({ noChat: true }));
-                expect(communication.initChat).toHaveBeenCalledWith("noChat", "johnny");
-            });
-            it("should use a fallback for the user if username is not given", async () => {
-                await callbacks.start!(
-                    createContext({ from: { first_name: "John", id: 1337, is_bot: false, username: "" } }),
+        describe("missing properties", () => {
+            it("should cancel and send an error if chatId is not given", async () => {
+                const ctx = createContext({ chat: { type: "private", id: 0 } });
+                await callbacks.start!(ctx);
+                expect(mockLogger.error).toHaveBeenCalledWith(
+                    "TelegramChat",
+                    new Error(
+                        'Wrong ChatId: {"chat":{"type":"private","id":0},"from":{"first_name":"John","id":1337,"is_bot":false,"username":"johnny"},"message":{"message_id":4711,"date":1594157543675,"text":"","chat":{"type":"private","id":0}}}',
+                    ),
                 );
-                expect(communication.initChat).toHaveBeenCalledWith("42", "noUser");
+                expect(ctx.reply).toHaveBeenCalledWith("Fehlerhafte ChatId");
+                expect(communication.initChat).not.toHaveBeenCalled();
             });
-            it("should use a fallback for the user if from is not given", async () => {
-                await callbacks.start!(createContext({ noFrom: true }));
-                expect(communication.initChat).toHaveBeenCalledWith("42", "noUser");
+            it("should cancel and send an error if chat is not given", async () => {
+                const ctx = createContext({ noChat: true });
+                await callbacks.start!(ctx);
+                expect(mockLogger.error).toHaveBeenCalledWith(
+                    "TelegramChat",
+                    new Error(
+                        'Wrong ChatId: {"from":{"first_name":"John","id":1337,"is_bot":false,"username":"johnny"},"message":{"message_id":4711,"date":1594157543675,"text":"","chat":{"type":"private","id":42}}}',
+                    ),
+                );
+                expect(ctx.reply).toHaveBeenCalledWith("Fehlerhafte ChatId");
+                expect(communication.initChat).not.toHaveBeenCalled();
             });
+            it("should cancel and send an error if userid is not given", async () => {
+                const ctx = createContext({ from: { first_name: "John", id: 0, is_bot: false, username: "johnny" } });
+                await callbacks.start!(ctx);
+                expect(mockLogger.error).toHaveBeenCalledWith(
+                    "TelegramChat",
+                    new Error(
+                        'Wrong UserId: {"chat":{"type":"private","id":42},"from":{"first_name":"John","id":0,"is_bot":false,"username":"johnny"},"message":{"message_id":4711,"date":1594157543675,"text":"","chat":{"type":"private","id":42}}}',
+                    ),
+                );
+                expect(ctx.reply).toHaveBeenCalledWith("Fehlerhafte UserId");
+                expect(communication.initChat).not.toHaveBeenCalled();
+            });
+            it("should cancel and send an error if from is not given", async () => {
+                const ctx = createContext({ noFrom: true });
+                await callbacks.start!(ctx);
+                expect(mockLogger.error).toHaveBeenCalledWith(
+                    "TelegramChat",
+                    new Error(
+                        'Wrong UserId: {"chat":{"type":"private","id":42},"message":{"message_id":4711,"date":1594157543675,"text":"","chat":{"type":"private","id":42}}}',
+                    ),
+                );
+                expect(ctx.reply).toHaveBeenCalledWith("Fehlerhafte UserId");
+                expect(communication.initChat).not.toHaveBeenCalled();
+            });
+
             it("should use a fallback for the message if text is not given", async () => {
                 await callbacks.addAdmin!(createContext({ message: "" }));
-                expect(communication.addAdmin).toHaveBeenCalledWith("42", "johnny", "");
+                expect(communication.addAdmin).toHaveBeenCalledWith("42", "1337", "");
             });
 
             it("should use a fallback for the message if message is not given", async () => {
                 await callbacks.addAdmin!(createContext({ noMessage: true }));
-                expect(communication.addAdmin).toHaveBeenCalledWith("42", "johnny", "");
+                expect(communication.addAdmin).toHaveBeenCalledWith("42", "1337", "");
             });
         });
     });
