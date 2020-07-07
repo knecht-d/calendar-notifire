@@ -17,8 +17,10 @@ export interface ISetConfigInput {
     triggerId: string;
     config: {
         recurrence: IPersistedRecurrenceRule;
-        frameStart: ITimeFrameSettings;
-        frameEnd: ITimeFrameSettings;
+        frame: {
+            begin: ITimeFrameSettings;
+            end: ITimeFrameSettings;
+        };
     };
 }
 
@@ -38,9 +40,9 @@ export class SetConfigImpl extends SetConfig {
         return new Promise<void>(resolve => {
             try {
                 const chat = Chats.instance.getChat(chatId);
-                const timeFrame = new TimeFrame(config.frameStart, config.frameEnd);
+                const timeFrame = new TimeFrame(config.frame.begin, config.frame.end);
                 const recurrence = createRecurrence(config.recurrence);
-                chat.setTimeFrame(triggerId, { frame: timeFrame, recurrence: recurrence }, userId);
+                chat.setTrigger(triggerId, { frame: timeFrame, recurrence: recurrence }, userId);
                 this.timerSettings.set(chatId, triggerId, config.recurrence);
                 this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
                 this.communication.send(chatId, { key: MessageKey.SET_CONFIG, triggerId });

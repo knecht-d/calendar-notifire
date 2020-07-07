@@ -39,11 +39,11 @@ describe("InitializeChat", () => {
                 triggerId: "trigger",
             });
 
-            expect(MockChatEntity.removeTimeFrame).toHaveBeenCalledWith("trigger", "user");
+            expect(MockChatEntity.removeTrigger).toHaveBeenCalledWith("trigger", "user");
             expect(mockTrigger.stop).toHaveBeenCalledWith("chat", "trigger");
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
                 administrators: ["mockAdmin"],
-                timeFrames: {},
+                triggerSettings: {},
             });
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
                 key: MessageKey.DELETE_CONFIG,
@@ -59,7 +59,7 @@ describe("InitializeChat", () => {
                 userId: "user",
                 triggerId: "trigger",
             });
-            expect(MockChatEntity.removeTimeFrame).not.toHaveBeenCalled();
+            expect(MockChatEntity.removeTrigger).not.toHaveBeenCalled();
             expect(mockTrigger.stop).not.toHaveBeenCalled();
             expect(mockPersistence.saveChatConfig).not.toHaveBeenCalled();
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {

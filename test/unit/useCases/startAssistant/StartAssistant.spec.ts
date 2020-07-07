@@ -32,24 +32,28 @@ describe("StartAssistamt", () => {
         beforeAll(() => {
             mockPersistence.readAllChats.mockReturnValue({
                 chat: {
-                    timeFrames: {
+                    triggerSettings: {
                         any: {
-                            begin: {
-                                type: "MockedBegin1",
-                            },
-                            end: {
-                                type: "MockedEnd1",
+                            frame: {
+                                begin: {
+                                    type: "MockedBegin1",
+                                },
+                                end: {
+                                    type: "MockedEnd1",
+                                },
                             },
                             recurrence: {
                                 type: "MockedRecurrence1",
                             },
                         },
                         frame: {
-                            begin: {
-                                type: "MockedBegin2",
-                            },
-                            end: {
-                                type: "MockedEnd2",
+                            frame: {
+                                begin: {
+                                    type: "MockedBegin2",
+                                },
+                                end: {
+                                    type: "MockedEnd2",
+                                },
                             },
                             recurrence: {
                                 type: "MockedRecurrence2",
@@ -59,24 +63,28 @@ describe("StartAssistamt", () => {
                     administrators: ["admin0", "admin8"],
                 },
                 chat2: {
-                    timeFrames: {
+                    triggerSettings: {
                         some: {
-                            begin: {
-                                type: "MockedBegin3",
-                            },
-                            end: {
-                                type: "MockedEnd3",
+                            frame: {
+                                begin: {
+                                    type: "MockedBegin3",
+                                },
+                                end: {
+                                    type: "MockedEnd3",
+                                },
                             },
                             recurrence: {
                                 type: "MockedRecurrence3",
                             },
                         },
                         other: {
-                            begin: {
-                                type: "MockedBegin4",
-                            },
-                            end: {
-                                type: "MockedEnd4",
+                            frame: {
+                                begin: {
+                                    type: "MockedBegin4",
+                                },
+                                end: {
+                                    type: "MockedEnd4",
+                                },
                             },
                             recurrence: {
                                 type: "MockedRecurrence4",
@@ -94,7 +102,7 @@ describe("StartAssistamt", () => {
         });
         it("should create the timeFrames", async () => {
             await useCase.execute();
-            expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
+            expect(MockChatEntity.setTrigger).toHaveBeenCalledWith(
                 "any",
                 {
                     frame: {
@@ -111,7 +119,7 @@ describe("StartAssistamt", () => {
                 },
                 "admin0",
             );
-            expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
+            expect(MockChatEntity.setTrigger).toHaveBeenCalledWith(
                 "frame",
                 {
                     frame: {
@@ -128,7 +136,7 @@ describe("StartAssistamt", () => {
                 },
                 "admin0",
             );
-            expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
+            expect(MockChatEntity.setTrigger).toHaveBeenCalledWith(
                 "some",
                 {
                     frame: {
@@ -145,7 +153,7 @@ describe("StartAssistamt", () => {
                 },
                 "admin1",
             );
-            expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
+            expect(MockChatEntity.setTrigger).toHaveBeenCalledWith(
                 "other",
                 {
                     frame: {

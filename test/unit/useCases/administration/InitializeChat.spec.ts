@@ -28,7 +28,7 @@ describe("InitializeChat", () => {
             await useCase.execute({ chatId: "chat", userId: "user" });
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
                 administrators: ["mockAdmin"],
-                timeFrames: {},
+                triggerSettings: {},
             });
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", { key: MessageKey.INITIALIZE_CHAT });
         });

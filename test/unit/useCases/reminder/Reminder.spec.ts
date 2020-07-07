@@ -48,7 +48,7 @@ describe("Reminder", () => {
             });
         });
         it("should log an error if trigger was not defined", async () => {
-            MockChatEntity.getTimeFrame.mockImplementation(() => {
+            MockChatEntity.getTrigger.mockImplementation(() => {
                 throw new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED);
             });
             await useCase.execute({ chatId: "chat", triggerId: "trigger" });

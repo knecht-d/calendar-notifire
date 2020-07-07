@@ -4,7 +4,7 @@ import {
     IEvent,
     IMessage,
     IPersistedRecurrenceRule,
-    ISerializedTimeFrame,
+    ISerializedTrigger,
     ITriggers,
     MessageKey,
     PersistedRecurrenceType,
@@ -156,18 +156,14 @@ ${event.title}:
             .join("\n\n");
     }
 
-    private getTriggerExample(trigger: ISerializedTimeFrame) {
-        if (!trigger.next) {
+    private getTriggerExample(trigger: ISerializedTrigger) {
+        if (!trigger.nextExecution) {
             return "";
         }
-        const { date, time } = this.getDateTimeString(trigger.next);
-        const example = `Nächte Erinnerung am ${date} um ${time}`;
-        if (!trigger.nextEventsFrom || !trigger.nextEventsTo) {
-            return example;
-        }
-        const { date: fromDate, time: fromTime } = this.getDateTimeString(trigger.nextEventsFrom);
-        const { date: toDate, time: toTime } = this.getDateTimeString(trigger.nextEventsTo);
-        return `${example} zeigt Termine von ${fromDate} ${fromTime} bis ${`${
+        const { date, time } = this.getDateTimeString(trigger.nextExecution.date);
+        const { date: fromDate, time: fromTime } = this.getDateTimeString(trigger.nextExecution.from);
+        const { date: toDate, time: toTime } = this.getDateTimeString(trigger.nextExecution.to);
+        return `Nächte Erinnerung am ${date} um ${time} zeigt Termine von ${fromDate} ${fromTime} bis ${`${
             fromDate !== toDate ? `${toDate} ` : ""
         }${toTime}`}`;
     }

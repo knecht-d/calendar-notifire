@@ -115,8 +115,10 @@ describe("TelegramChat", () => {
                 (communication.set as jest.Mock).mockImplementationOnce(() => {
                     expect(communication.set).toHaveBeenCalledWith("42", "johnny", "someTriggerPayload", {
                         recurrence: { trigger: "config" },
-                        frameStart: {},
-                        frameEnd: { frame: "config" },
+                        frame: {
+                            begin: {},
+                            end: { frame: "config" },
+                        },
                     });
                     done();
                 });

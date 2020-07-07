@@ -58,8 +58,10 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
                     .then(triggerConfig => frameEndBuilder.requestConfig(triggerConfig))
                     .then(async () => {
                         config.recurrence = triggerBuilder.getConfig();
-                        config.frameStart = {}; // For Telegram only the current data as a start frame is possible!
-                        config.frameEnd = frameEndBuilder.getConfig();
+                        config.frame = {
+                            begin: {}, // For Telegram only the current data as a start frame is possible!
+                            end: frameEndBuilder.getConfig(),
+                        };
                         await editMessage("Moment ...");
                         await this.communication!.set(chatId, user, triggerId, config);
                     })

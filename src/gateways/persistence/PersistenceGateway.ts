@@ -1,4 +1,4 @@
-import { IChatConfigLoader, IChatConfigSaver, IChatPersistence } from "../../useCases";
+import { IChatConfigLoader, IChatConfigSaver, ISerializedChat } from "../../useCases";
 import { GateWay } from "../GateWay";
 import { logCall, logTime } from "../logging";
 
@@ -20,12 +20,12 @@ export class PeristenceGateway extends GateWay<IDependencies> implements IChatCo
         const data = Object.entries(serializedData).reduce((result, [chatId, serializedString]) => {
             result[chatId] = JSON.parse(serializedString);
             return result;
-        }, {} as { [chatId: string]: IChatPersistence });
+        }, {} as { [chatId: string]: ISerializedChat });
         return data;
     }
     @logCall()
     @logTime()
-    saveChatConfig(chatId: string, chat: IChatPersistence) {
+    saveChatConfig(chatId: string, chat: ISerializedChat) {
         this.checkInitialized();
         this.dependencies!.persistence.save(chatId, JSON.stringify(chat));
     }

@@ -26,7 +26,7 @@ export class DeleteConfigImpl extends DeleteConfig {
         return new Promise<void>(resolve => {
             try {
                 const chat = Chats.instance.getChat(chatId);
-                chat.removeTimeFrame(triggerId, userId);
+                chat.removeTrigger(triggerId, userId);
                 this.timerSettings.stop(chatId, triggerId);
                 this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
                 this.communication.send(chatId, { key: MessageKey.DELETE_CONFIG, triggerId });

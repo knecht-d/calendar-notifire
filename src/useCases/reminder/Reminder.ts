@@ -22,7 +22,7 @@ export class ReminderImpl extends Reminder {
     async execute({ chatId, triggerId }: IReminderIn) {
         try {
             const chat = Chats.instance.getChat(chatId);
-            const timeFrame = chat.getTimeFrame(triggerId).frame;
+            const timeFrame = chat.getTrigger(triggerId).frame;
             const currentTime = new Date();
             currentTime.setMilliseconds(0);
             currentTime.setSeconds(0);

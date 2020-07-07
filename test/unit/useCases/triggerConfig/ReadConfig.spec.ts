@@ -30,7 +30,7 @@ describe("ReadConfig", () => {
         it("pass the config", async () => {
             const settings = [
                 {
-                    key: "frame1",
+                    key: "trigger1",
                     frame: {
                         begin: { mock: "frame start" },
                         end: { mock: "frame end" },
@@ -38,7 +38,7 @@ describe("ReadConfig", () => {
                     recurrence: { mock: "recurrence" },
                 },
                 {
-                    key: "frame2",
+                    key: "trigger2",
                     frame: {
                         begin: { mock: "frame start" },
                         end: { mock: "frame end" },
@@ -50,7 +50,7 @@ describe("ReadConfig", () => {
                 settings,
                 administrators: ["admin1", "admin2"],
             });
-            MockChatEntity.getTimeFrame.mockReturnValue({
+            MockChatEntity.getTrigger.mockReturnValue({
                 frame: {
                     getStart: jest.fn().mockImplementation((current: Date) => {
                         const newDate = new Date(current);
@@ -68,21 +68,29 @@ describe("ReadConfig", () => {
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
                 key: MessageKey.READ_CONFIG,
                 triggers: {
-                    frame1: {
-                        begin: { mock: "frame start" },
-                        end: { mock: "frame end" },
+                    trigger1: {
+                        frame: {
+                            begin: { mock: "frame start" },
+                            end: { mock: "frame end" },
+                        },
                         recurrence: { mock: "recurrence" },
-                        next: new Date(2020, 4, 10, 0, 12, 13, 14),
-                        nextEventsFrom: new Date(2020, 4, 11, 0, 12, 13, 14),
-                        nextEventsTo: new Date(2020, 4, 12, 0, 12, 13, 14),
+                        nextExecution: {
+                            date: new Date(2020, 4, 10, 0, 12, 13, 14),
+                            from: new Date(2020, 4, 11, 0, 12, 13, 14),
+                            to: new Date(2020, 4, 12, 0, 12, 13, 14),
+                        },
                     },
-                    frame2: {
-                        begin: { mock: "frame start" },
-                        end: { mock: "frame end" },
+                    trigger2: {
+                        frame: {
+                            begin: { mock: "frame start" },
+                            end: { mock: "frame end" },
+                        },
                         recurrence: { mock: "recurrence" },
-                        next: new Date(2020, 4, 10, 0, 12, 13, 14),
-                        nextEventsFrom: new Date(2020, 4, 11, 0, 12, 13, 14),
-                        nextEventsTo: new Date(2020, 4, 12, 0, 12, 13, 14),
+                        nextExecution: {
+                            date: new Date(2020, 4, 10, 0, 12, 13, 14),
+                            from: new Date(2020, 4, 11, 0, 12, 13, 14),
+                            to: new Date(2020, 4, 12, 0, 12, 13, 14),
+                        },
                     },
                 },
             });

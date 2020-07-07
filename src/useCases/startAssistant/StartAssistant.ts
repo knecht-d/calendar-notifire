@@ -17,15 +17,15 @@ export class StartAssistantImpl extends StartAssistant {
                 const chatsData = this.configLoader.readAllChats();
                 Object.entries(chatsData).forEach(([chatId, chatData]) => {
                     const chat = Chats.instance.createChat(chatId, chatData.administrators);
-                    Object.entries(chatData.timeFrames).forEach(([timeFameKey, timeFameData]) => {
-                        const timeFrame = new TimeFrame(timeFameData.begin, timeFameData.end);
-                        const recurrence = createRecurrence(timeFameData.recurrence);
-                        chat.setTimeFrame(
-                            timeFameKey,
+                    Object.entries(chatData.triggerSettings).forEach(([triggerKey, triggerData]) => {
+                        const timeFrame = new TimeFrame(triggerData.frame.begin, triggerData.frame.end);
+                        const recurrence = createRecurrence(triggerData.recurrence);
+                        chat.setTrigger(
+                            triggerKey,
                             { frame: timeFrame, recurrence: recurrence },
                             chatData.administrators[0],
                         );
-                        this.timerSettings.set(chatId, timeFameKey, timeFameData.recurrence);
+                        this.timerSettings.set(chatId, triggerKey, triggerData.recurrence);
                     });
                 });
             } catch (error) {

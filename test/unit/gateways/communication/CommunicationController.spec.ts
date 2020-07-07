@@ -96,8 +96,10 @@ describe("CommunicationController", () => {
                                 toHour: 20,
                                 minute: 30,
                             },
-                            frameStart: {},
-                            frameEnd: {},
+                            frame: {
+                                begin: {},
+                                end: {},
+                            },
                         },
                     }),
                 );
@@ -129,8 +131,10 @@ describe("CommunicationController", () => {
                                 hour: 17,
                                 minute: 0,
                             },
-                            frameStart: {},
-                            frameEnd: {},
+                            frame: {
+                                begin: {},
+                                end: {},
+                            },
                         },
                     }),
                 );
@@ -156,8 +160,10 @@ describe("CommunicationController", () => {
                                 hour: 14,
                                 minute: 5,
                             },
-                            frameStart: {},
-                            frameEnd: {},
+                            frame: {
+                                begin: {},
+                                end: {},
+                            },
                         },
                     }),
                 );
@@ -173,80 +179,84 @@ describe("CommunicationController", () => {
                         hour: 14,
                         minute: 5,
                     },
-                    frameStart: {
-                        month: {
-                            value: 1,
-                            fixed: false,
+                    frame: {
+                        begin: {
+                            month: {
+                                value: 1,
+                                fixed: false,
+                            },
+                            day: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            hour: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            minute: {
+                                value: 0,
+                                fixed: true,
+                            },
                         },
-                        day: {
-                            value: 0,
-                            fixed: true,
-                        },
-                        hour: {
-                            value: 0,
-                            fixed: true,
-                        },
-                        minute: {
-                            value: 0,
-                            fixed: true,
-                        },
-                    },
-                    frameEnd: {
-                        month: {
-                            value: 2,
-                            fixed: false,
-                        },
-                        day: {
-                            value: 0,
-                            fixed: true,
-                        },
-                        hour: {
-                            value: 0,
-                            fixed: true,
-                        },
-                        minute: {
-                            value: 0,
-                            fixed: true,
+                        end: {
+                            month: {
+                                value: 2,
+                                fixed: false,
+                            },
+                            day: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            hour: {
+                                value: 0,
+                                fixed: true,
+                            },
+                            minute: {
+                                value: 0,
+                                fixed: true,
+                            },
                         },
                     },
                 });
                 expect(setMock.execute).toHaveBeenCalledWith(
                     expect.objectContaining({
                         config: expect.objectContaining({
-                            frameStart: {
-                                month: {
-                                    value: 1,
-                                    fixed: false,
+                            frame: {
+                                begin: {
+                                    month: {
+                                        value: 1,
+                                        fixed: false,
+                                    },
+                                    day: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
+                                    hour: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
+                                    minute: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
                                 },
-                                day: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                                hour: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
-                            frameEnd: {
-                                month: {
-                                    value: 2,
-                                    fixed: false,
-                                },
-                                day: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                                hour: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                                minute: {
-                                    value: 0,
-                                    fixed: true,
+                                end: {
+                                    month: {
+                                        value: 2,
+                                        fixed: false,
+                                    },
+                                    day: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
+                                    hour: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
+                                    minute: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
                                 },
                             },
                         }),
@@ -551,10 +561,12 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {
-                                        year: {},
+                                    frame: {
+                                        begin: {
+                                            year: {},
+                                        },
+                                        end: {},
                                     },
-                                    frameEnd: {},
                                 }),
                             {
                                 key: "INVALID_FRAME_CONFIG",
@@ -572,10 +584,12 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {
-                                        month: {},
+                                    frame: {
+                                        begin: {
+                                            month: {},
+                                        },
+                                        end: {},
                                     },
-                                    frameEnd: {},
                                 }),
                             {
                                 key: "INVALID_FRAME_CONFIG",
@@ -593,10 +607,12 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {
-                                        day: {},
+                                    frame: {
+                                        begin: {
+                                            day: {},
+                                        },
+                                        end: {},
                                     },
-                                    frameEnd: {},
                                 }),
                             {
                                 key: "INVALID_FRAME_CONFIG",
@@ -614,10 +630,12 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {
-                                        hour: {},
+                                    frame: {
+                                        begin: {
+                                            hour: {},
+                                        },
+                                        end: {},
                                     },
-                                    frameEnd: {},
                                 }),
                             {
                                 key: "INVALID_FRAME_CONFIG",
@@ -635,10 +653,12 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {
-                                        minute: {},
+                                    frame: {
+                                        begin: {
+                                            minute: {},
+                                        },
+                                        end: {},
                                     },
-                                    frameEnd: {},
                                 }),
                             {
                                 key: "INVALID_FRAME_CONFIG",
@@ -658,9 +678,11 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {},
-                                    frameEnd: {
-                                        year: {},
+                                    frame: {
+                                        begin: {},
+                                        end: {
+                                            year: {},
+                                        },
                                     },
                                 }),
                             {
@@ -679,9 +701,11 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {},
-                                    frameEnd: {
-                                        month: {},
+                                    frame: {
+                                        begin: {},
+                                        end: {
+                                            month: {},
+                                        },
                                     },
                                 }),
                             {
@@ -700,9 +724,11 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {},
-                                    frameEnd: {
-                                        day: {},
+                                    frame: {
+                                        begin: {},
+                                        end: {
+                                            day: {},
+                                        },
                                     },
                                 }),
                             {
@@ -721,9 +747,11 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {},
-                                    frameEnd: {
-                                        hour: {},
+                                    frame: {
+                                        begin: {},
+                                        end: {
+                                            hour: {},
+                                        },
                                     },
                                 }),
                             {
@@ -742,9 +770,11 @@ describe("CommunicationController", () => {
                                         hour: 14,
                                         minute: 5,
                                     },
-                                    frameStart: {},
-                                    frameEnd: {
-                                        minute: {},
+                                    frame: {
+                                        begin: {},
+                                        end: {
+                                            minute: {},
+                                        },
                                     },
                                 }),
                             {

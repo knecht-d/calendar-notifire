@@ -29,7 +29,7 @@ describe("RemoveAdmin", () => {
             expect(MockChatEntity.removeAdmin).toHaveBeenCalledWith("user", "admin");
             expect(mockPersistence.saveChatConfig).toHaveBeenCalledWith("chat", {
                 administrators: ["mockAdmin"],
-                timeFrames: {},
+                triggerSettings: {},
             });
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
                 key: MessageKey.REMOVE_ADMIN,

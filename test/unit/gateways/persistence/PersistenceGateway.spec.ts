@@ -15,52 +15,10 @@ describe("PersistenceGateway", () => {
             const gateway = new PeristenceGateway(mockLogger);
             gateway.init({ persistence: mockPersistence });
             gateway.saveChatConfig("chat", {
-                timeFrames: {
+                administrators: [],
+                triggerSettings: {
                     some: {
-                        begin: {
-                            day: {
-                                value: -1,
-                            },
-                            hour: {
-                                value: 0,
-                                fixed: true,
-                            },
-                        },
-                        end: {
-                            year: {
-                                value: 1,
-                                fixed: false,
-                            },
-                        },
-                        recurrence: {
-                            type: "Mocked",
-                        },
-                    },
-                },
-            } as any);
-            expect(mockPersistence.save).toHaveBeenCalledWith(
-                "chat",
-                '{"timeFrames":{"some":{"begin":{"day":{"value":-1},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}},"recurrence":{"type":"Mocked"}}}}',
-            );
-        });
-    });
-    describe("readAllChats", () => {
-        it("should read and parse the saved config", () => {
-            const gateway = new PeristenceGateway(mockLogger);
-
-            mockPersistence.readAll.mockReturnValue({
-                chat:
-                    '{"timeFrames":{"some":{"begin":{"day":{"value":-1},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}},"recurrence":{"type":"Mocked"}}}}',
-                chat2:
-                    '{"timeFrames":{"some":{"begin":{"day":{"value":-2},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}},"recurrence":{"type":"Mocked2"}}}}',
-            });
-
-            gateway.init({ persistence: mockPersistence });
-            const data = gateway.readAllChats();
-            expect(data).toEqual({
-                chat: {
-                    timeFrames: {
-                        some: {
+                        frame: {
                             begin: {
                                 day: {
                                     value: -1,
@@ -76,6 +34,52 @@ describe("PersistenceGateway", () => {
                                     fixed: false,
                                 },
                             },
+                        },
+                        recurrence: { type: "Mocked" } as any,
+                    },
+                },
+            });
+            expect(mockPersistence.save).toHaveBeenCalledWith(
+                "chat",
+                '{"administrators":[],"triggerSettings":{"some":{"frame":{"begin":{"day":{"value":-1},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}}},"recurrence":{"type":"Mocked"}}}}',
+            );
+        });
+    });
+    describe("readAllChats", () => {
+        it("should read and parse the saved config", () => {
+            const gateway = new PeristenceGateway(mockLogger);
+
+            mockPersistence.readAll.mockReturnValue({
+                chat:
+                    '{"administrators":[],"triggerSettings":{"some":{"frame":{"begin":{"day":{"value":-1},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}}},"recurrence":{"type":"Mocked"}}}}',
+                chat2:
+                    '{"administrators":[],"triggerSettings":{"some":{"frame":{"begin":{"day":{"value":-2},"hour":{"value":0,"fixed":true}},"end":{"year":{"value":1,"fixed":false}}},"recurrence":{"type":"Mocked2"}}}}',
+            });
+
+            gateway.init({ persistence: mockPersistence });
+            const data = gateway.readAllChats();
+            expect(data).toEqual({
+                chat: {
+                    administrators: [],
+                    triggerSettings: {
+                        some: {
+                            frame: {
+                                begin: {
+                                    day: {
+                                        value: -1,
+                                    },
+                                    hour: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
+                                },
+                                end: {
+                                    year: {
+                                        value: 1,
+                                        fixed: false,
+                                    },
+                                },
+                            },
                             recurrence: {
                                 type: "Mocked",
                             },
@@ -83,21 +87,24 @@ describe("PersistenceGateway", () => {
                     },
                 },
                 chat2: {
-                    timeFrames: {
+                    administrators: [],
+                    triggerSettings: {
                         some: {
-                            begin: {
-                                day: {
-                                    value: -2,
+                            frame: {
+                                begin: {
+                                    day: {
+                                        value: -2,
+                                    },
+                                    hour: {
+                                        value: 0,
+                                        fixed: true,
+                                    },
                                 },
-                                hour: {
-                                    value: 0,
-                                    fixed: true,
-                                },
-                            },
-                            end: {
-                                year: {
-                                    value: 1,
-                                    fixed: false,
+                                end: {
+                                    year: {
+                                        value: 1,
+                                        fixed: false,
+                                    },
                                 },
                             },
                             recurrence: {

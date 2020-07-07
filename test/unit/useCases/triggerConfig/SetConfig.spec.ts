@@ -42,13 +42,15 @@ describe("SetConfig", () => {
                 userId: "user",
                 triggerId: "trigger",
                 config: {
-                    frameStart: { mock: "frame start" },
-                    frameEnd: { mock: "frame end" },
-                    recurrence: { mock: "recurrence" },
+                    frame: {
+                        begin: { mock: "frame start" } as any,
+                        end: { mock: "frame end" } as any,
+                    },
+                    recurrence: { mock: "recurrence" } as any,
                 },
-            } as any);
+            });
 
-            expect(MockChatEntity.setTimeFrame).toHaveBeenCalledWith(
+            expect(MockChatEntity.setTrigger).toHaveBeenCalledWith(
                 "trigger",
                 {
                     frame: {
@@ -75,12 +77,14 @@ describe("SetConfig", () => {
                 userId: "user",
                 triggerId: "trigger",
                 config: {
-                    frameStart: { mock: "frame start" },
-                    frameEnd: { mock: "frame end" },
-                    recurrence: { mock: "recurrence" },
+                    frame: {
+                        begin: { mock: "frame start" } as any,
+                        end: { mock: "frame end" } as any,
+                    },
+                    recurrence: { mock: "recurrence" } as any,
                 },
-            } as any);
-            expect(MockChatEntity.setTimeFrame).not.toHaveBeenCalled();
+            });
+            expect(MockChatEntity.setTrigger).not.toHaveBeenCalled();
             expect(mockTrigger.set).not.toHaveBeenCalled();
             expect(mockPersistence.saveChatConfig).not.toHaveBeenCalled();
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {

@@ -21,8 +21,10 @@ export interface IGenericFrameEntry {
 
 export interface IGenericConfig {
     recurrence?: IGenericRecurrence;
-    frameStart?: IGenericFrame;
-    frameEnd?: IGenericFrame;
+    frame?: {
+        begin?: IGenericFrame;
+        end?: IGenericFrame;
+    };
 }
 
 export type GenericDaysDaysOfWeek = {
