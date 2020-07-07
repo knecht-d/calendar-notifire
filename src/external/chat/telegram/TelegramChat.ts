@@ -93,6 +93,9 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
                 this.communication!.removeAdmin(this.getChatId(ctx), this.getUser(ctx), payload),
             );
         });
+        this.bot.command("info", async ctx => {
+            await ctx.reply(`ChatId: ${this.getChatId(ctx)}\nUserId: ${this.getUser(ctx)}`);
+        });
 
         this.bot.on("callback_query", async ctx => {
             await ctx.reply(`Invalid Callback ${ctx.callbackQuery?.data}`);
@@ -113,7 +116,7 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
         return `${ctx.chat?.id || "noChat"}`;
     }
     private getUser(ctx: TelegrafContext) {
-        return ctx.from?.username || "noUser";
+        return `${ctx.from?.id || "noUser"}`;
     }
     private getPayload(ctx: TelegrafContext, command: string) {
         const lengthForSlashAndSpace = 2;
