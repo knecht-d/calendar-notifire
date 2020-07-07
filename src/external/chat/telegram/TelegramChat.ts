@@ -113,10 +113,24 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
     }
 
     private getChatId(ctx: TelegrafContext) {
-        return `${ctx.chat?.id || "noChat"}`;
+        const id = ctx.chat?.id;
+        if (!id) {
+            ctx.reply("Fehlerhafte ChatId").catch(error => this.logger.error("TelegramChat", error));
+            const context = JSON.parse(JSON.stringify(ctx)) as TelegrafContext;
+            delete context.tg;
+            throw new Error(`Wrong ChatId: ${JSON.stringify(context)}`);
+        }
+        return `${id}`;
     }
     private getUser(ctx: TelegrafContext) {
-        return `${ctx.from?.id || "noUser"}`;
+        const id = ctx.from?.id;
+        if (!id) {
+            ctx.reply("Fehlerhafte UserId").catch(error => this.logger.error("TelegramChat", error));
+            const context = JSON.parse(JSON.stringify(ctx)) as TelegrafContext;
+            delete context.tg;
+            throw new Error(`Wrong UserId: ${JSON.stringify(context)}`);
+        }
+        return `${id}`;
     }
     private getPayload(ctx: TelegrafContext, command: string) {
         const lengthForSlashAndSpace = 2;
