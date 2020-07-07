@@ -27,26 +27,30 @@ describe("CommunicationPresenter", () => {
                             hour: 14,
                             minute: 5,
                         },
-                        next: new Date(2020, 5, 25, 14, 5),
-                        nextEventsFrom: new Date(2020, 5, 25, 14, 5),
-                        nextEventsTo: new Date(2020, 7, 0, 0, 0),
-                        begin: {},
-                        end: {
-                            month: {
-                                value: 2,
-                                fixed: false,
-                            },
-                            day: {
-                                value: 0,
-                                fixed: true,
-                            },
-                            hour: {
-                                value: 0,
-                                fixed: true,
-                            },
-                            minute: {
-                                value: 0,
-                                fixed: true,
+                        nextExecution: {
+                            date: new Date(2020, 5, 25, 14, 5),
+                            from: new Date(2020, 5, 25, 14, 5),
+                            to: new Date(2020, 7, 0, 0, 0),
+                        },
+                        frame: {
+                            begin: {},
+                            end: {
+                                month: {
+                                    value: 2,
+                                    fixed: false,
+                                },
+                                day: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                                hour: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                                minute: {
+                                    value: 0,
+                                    fixed: true,
+                                },
                             },
                         },
                     },
@@ -60,30 +64,32 @@ describe("CommunicationPresenter", () => {
                                 sunday: true,
                             },
                         },
-                        begin: {
-                            month: {
-                                value: 1,
-                                fixed: false,
+                        frame: {
+                            begin: {
+                                month: {
+                                    value: 1,
+                                    fixed: false,
+                                },
+                                day: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                                hour: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                                minute: {
+                                    value: 0,
+                                    fixed: true,
+                                },
                             },
-                            day: {
-                                value: 0,
-                                fixed: true,
-                            },
-                            hour: {
-                                value: 0,
-                                fixed: true,
-                            },
-                            minute: {
-                                value: 0,
-                                fixed: true,
-                            },
+                            end: {},
                         },
-                        end: {},
                     },
                 };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
+                    triggers: mockTriggers,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
@@ -108,21 +114,25 @@ trigger2:
                             days: { monday: true },
                             minute: 0,
                         },
-                        next: new Date(2020, 5, 25, 15, 0),
-                        nextEventsFrom: new Date(2020, 5, 25, 15, 0),
-                        nextEventsTo: new Date(2020, 5, 25, 16, 0),
-                        begin: {},
-                        end: {
-                            hour: {
-                                value: 1,
-                                fixed: false,
+                        nextExecution: {
+                            date: new Date(2020, 5, 25, 15, 0),
+                            from: new Date(2020, 5, 25, 15, 0),
+                            to: new Date(2020, 5, 25, 16, 0),
+                        },
+                        frame: {
+                            begin: {},
+                            end: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
                             },
                         },
                     },
                 };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
+                    triggers: mockTriggers,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
@@ -132,7 +142,7 @@ trigger2:
                 );
             });
 
-            it("should not send the next events if nextEventsFrom is not given", () => {
+            it("should not send the next events if nextExecution is not given", () => {
                 const presenter = new CommunicationPresenter(mockLogger);
                 presenter.init({ communication: mockCommunicationOut });
                 const mockTriggers: ITriggers = {
@@ -144,60 +154,25 @@ trigger2:
                             days: { monday: true },
                             minute: 0,
                         },
-                        next: new Date(2020, 5, 25, 15, 0),
-                        nextEventsTo: new Date(2020, 5, 25, 16, 0),
-                        begin: {},
-                        end: {
-                            hour: {
-                                value: 1,
-                                fixed: false,
+                        frame: {
+                            begin: {},
+                            end: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
                             },
                         },
                     },
                 };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
+                    triggers: mockTriggers,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
                     `trigger:
-    Stündlich von 14:00 bis 20:00 am Montag
-    Nächte Erinnerung am 25.6.2020 um 15:00`,
-                );
-            });
-            it("should not send the next events if nextEventsTo is not given", () => {
-                const presenter = new CommunicationPresenter(mockLogger);
-                presenter.init({ communication: mockCommunicationOut });
-                const mockTriggers: ITriggers = {
-                    trigger: {
-                        recurrence: {
-                            type: PersistedRecurrenceType.hourly,
-                            fromHour: 14,
-                            toHour: 20,
-                            days: { monday: true },
-                            minute: 0,
-                        },
-                        next: new Date(2020, 5, 25, 15, 0),
-                        nextEventsFrom: new Date(2020, 5, 25, 15, 0),
-                        begin: {},
-                        end: {
-                            hour: {
-                                value: 1,
-                                fixed: false,
-                            },
-                        },
-                    },
-                };
-                presenter.send("someChat", {
-                    key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
-                });
-                expect(mockCommunicationOut.send).toHaveBeenCalledWith(
-                    "someChat",
-                    `trigger:
-    Stündlich von 14:00 bis 20:00 am Montag
-    Nächte Erinnerung am 25.6.2020 um 15:00`,
+    Stündlich von 14:00 bis 20:00 am Montag`,
                 );
             });
             it("should send the text for weekdays", () => {
@@ -211,18 +186,20 @@ trigger2:
                             days: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true },
                             minute: 0,
                         },
-                        begin: {},
-                        end: {
-                            hour: {
-                                value: 1,
-                                fixed: false,
+                        frame: {
+                            begin: {},
+                            end: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
                             },
                         },
                     },
                 };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
+                    triggers: mockTriggers,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
@@ -241,18 +218,20 @@ trigger2:
                             days: { saturday: true, sunday: true },
                             minute: 0,
                         },
-                        begin: {},
-                        end: {
-                            hour: {
-                                value: 1,
-                                fixed: false,
+                        frame: {
+                            begin: {},
+                            end: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
                             },
                         },
                     },
                 };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
+                    triggers: mockTriggers,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
@@ -279,18 +258,20 @@ trigger2:
                             },
                             minute: 0,
                         },
-                        begin: {},
-                        end: {
-                            hour: {
-                                value: 1,
-                                fixed: false,
+                        frame: {
+                            begin: {},
+                            end: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
                             },
                         },
                     },
                 };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
+                    triggers: mockTriggers,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",
@@ -345,18 +326,20 @@ trigger2:
                             days,
                             minute: 0,
                         },
-                        begin: {},
-                        end: {
-                            hour: {
-                                value: 1,
-                                fixed: false,
+                        frame: {
+                            begin: {},
+                            end: {
+                                hour: {
+                                    value: 1,
+                                    fixed: false,
+                                },
                             },
                         },
                     },
                 };
                 presenter.send("someChat", {
                     key: MessageKey.READ_CONFIG,
-                    triggers: mockTriggers as any,
+                    triggers: mockTriggers,
                 });
                 expect(mockCommunicationOut.send).toHaveBeenCalledWith(
                     "someChat",

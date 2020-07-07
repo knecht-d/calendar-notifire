@@ -1,8 +1,8 @@
 export interface IChatConfigSaver {
-    saveChatConfig: (chatId: string, chat: IChatPersistence) => void;
+    saveChatConfig: (chatId: string, chat: ISerializedChat) => void;
 }
 export interface IChatConfigLoader {
-    readAllChats: () => { [chatId: string]: IChatPersistence };
+    readAllChats: () => { [chatId: string]: ISerializedChat };
 }
 
 export enum PersistedRecurrenceType {
@@ -21,18 +21,22 @@ export interface IDaysOfWeekConfig {
     sunday?: boolean;
 }
 
-export interface IChatPersistence {
-    timeFrames: { [frameKey: string]: ISerializedTimeFrame };
+export interface ISerializedChat {
+    triggerSettings: { [triggerKey: string]: ISerializedTrigger };
     administrators: string[];
 }
 
-export interface ISerializedTimeFrame {
-    begin: ITimeFrameSettings;
-    end: ITimeFrameSettings;
+export interface ISerializedTrigger {
+    frame: {
+        begin: ITimeFrameSettings;
+        end: ITimeFrameSettings;
+    };
     recurrence: IPersistedRecurrenceRule;
-    next?: Date;
-    nextEventsFrom?: Date;
-    nextEventsTo?: Date;
+    nextExecution?: {
+        date: Date;
+        from: Date;
+        to: Date;
+    };
 }
 
 export interface ITimeFrameSettings {
@@ -79,10 +83,4 @@ export type IPersistedRecurrenceRule = IHourlyRecurrenceRule | IDailyRecurrenceR
 export interface ITimeCalc {
     value: number;
     fixed?: boolean;
-}
-
-export interface ITimeFrameJSON {
-    begin: ITimeFrameSettings;
-    end: ITimeFrameSettings;
-    recurrence: IPersistedRecurrenceRule;
 }

@@ -64,47 +64,47 @@ describe("Chat", () => {
         });
     });
 
-    describe("TimeFrames", () => {
-        it("should set and return the time frame", () => {
+    describe("Trigers", () => {
+        it("should set and return the triggers", () => {
             const chat = new Chat(["admin"]);
-            chat.setTimeFrame("tf", baseSettings, "admin");
-            const tf = chat.getTimeFrame("tf");
+            chat.setTrigger("tf", baseSettings, "admin");
+            const tf = chat.getTrigger("tf");
             expect(tf).toBeDefined();
         });
         it("should fail if user has no privileges", () => {
             const chat = new Chat(["admin"]);
             expect(() => {
-                chat.setTimeFrame("tf_not", baseSettings, "another user");
+                chat.setTrigger("tf_not", baseSettings, "another user");
             }).toThrow(new EntityError(EntityErrorCode.MISSING_PRIVILEGES));
             expect(() => {
-                chat.getTimeFrame("tf_not");
+                chat.getTrigger("tf_not");
             }).toThrow(new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED));
         });
         it("should throw for not exisiting timeframes", () => {
             const chat = new Chat(["admin"]);
-            chat.setTimeFrame("tf", baseSettings, "admin");
+            chat.setTrigger("tf", baseSettings, "admin");
             expect(() => {
-                chat.getTimeFrame("tf_not");
+                chat.getTrigger("tf_not");
             }).toThrow(new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED));
         });
-        it("should remove a time frame", () => {
+        it("should remove a trigger", () => {
             const chat = new Chat(["admin"]);
-            chat.setTimeFrame("tf", baseSettings, "admin");
-            chat.removeTimeFrame("tf", "admin");
+            chat.setTrigger("tf", baseSettings, "admin");
+            chat.removeTrigger("tf", "admin");
             expect(() => {
-                chat.getTimeFrame("tf");
+                chat.getTrigger("tf");
             }).toThrow(new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED));
         });
-        it("should not remove a time frame if user has no privileges", () => {
+        it("should not remove a trigger if user has no privileges", () => {
             const chat = new Chat(["admin"]);
-            chat.setTimeFrame("tf", baseSettings, "admin");
+            chat.setTrigger("tf", baseSettings, "admin");
             expect(() => {
-                chat.removeTimeFrame("tf", "no admin");
+                chat.removeTrigger("tf", "no admin");
             }).toThrow(new EntityError(EntityErrorCode.MISSING_PRIVILEGES));
-            const tf = chat.getTimeFrame("tf");
+            const tf = chat.getTrigger("tf");
             expect(tf).toBeDefined();
         });
-        it("should create the correct TimeFrame", () => {
+        it("should create the correct trigger", () => {
             const chat = new Chat(["admin"]);
             const tfBegin: TimeFrameSettings = {
                 minute: { value: -1 },
@@ -137,11 +137,11 @@ describe("Chat", () => {
             const tf = new TimeFrame(tfBegin, tfEnd);
             const tf2 = new TimeFrame(tf2Begin, tf2End);
 
-            chat.setTimeFrame("tf", { frame: tf, recurrence: baseRecurrence }, "admin");
-            chat.setTimeFrame("tf2", { frame: tf2, recurrence: baseRecurrence }, "admin");
+            chat.setTrigger("tf", { frame: tf, recurrence: baseRecurrence }, "admin");
+            chat.setTrigger("tf2", { frame: tf2, recurrence: baseRecurrence }, "admin");
 
-            const actualTf = chat.getTimeFrame("tf");
-            const actualTf2 = chat.getTimeFrame("tf2");
+            const actualTf = chat.getTrigger("tf");
+            const actualTf2 = chat.getTrigger("tf2");
             const date = new Date(2020, 8, 13, 18, 45, 17, 30);
             expect(actualTf?.frame.getStart(date)).toEqual(tf.getStart(date));
             expect(actualTf?.frame.getEnd(date)).toEqual(tf.getEnd(date));
@@ -152,9 +152,9 @@ describe("Chat", () => {
             const chat = new Chat(["admin"]);
             const tf = new TimeFrame({}, {});
 
-            chat.setTimeFrame("tf", { frame: tf, recurrence: baseRecurrence }, "admin");
+            chat.setTrigger("tf", { frame: tf, recurrence: baseRecurrence }, "admin");
 
-            const actualTf = chat.getTimeFrame("tf");
+            const actualTf = chat.getTrigger("tf");
             const date = new Date(2020, 8, 13, 18, 45, 17, 30);
             expect(actualTf?.frame.getStart(date)).toEqual(tf.getStart(date));
             expect(actualTf?.frame.getEnd(date)).toEqual(tf.getEnd(date));
@@ -178,7 +178,7 @@ describe("Chat", () => {
                 year: { value: 2020 },
             };
             const chat = new Chat(["admin"]);
-            chat.setTimeFrame("tf", { frame: new TimeFrame(tfBegin, tfEnd), recurrence: baseRecurrence }, "admin");
+            chat.setTrigger("tf", { frame: new TimeFrame(tfBegin, tfEnd), recurrence: baseRecurrence }, "admin");
             expect(chat.getConfig()).toEqual({
                 administrators: ["admin"],
                 settings: [

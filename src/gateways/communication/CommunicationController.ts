@@ -150,8 +150,10 @@ export class CommunicationController extends GateWay<IDependencies> implements I
 
         const configOut: ISetConfigInput["config"] = {
             recurrence: recurrence as IMonthlyRecurrenceRule,
-            frameStart: this.extractAndValidateFrame(configIn.frameStart),
-            frameEnd: this.extractAndValidateFrame(configIn.frameEnd),
+            frame: {
+                begin: this.extractAndValidateFrame(configIn.frame?.begin),
+                end: this.extractAndValidateFrame(configIn.frame?.end),
+            },
         };
         return configOut;
     }
@@ -167,8 +169,10 @@ export class CommunicationController extends GateWay<IDependencies> implements I
 
         const configOut: ISetConfigInput["config"] = {
             recurrence: recurrence as IDailyRecurrenceRule,
-            frameStart: this.extractAndValidateFrame(configIn.frameStart),
-            frameEnd: this.extractAndValidateFrame(configIn.frameEnd),
+            frame: {
+                begin: this.extractAndValidateFrame(configIn.frame?.begin),
+                end: this.extractAndValidateFrame(configIn.frame?.end),
+            },
         };
         return configOut;
     }
@@ -185,8 +189,10 @@ export class CommunicationController extends GateWay<IDependencies> implements I
 
         const configOut: ISetConfigInput["config"] = {
             recurrence: recurrence as IHourlyRecurrenceRule,
-            frameStart: this.extractAndValidateFrame(configIn.frameStart),
-            frameEnd: this.extractAndValidateFrame(configIn.frameEnd),
+            frame: {
+                begin: this.extractAndValidateFrame(configIn.frame?.begin),
+                end: this.extractAndValidateFrame(configIn.frame?.end),
+            },
         };
         return configOut;
     }

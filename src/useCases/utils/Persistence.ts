@@ -1,10 +1,5 @@
 import { Chat, IRecurrenceSettings, RecurrenceType } from "../../entities";
-import {
-    IChatPersistence,
-    IPersistedRecurrenceRule,
-    ISerializedTimeFrame,
-    PersistedRecurrenceType,
-} from "../interfaces";
+import { IPersistedRecurrenceRule, ISerializedChat, ISerializedTrigger, PersistedRecurrenceType } from "../interfaces";
 
 export function convertRecurrence(settings: IRecurrenceSettings): IPersistedRecurrenceRule {
     switch (settings.type) {
@@ -33,18 +28,20 @@ export function convertRecurrence(settings: IRecurrenceSettings): IPersistedRecu
     }
 }
 
-export function convertChatToPersistence(chat: Chat): IChatPersistence {
+export function convertChatToPersistence(chat: Chat): ISerializedChat {
     const chatConfig = chat.getConfig();
-    const timeFrames = chatConfig.settings.reduce((frames, setting) => {
-        frames[setting.key] = {
-            begin: setting.frame.begin,
-            end: setting.frame.end,
+    const triggers = chatConfig.settings.reduce((triggers, setting) => {
+        triggers[setting.key] = {
+            frame: {
+                begin: setting.frame.begin,
+                end: setting.frame.end,
+            },
             recurrence: convertRecurrence(setting.recurrence),
         };
-        return frames;
-    }, {} as { [frameKey: string]: ISerializedTimeFrame });
+        return triggers;
+    }, {} as { [triggerKey: string]: ISerializedTrigger });
     return {
         administrators: chatConfig.administrators,
-        timeFrames,
+        triggerSettings: triggers,
     };
 }

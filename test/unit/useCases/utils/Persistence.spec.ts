@@ -96,7 +96,7 @@ describe("Persistence Utils", () => {
     describe("convertChatToPersistence", () => {
         it("shouuld convert a chat", () => {
             const chat = new Chat(["admin1", "admin2"]);
-            chat.setTimeFrame(
+            chat.setTrigger(
                 "tf1",
                 {
                     frame: new TimeFrame({ hour: { value: 0, fixed: true } }, { hour: { value: 0 } }),
@@ -107,10 +107,12 @@ describe("Persistence Utils", () => {
             const result = convertChatToPersistence(chat);
             expect(result).toEqual({
                 administrators: ["admin1", "admin2"],
-                timeFrames: {
+                triggerSettings: {
                     tf1: {
-                        begin: { hour: { value: 0, fixed: true } },
-                        end: { hour: { value: 0 } },
+                        frame: {
+                            begin: { hour: { value: 0, fixed: true } },
+                            end: { hour: { value: 0 } },
+                        },
                         recurrence: {
                             type: PersistedRecurrenceType.monthly,
                             day: 25,

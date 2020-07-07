@@ -113,40 +113,42 @@ describe("End to end test", () => {
                             hour: 17,
                             minute: 30,
                         },
-                        frameStart: {
-                            month: {
-                                value: 1,
-                                fixed: false,
+                        frame: {
+                            begin: {
+                                month: {
+                                    value: 1,
+                                    fixed: false,
+                                },
+                                day: {
+                                    value: 1,
+                                    fixed: true,
+                                },
+                                hour: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                                minute: {
+                                    value: 0,
+                                    fixed: true,
+                                },
                             },
-                            day: {
-                                value: 1,
-                                fixed: true,
-                            },
-                            hour: {
-                                value: 0,
-                                fixed: true,
-                            },
-                            minute: {
-                                value: 0,
-                                fixed: true,
-                            },
-                        },
-                        frameEnd: {
-                            month: {
-                                value: 2,
-                                fixed: false,
-                            },
-                            day: {
-                                value: 1,
-                                fixed: true,
-                            },
-                            hour: {
-                                value: 0,
-                                fixed: true,
-                            },
-                            minute: {
-                                value: 0,
-                                fixed: true,
+                            end: {
+                                month: {
+                                    value: 2,
+                                    fixed: false,
+                                },
+                                day: {
+                                    value: 1,
+                                    fixed: true,
+                                },
+                                hour: {
+                                    value: 0,
+                                    fixed: true,
+                                },
+                                minute: {
+                                    value: 0,
+                                    fixed: true,
+                                },
                             },
                         },
                     });
@@ -164,7 +166,7 @@ describe("End to end test", () => {
             await chat.fireInitChat("chat1", "user1");
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith("chat1", "Initialisierung des Chats erfolgreich.");
-            expect(storage.storedData).toEqual({ chat1: '{"administrators":["user1"],"timeFrames":{}}' });
+            expect(storage.storedData).toEqual({ chat1: '{"administrators":["user1"],"triggerSettings":{}}' });
         });
         it("chat should not be initialized twice", async () => {
             await chat.fireInitChat("chat1", "anotherUser");
@@ -173,7 +175,7 @@ describe("End to end test", () => {
                 "chat1",
                 "Initialisierung des Chats fehlgeschlagen.\n{CHAT_ALREADY_EXISTING}",
             );
-            expect(storage.storedData).toEqual({ chat1: '{"administrators":["user1"],"timeFrames":{}}' });
+            expect(storage.storedData).toEqual({ chat1: '{"administrators":["user1"],"triggerSettings":{}}' });
         });
     });
 
@@ -183,7 +185,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith("chat1", "user2 erfolgreich zu Administratoren hinzugefügt.");
             expect(storage.storedData).toEqual({
-                chat1: '{"administrators":["user1","user2"],"timeFrames":{}}',
+                chat1: '{"administrators":["user1","user2"],"triggerSettings":{}}',
             });
         });
         it("should fail to add a new admin if current user is not an admin", async () => {
@@ -194,7 +196,7 @@ describe("End to end test", () => {
                 "Hinzufügen von user3 zu Administratoren fehlgeschlagen.\n{MISSING_PRIVILEGES}",
             );
             expect(storage.storedData).toEqual({
-                chat1: '{"administrators":["user1","user2"],"timeFrames":{}}',
+                chat1: '{"administrators":["user1","user2"],"triggerSettings":{}}',
             });
         });
         it("should fail to remove an admin if current user is not an admin", async () => {
@@ -205,7 +207,7 @@ describe("End to end test", () => {
                 "Entfernen von user1 aus Administratoren fehlgeschlagen.\n{MISSING_PRIVILEGES}",
             );
             expect(storage.storedData).toEqual({
-                chat1: '{"administrators":["user1","user2"],"timeFrames":{}}',
+                chat1: '{"administrators":["user1","user2"],"triggerSettings":{}}',
             });
         });
         it("should fail to remove an admin if to be removed user is not an admin", async () => {
@@ -216,7 +218,7 @@ describe("End to end test", () => {
                 "Entfernen von noAdmin aus Administratoren fehlgeschlagen.\n{NO_ADMIN}",
             );
             expect(storage.storedData).toEqual({
-                chat1: '{"administrators":["user1","user2"],"timeFrames":{}}',
+                chat1: '{"administrators":["user1","user2"],"triggerSettings":{}}',
             });
         });
         it("should remove an admin", async () => {
@@ -224,7 +226,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledTimes(1);
             expect(chat.send).toHaveBeenCalledWith("chat1", "user2 erfolgreich von Administratoren entfernt.");
             expect(storage.storedData).toEqual({
-                chat1: '{"administrators":["user1"],"timeFrames":{}}',
+                chat1: '{"administrators":["user1"],"triggerSettings":{}}',
             });
         });
         it("should fail to remove an admin if it is the last one", async () => {
@@ -235,7 +237,7 @@ describe("End to end test", () => {
                 "Entfernen von user1 aus Administratoren fehlgeschlagen.\n{LAST_ADMIN}",
             );
             expect(storage.storedData).toEqual({
-                chat1: '{"administrators":["user1"],"timeFrames":{}}',
+                chat1: '{"administrators":["user1"],"triggerSettings":{}}',
             });
         });
     });
@@ -249,40 +251,42 @@ describe("End to end test", () => {
                     hour: 17,
                     minute: 30,
                 },
-                frameStart: {
-                    month: {
-                        value: 1,
-                        fixed: false,
+                frame: {
+                    begin: {
+                        month: {
+                            value: 1,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
-                    },
-                },
-                frameEnd: {
-                    month: {
-                        value: 2,
-                        fixed: false,
-                    },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
+                    end: {
+                        month: {
+                            value: 2,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
                 },
             });
@@ -291,7 +295,7 @@ describe("End to end test", () => {
             expect(timer.triggers["chat1|trigger1"]).toEqual("30 17 15 * *");
             expect(storage.storedData).toEqual({
                 chat1:
-                    '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":30}}}}',
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":30}}}}',
             });
         });
         it("should fail to set a new trigger if user is not an admin", async () => {
@@ -302,40 +306,42 @@ describe("End to end test", () => {
                     hour: 17,
                     minute: 30,
                 },
-                frameStart: {
-                    month: {
-                        value: 1,
-                        fixed: false,
+                frame: {
+                    begin: {
+                        month: {
+                            value: 1,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
-                    },
-                },
-                frameEnd: {
-                    month: {
-                        value: 2,
-                        fixed: false,
-                    },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
+                    end: {
+                        month: {
+                            value: 2,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
                 },
             });
@@ -347,7 +353,7 @@ describe("End to end test", () => {
             expect(timer.triggers["chat1|trigger2"]).toBeUndefined();
             expect(storage.storedData).toEqual({
                 chat1:
-                    '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":30}}}}',
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":30}}}}',
             });
         });
         it("should update an existing trigger", async () => {
@@ -358,40 +364,42 @@ describe("End to end test", () => {
                     hour: 17,
                     minute: 45,
                 },
-                frameStart: {
-                    month: {
-                        value: 1,
-                        fixed: false,
+                frame: {
+                    begin: {
+                        month: {
+                            value: 1,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
-                    },
-                },
-                frameEnd: {
-                    month: {
-                        value: 2,
-                        fixed: false,
-                    },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
+                    end: {
+                        month: {
+                            value: 2,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
                 },
             });
@@ -400,7 +408,7 @@ describe("End to end test", () => {
             expect(timer.triggers["chat1|trigger1"]).toEqual("45 17 15 * *");
             expect(storage.storedData).toEqual({
                 chat1:
-                    '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
             });
         });
         it("should add a additional trigger", async () => {
@@ -411,40 +419,42 @@ describe("End to end test", () => {
                     hour: 17,
                     minute: 30,
                 },
-                frameStart: {
-                    month: {
-                        value: 1,
-                        fixed: false,
+                frame: {
+                    begin: {
+                        month: {
+                            value: 1,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
-                    },
-                },
-                frameEnd: {
-                    month: {
-                        value: 2,
-                        fixed: false,
-                    },
-                    day: {
-                        value: 1,
-                        fixed: true,
-                    },
-                    hour: {
-                        value: 0,
-                        fixed: true,
-                    },
-                    minute: {
-                        value: 0,
-                        fixed: true,
+                    end: {
+                        month: {
+                            value: 2,
+                            fixed: false,
+                        },
+                        day: {
+                            value: 1,
+                            fixed: true,
+                        },
+                        hour: {
+                            value: 0,
+                            fixed: true,
+                        },
+                        minute: {
+                            value: 0,
+                            fixed: true,
+                        },
                     },
                 },
             });
@@ -454,7 +464,7 @@ describe("End to end test", () => {
             expect(timer.triggers["chat1|trigger2"]).toEqual("30 17 15 * *");
             expect(storage.storedData).toEqual({
                 chat1:
-                    '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}},"trigger2":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":30}}}}',
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}},"trigger2":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":30}}}}',
             });
         });
         it("should delete an existing trigger", async () => {
@@ -465,7 +475,7 @@ describe("End to end test", () => {
             expect(timer.triggers["chat1|trigger2"]).toBeUndefined();
             expect(storage.storedData).toEqual({
                 chat1:
-                    '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
             });
         });
         it("should fail to delete an existing trigger if user is not an admin", async () => {
@@ -478,7 +488,7 @@ describe("End to end test", () => {
             expect(timer.triggers["chat1|trigger1"]).toEqual("45 17 15 * *");
             expect(storage.storedData).toEqual({
                 chat1:
-                    '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
             });
         });
         it("should read the config even if user is not an admin", async () => {
@@ -495,7 +505,7 @@ describe("End to end test", () => {
             expect(chat.send).toHaveBeenCalledWith("chat1", "Termine:\n");
             expect(storage.storedData).toEqual({
                 chat1:
-                    '{"administrators":["user1"],"timeFrames":{"trigger1":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
             });
         });
     });

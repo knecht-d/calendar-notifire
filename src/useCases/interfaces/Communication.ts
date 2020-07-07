@@ -1,4 +1,4 @@
-import { ISerializedTimeFrame } from "./Persistence";
+import { ISerializedTrigger } from "./Persistence";
 
 export interface IEvent {
     start: Date;
@@ -13,7 +13,7 @@ export interface ICommunication {
 }
 
 export interface ITriggers {
-    [key: string]: ISerializedTimeFrame;
+    [key: string]: ISerializedTrigger;
 }
 
 export enum MessageKey {

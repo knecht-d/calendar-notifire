@@ -1,5 +1,5 @@
 import { Chats } from "../../entities";
-import { ICommunication, ISerializedTimeFrame, ITimerRead, MessageKey } from "../interfaces";
+import { ICommunication, ISerializedTrigger, ITimerRead, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertRecurrence } from "../utils";
@@ -20,19 +20,23 @@ export class ReadConfigImpl extends ReadConfig {
             try {
                 const chat = Chats.instance.getChat(chatId);
                 const chatConfig = chat.getConfig();
-                const timeFrames = chatConfig.settings.reduce((frames, setting) => {
+                const triggers = chatConfig.settings.reduce((triggers, setting) => {
                     const nextExecution = this.timerRead.getNext(chatId, setting.key);
-                    frames[setting.key] = {
-                        begin: setting.frame.begin,
-                        end: setting.frame.end,
+                    triggers[setting.key] = {
+                        frame: {
+                            begin: setting.frame.begin,
+                            end: setting.frame.end,
+                        },
                         recurrence: convertRecurrence(setting.recurrence),
-                        next: nextExecution,
-                        nextEventsFrom: chat.getTimeFrame(setting.key).frame.getStart(nextExecution),
-                        nextEventsTo: chat.getTimeFrame(setting.key).frame.getEnd(nextExecution),
+                        nextExecution: {
+                            date: nextExecution,
+                            from: chat.getTrigger(setting.key).frame.getStart(nextExecution),
+                            to: chat.getTrigger(setting.key).frame.getEnd(nextExecution),
+                        },
                     };
-                    return frames;
-                }, {} as { [frameKey: string]: ISerializedTimeFrame });
-                this.communication.send(chatId, { key: MessageKey.READ_CONFIG, triggers: timeFrames });
+                    return triggers;
+                }, {} as { [triggerKey: string]: ISerializedTrigger });
+                this.communication.send(chatId, { key: MessageKey.READ_CONFIG, triggers: triggers });
             } catch (error) {
                 this.logger.warn("DeleteConfigImpl", error);
                 this.communication.send(chatId, {

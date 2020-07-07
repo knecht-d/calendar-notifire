@@ -12,7 +12,7 @@ export interface IChatConfig {
 }
 
 export class Chat {
-    private settings: { [frameId: string]: { frame: TimeFrame; recurrence: RecurrenceRule } | undefined };
+    private settings: { [triggerId: string]: { frame: TimeFrame; recurrence: RecurrenceRule } | undefined };
     private administrators: Set<string>;
     constructor(adminIds: string[]) {
         this.settings = {};
@@ -39,22 +39,22 @@ export class Chat {
         this.administrators.delete(toBeRemovedAdmin);
     }
 
-    public setTimeFrame(key: string, settings: { frame: TimeFrame; recurrence: RecurrenceRule }, userId: string) {
+    public setTrigger(key: string, settings: { frame: TimeFrame; recurrence: RecurrenceRule }, userId: string) {
         if (!this.administrators.has(userId)) {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
         this.settings[key] = settings;
     }
 
-    public getTimeFrame(key: string) {
-        const timeFrame = this.settings[key];
-        if (!timeFrame) {
+    public getTrigger(key: string) {
+        const trigger = this.settings[key];
+        if (!trigger) {
             throw new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED);
         }
-        return timeFrame;
+        return trigger;
     }
 
-    public removeTimeFrame(key: string, userId: string) {
+    public removeTrigger(key: string, userId: string) {
         if (!this.administrators.has(userId)) {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
