@@ -4,4 +4,5 @@
 /.vscode
 node_modules
 
-/data
+data/*
+!data\setup.example.json

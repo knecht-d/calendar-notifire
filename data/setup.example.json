@@ -1,0 +1,6 @@
+{
+  "telegram": "[TOKEN]",
+  "calendarURL": "https://example.com/calendar.ics",
+  "chatConfig": "data/chats.json",
+  "logLevel": "error|warn|info|verbose|debug"
+}
