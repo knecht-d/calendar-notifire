@@ -1,4 +1,4 @@
-import { ConsoleChat, SimpleFileStorage, StaticCalendar, TestSetIntervalTimer } from "../external";
+import { ConsoleChat, SetIntervalTimer, SimpleFileStorage, StaticCalendar } from "../external";
 import { IEvent } from "../useCases";
 import { GenericFactory } from "./GenericFactory";
 
@@ -12,7 +12,7 @@ export class LocalFactory extends GenericFactory<
             calendar: StaticCalendar,
             chat: ConsoleChat,
             storage: SimpleFileStorage,
-            timer: TestSetIntervalTimer,
+            timer: SetIntervalTimer,
         });
     }
 }

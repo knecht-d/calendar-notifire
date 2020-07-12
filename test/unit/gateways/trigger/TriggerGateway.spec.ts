@@ -96,7 +96,7 @@ describe("TriggerGateway", () => {
     });
 
     describe("stop", () => {
-        it("should stop using the encoded id", () => {
+        it("should execute 'stop' using the encoded id", () => {
             const triggerGW = new TriggerGateway(mockLogger);
             triggerGW.init({ triggerConfig: mockTriggerConfigure, reminder: mockReminder });
             triggerGW.stop("chat|Id", "trigger|Id");

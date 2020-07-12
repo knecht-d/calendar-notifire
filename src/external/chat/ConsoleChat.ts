@@ -37,10 +37,16 @@ export class ConsoleChat extends AbstractChat<{ chatId: string; userId: string }
                         console.log("User input complete, program exit.");
                         process.exit();
                         break;
-                    case "/set":
-                        // @ts-ignore
-                        await this.communication!.set(this.chatId, this.userId, payload);
+                    case "/set": {
+                        const payloadParts = payload.split(" ");
+                        await this.communication!.set(
+                            this.chatId,
+                            this.userId,
+                            payloadParts[0],
+                            JSON.parse(payloadParts[1]),
+                        );
                         break;
+                    }
                     case "/delete":
                         await this.communication!.delete(this.chatId, this.userId, payload);
                         break;

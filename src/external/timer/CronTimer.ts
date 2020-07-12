@@ -12,6 +12,9 @@ export class CronTimer extends AbstractTimer {
 
     @logCall()
     setTrigger(id: string, cron: string) {
+        if (this.triggers[id]) {
+            this.triggers[id].job.stop();
+        }
         const job = new CronJob(cron, async () => {
             if (this.triggerReceiver) {
                 await this.triggerReceiver.trigger(id);

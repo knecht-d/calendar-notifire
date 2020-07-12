@@ -95,7 +95,7 @@ describe("CommunicationPresenter", () => {
                     "someChat",
                     `trigger:
     Jeden Monat am 25. um 14:05
-    Nächte Erinnerung am 25.6.2020 um 14:05 zeigt Termine von 25.6.2020 14:05 bis 31.7.2020 00:00
+    Nächste Erinnerung am 25.6.2020 um 14:05 zeigt Termine von 25.6.2020 14:05 bis 31.7.2020 00:00
 
 trigger2:
     Einmal täglich um 14:05 am Wochenende`,
@@ -138,7 +138,7 @@ trigger2:
                     "someChat",
                     `trigger:
     Stündlich von 14:00 bis 20:00 am Montag
-    Nächte Erinnerung am 25.6.2020 um 15:00 zeigt Termine von 25.6.2020 15:00 bis 16:00`,
+    Nächste Erinnerung am 25.6.2020 um 15:00 zeigt Termine von 25.6.2020 15:00 bis 16:00`,
                 );
             });
 

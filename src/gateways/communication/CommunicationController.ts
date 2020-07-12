@@ -74,10 +74,7 @@ export class CommunicationController extends GateWay<IDependencies> implements I
     async delete(chatId: string, userId: string, payload: string) {
         this.checkInitialized();
         try {
-            const triggerId = payload
-                .trim()
-                .replace(/\s+/gm, " ")
-                .split(" ")[0];
+            const triggerId = payload.trim();
             if (!triggerId) {
                 throw new CommunicationError(CommunicationErrorCode.MISSING_TRIGGER_ID);
             }

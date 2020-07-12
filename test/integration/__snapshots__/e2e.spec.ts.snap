@@ -7,7 +7,7 @@ exports[`End to end test trigger settings should read the config even if user is
       "chat1",
       "trigger1:
     Jeden Monat am 15. um 17:45
-    Nächte Erinnerung am 15.8.2020 um 17:45 zeigt Termine von 1.9.2020 00:00 bis 1.10.2020 00:00",
+    Nächste Erinnerung am 15.8.2020 um 17:45 zeigt Termine von 1.9.2020 00:00 bis 1.10.2020 00:00",
     ],
   ],
   "results": Array [

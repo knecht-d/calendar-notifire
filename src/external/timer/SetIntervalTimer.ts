@@ -1,6 +1,6 @@
 import { AbstractTimer } from "./AbstractTimer";
 
-export class TestSetIntervalTimer extends AbstractTimer {
+export class SetIntervalTimer extends AbstractTimer {
     private triggers: { [id: string]: NodeJS.Timeout } = {};
     getNextExecution(_id: string): Date {
         return new Date();

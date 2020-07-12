@@ -30,7 +30,9 @@ export class ReminderImpl extends Reminder {
             const from = timeFrame.getStart(currentTime);
             const to = timeFrame.getEnd(currentTime);
             const events = await this.eventProvider.getEventsBetween(from, to);
-            this.communication.send(chatId, { key: MessageKey.EVENTS, events });
+            if (events.length > 0) {
+                this.communication.send(chatId, { key: MessageKey.EVENTS, events });
+            }
         } catch (error) {
             this.logger.error("ReminderImpl", error);
         }

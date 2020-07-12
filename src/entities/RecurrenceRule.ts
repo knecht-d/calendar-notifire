@@ -8,22 +8,20 @@ type DayFlags = { [day in Days]?: boolean };
 
 interface IBaseRecurrenceSettings {
     type: RecurrenceType;
-}
-
-interface IManualRecurrenceSettings extends IBaseRecurrenceSettings {
     hour: number;
     minute: number;
 }
-interface IHourlyRecurrenceSettings extends IManualRecurrenceSettings {
+
+interface IHourlyRecurrenceSettings extends IBaseRecurrenceSettings {
     type: RecurrenceType.hourly;
     toHour: number;
     weekDays: DayFlags;
 }
-interface IDailyRecurrenceSettings extends IManualRecurrenceSettings {
+interface IDailyRecurrenceSettings extends IBaseRecurrenceSettings {
     type: RecurrenceType.daily;
     weekDays: DayFlags;
 }
-interface IMonthlyRecurrenceSettings extends IManualRecurrenceSettings {
+interface IMonthlyRecurrenceSettings extends IBaseRecurrenceSettings {
     type: RecurrenceType.monthly;
     dayOfMonth: number;
 }
@@ -31,20 +29,8 @@ interface IMonthlyRecurrenceSettings extends IManualRecurrenceSettings {
 export type IRecurrenceSettings = IMonthlyRecurrenceSettings | IDailyRecurrenceSettings | IHourlyRecurrenceSettings;
 
 export abstract class RecurrenceRule {
-    constructor(protected type: RecurrenceType) {}
+    constructor(protected type: RecurrenceType, protected hour: number, protected minute: number) {}
     protected getBaseSetting(): IBaseRecurrenceSettings {
-        return {
-            type: this.type,
-        };
-    }
-    abstract getSettings(): IRecurrenceSettings;
-}
-
-export abstract class ManualRecurrenceRule extends RecurrenceRule {
-    constructor(protected type: RecurrenceType, protected hour: number, protected minute: number) {
-        super(type);
-    }
-    protected getBaseSetting(): IManualRecurrenceSettings {
         return {
             type: this.type,
             hour: this.hour,
@@ -54,7 +40,7 @@ export abstract class ManualRecurrenceRule extends RecurrenceRule {
     abstract getSettings(): IRecurrenceSettings;
 }
 
-export class HourlyRecurrenceRule extends ManualRecurrenceRule {
+export class HourlyRecurrenceRule extends RecurrenceRule {
     constructor(fromHour: number, private toHour: number, minute: number, private weekDays: DayFlags) {
         super(RecurrenceType.hourly, fromHour, minute);
     }
@@ -68,7 +54,7 @@ export class HourlyRecurrenceRule extends ManualRecurrenceRule {
     }
 }
 
-export class DailyRecurrenceRule extends ManualRecurrenceRule {
+export class DailyRecurrenceRule extends RecurrenceRule {
     constructor(hour: number, minute: number, private weekDays: DayFlags) {
         super(RecurrenceType.daily, hour, minute);
     }
@@ -81,7 +67,7 @@ export class DailyRecurrenceRule extends ManualRecurrenceRule {
     }
 }
 
-export class MonthlyRecurrenceRule extends ManualRecurrenceRule {
+export class MonthlyRecurrenceRule extends RecurrenceRule {
     constructor(hour: number, minute: number, private dayOfMonth: number) {
         super(RecurrenceType.monthly, hour, minute);
     }

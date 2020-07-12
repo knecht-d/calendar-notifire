@@ -1,5 +1,5 @@
 import { LocalFactory } from "../../../src/creation";
-import { ConsoleChat, SimpleFileStorage, StaticCalendar, TestSetIntervalTimer } from "../../../src/external";
+import { ConsoleChat, SetIntervalTimer, SimpleFileStorage, StaticCalendar } from "../../../src/external";
 import { MockLogger } from "../../mocks/external/MockLogger";
 
 jest.mock("../../../src/external");
@@ -24,7 +24,7 @@ describe("LocalFactory", () => {
         it("timer", () => {
             const factory = new LocalFactory();
             const timer = factory.createTimer(mockLogger);
-            expect(timer).toBeInstanceOf(TestSetIntervalTimer);
+            expect(timer).toBeInstanceOf(SetIntervalTimer);
         });
     });
 });
