@@ -141,9 +141,9 @@ export class CommunicationPresenter extends GateWay<IDependencies> implements IE
         const { date: startDate, time: startTime } = this.getDateTimeString(event.start);
         const { date: endDate, time: endTime } = this.getDateTimeString(event.end);
         return `
-${event.title}:
+${event.title}${event.location ? ` (${event.location})` : ""}:
     ${startDate} ${startTime} - ${`${startDate !== endDate ? `${endDate} ` : ""}${endTime}`}
-    ${event.description || ""}${event.location || ""}`;
+    ${event.description || ""}`;
     }
 
     private getConfigText(triggers: ITriggers) {
@@ -163,7 +163,7 @@ ${event.title}:
         const { date, time } = this.getDateTimeString(trigger.nextExecution.date);
         const { date: fromDate, time: fromTime } = this.getDateTimeString(trigger.nextExecution.from);
         const { date: toDate, time: toTime } = this.getDateTimeString(trigger.nextExecution.to);
-        return `Nächte Erinnerung am ${date} um ${time} zeigt Termine von ${fromDate} ${fromTime} bis ${`${
+        return `Nächste Erinnerung am ${date} um ${time} zeigt Termine von ${fromDate} ${fromTime} bis ${`${
             fromDate !== toDate ? `${toDate} ` : ""
         }${toTime}`}`;
     }

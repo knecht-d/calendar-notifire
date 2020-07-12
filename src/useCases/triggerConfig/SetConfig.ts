@@ -29,7 +29,7 @@ export class SetConfigImpl extends SetConfig {
     constructor(
         logger: IUseCaseLogger,
         private communication: ICommunication,
-        private timerSettings: ITimerSetter,
+        private triggerSettings: ITimerSetter,
         private persistence: IChatConfigSaver,
     ) {
         super(logger);
@@ -43,7 +43,7 @@ export class SetConfigImpl extends SetConfig {
                 const timeFrame = new TimeFrame(config.frame.begin, config.frame.end);
                 const recurrence = createRecurrence(config.recurrence);
                 chat.setTrigger(triggerId, { frame: timeFrame, recurrence: recurrence }, userId);
-                this.timerSettings.set(chatId, triggerId, config.recurrence);
+                this.triggerSettings.set(chatId, triggerId, config.recurrence);
                 this.persistence.saveChatConfig(chatId, convertChatToPersistence(chat));
                 this.communication.send(chatId, { key: MessageKey.SET_CONFIG, triggerId });
             } catch (error) {

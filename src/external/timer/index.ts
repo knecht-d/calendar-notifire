@@ -1,3 +1,3 @@
 export * from "./AbstractTimer";
 export * from "./CronTimer";
-export * from "./TestSetIntervalTimer";
+export * from "./SetIntervalTimer";

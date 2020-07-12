@@ -500,9 +500,29 @@ describe("End to end test", () => {
 
     describe("reminder", () => {
         it("should send the events if a trigger fires", async () => {
+            jest.spyOn(calendar, "getEvents").mockResolvedValueOnce([
+                {
+                    start: new Date(2020, 7, 15, 18, 0),
+                    end: new Date(2020, 7, 15, 19, 0),
+                    title: "Test",
+                    description: "Dies ist ein Test",
+                    location: "Überall",
+                },
+            ]);
             await timer.fireTrigger("chat1|trigger1");
             expect(chat.send).toHaveBeenCalledTimes(1);
-            expect(chat.send).toHaveBeenCalledWith("chat1", "Termine:\n");
+            expect(chat.send).toHaveBeenCalledWith(
+                "chat1",
+                "Termine:\nTest (Überall):\n    15.8.2020 18:00 - 19:00\n    Dies ist ein Test",
+            );
+            expect(storage.storedData).toEqual({
+                chat1:
+                    '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',
+            });
+        });
+        it("should not send the events if a trigger fires but there are no events", async () => {
+            await timer.fireTrigger("chat1|trigger1");
+            expect(chat.send).not.toHaveBeenCalled();
             expect(storage.storedData).toEqual({
                 chat1:
                     '{"administrators":["user1"],"triggerSettings":{"trigger1":{"frame":{"begin":{"month":{"value":1,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}},"end":{"month":{"value":2,"fixed":false},"day":{"value":1,"fixed":true},"hour":{"value":0,"fixed":true},"minute":{"value":0,"fixed":true}}},"recurrence":{"type":"m","day":15,"hour":17,"minute":45}}}}',

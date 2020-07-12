@@ -58,6 +58,10 @@ export class Chat {
         if (!this.administrators.has(userId)) {
             throw new EntityError(EntityErrorCode.MISSING_PRIVILEGES);
         }
+        const trigger = this.settings[key];
+        if (!trigger) {
+            throw new EntityError(EntityErrorCode.TRIGGER_NOT_DEFINED);
+        }
         delete this.settings[key];
     }
 
