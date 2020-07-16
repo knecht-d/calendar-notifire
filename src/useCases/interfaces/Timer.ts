@@ -1,13 +1,13 @@
 import { IPersistedRecurrenceRule } from "./Persistence";
 
-export interface ITimerSetter {
+export interface ITriggerSetter {
     set: (chatId: string, triggerId: string, recurrence: IPersistedRecurrenceRule) => void;
 }
 
-export interface ITimerStopper {
+export interface ITriggerStopper {
     stop: (chatId: string, triggerId: string) => void;
 }
 
-export interface ITimerRead {
+export interface ITriggerRead {
     getNext: (chatId: string, triggerId: string) => Date;
 }

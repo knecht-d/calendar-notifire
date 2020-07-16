@@ -1,12 +1,16 @@
 import { Chats, TimeFrame } from "../../entities";
-import { IChatConfigLoader, ITimerSetter } from "../interfaces";
+import { IChatConfigLoader, ITriggerSetter } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
 import { createRecurrence } from "../utils";
 
 export abstract class StartAssistant extends UseCase<void> {}
 export class StartAssistantImpl extends StartAssistant {
-    constructor(logger: IUseCaseLogger, private timerSettings: ITimerSetter, private configLoader: IChatConfigLoader) {
+    constructor(
+        logger: IUseCaseLogger,
+        private triggerSettings: ITriggerSetter,
+        private configLoader: IChatConfigLoader,
+    ) {
         super(logger);
     }
 
@@ -25,7 +29,7 @@ export class StartAssistantImpl extends StartAssistant {
                             { frame: timeFrame, recurrence: recurrence },
                             chatData.administrators[0],
                         );
-                        this.timerSettings.set(chatId, triggerKey, triggerData.recurrence);
+                        this.triggerSettings.set(chatId, triggerKey, triggerData.recurrence);
                     });
                 });
             } catch (error) {

@@ -1,5 +1,5 @@
 import { Chats } from "../../entities";
-import { ICommunication, ISerializedTrigger, ITimerRead, MessageKey } from "../interfaces";
+import { ICommunication, ISerializedTrigger, ITriggerRead, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertRecurrence } from "../utils";
@@ -10,7 +10,7 @@ export interface IReadConfigInput {
 
 export abstract class ReadConfig extends UseCase<IReadConfigInput> {}
 export class ReadConfigImpl extends ReadConfig {
-    constructor(logger: IUseCaseLogger, private communication: ICommunication, private timerRead: ITimerRead) {
+    constructor(logger: IUseCaseLogger, private communication: ICommunication, private timerRead: ITriggerRead) {
         super(logger);
     }
 
@@ -38,7 +38,7 @@ export class ReadConfigImpl extends ReadConfig {
                 }, {} as { [triggerKey: string]: ISerializedTrigger });
                 this.communication.send(chatId, { key: MessageKey.READ_CONFIG, triggers: triggers });
             } catch (error) {
-                this.logger.warn("DeleteConfigImpl", error);
+                this.logger.warn("ReadConfigImpl", error);
                 this.communication.send(chatId, {
                     hasError: true,
                     key: MessageKey.READ_CONFIG,

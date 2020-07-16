@@ -1,5 +1,5 @@
 import { Chats } from "../../entities";
-import { IChatConfigSaver, ICommunication, ITimerStopper, MessageKey } from "../interfaces";
+import { IChatConfigSaver, ICommunication, ITriggerStopper, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
 import { convertChatToPersistence } from "../utils";
@@ -15,7 +15,7 @@ export class DeleteConfigImpl extends DeleteConfig {
     constructor(
         logger: IUseCaseLogger,
         private communication: ICommunication,
-        private timerSettings: ITimerStopper,
+        private timerSettings: ITriggerStopper,
         private persistence: IChatConfigSaver,
     ) {
         super(logger);

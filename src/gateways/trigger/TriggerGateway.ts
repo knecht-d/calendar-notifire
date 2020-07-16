@@ -1,8 +1,8 @@
 import {
     IPersistedRecurrenceRule,
-    ITimerRead,
-    ITimerSetter,
-    ITimerStopper,
+    ITriggerRead,
+    ITriggerSetter,
+    ITriggerStopper,
     PersistedRecurrenceType,
     Reminder,
 } from "../../useCases";
@@ -25,7 +25,7 @@ interface IDependencies {
 }
 
 export class TriggerGateway extends GateWay<IDependencies>
-    implements ITimerStopper, ITriggerReceiver, ITimerSetter, ITimerRead {
+    implements ITriggerStopper, ITriggerReceiver, ITriggerSetter, ITriggerRead {
     async trigger(id: string) {
         this.checkInitialized();
         const { chatId, triggerId } = this.decodeId(id);

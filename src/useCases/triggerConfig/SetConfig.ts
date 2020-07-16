@@ -4,7 +4,7 @@ import {
     ICommunication,
     IPersistedRecurrenceRule,
     ITimeFrameSettings,
-    ITimerSetter,
+    ITriggerSetter,
     MessageKey,
 } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
@@ -29,7 +29,7 @@ export class SetConfigImpl extends SetConfig {
     constructor(
         logger: IUseCaseLogger,
         private communication: ICommunication,
-        private triggerSettings: ITimerSetter,
+        private triggerSettings: ITriggerSetter,
         private persistence: IChatConfigSaver,
     ) {
         super(logger);
