@@ -47,7 +47,7 @@ describe("AddAdmin", () => {
                 hasError: true,
                 key: MessageKey.ADD_ADMIN,
                 newAdmin: "admin",
-                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
+                message: "Chat existiert nicht",
             });
         });
     });

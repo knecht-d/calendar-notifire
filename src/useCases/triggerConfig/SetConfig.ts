@@ -9,7 +9,7 @@ import {
 } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
-import { convertChatToPersistence, createRecurrence } from "../utils";
+import { convertChatToPersistence, createRecurrence, toText } from "../utils";
 
 export interface ISetConfigInput {
     userId: string;
@@ -52,7 +52,7 @@ export class SetConfigImpl extends SetConfig {
                     hasError: true,
                     key: MessageKey.SET_CONFIG,
                     triggerId,
-                    message: `{${error.key}}`,
+                    message: toText(error.key),
                 });
             }
             resolve();

@@ -2,7 +2,7 @@ import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, ITriggerStopper, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
-import { convertChatToPersistence } from "../utils";
+import { convertChatToPersistence, toText } from "../utils";
 
 export interface IDeleteConfigInput {
     userId: string;
@@ -36,7 +36,7 @@ export class DeleteConfigImpl extends DeleteConfig {
                     hasError: true,
                     key: MessageKey.DELETE_CONFIG,
                     triggerId,
-                    message: `{${error.key}}`,
+                    message: toText(error.key),
                 });
             }
             resolve();

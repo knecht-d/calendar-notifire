@@ -2,7 +2,7 @@ import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
-import { convertChatToPersistence } from "../utils";
+import { convertChatToPersistence, toText } from "../utils";
 
 export interface IAddAdminInput {
     userId: string;
@@ -31,7 +31,7 @@ export class AddAdminImpl extends AddAdmin {
                     hasError: true,
                     key: MessageKey.ADD_ADMIN,
                     newAdmin: adminId,
-                    message: `{${error.key}}`,
+                    message: toText(error.key),
                 });
             }
             resolve();

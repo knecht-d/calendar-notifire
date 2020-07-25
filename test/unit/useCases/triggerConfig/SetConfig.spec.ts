@@ -18,6 +18,7 @@ jest.mock("../../../../src/entities/Chats", () => {
 jest.mock("../../../../src/useCases/utils", () => ({
     createRecurrence: jest.fn().mockImplementation(x => x),
     convertChatToPersistence: jest.fn().mockReturnValue({ mock: "newChat" }),
+    toText: jest.requireActual("../../../../src/useCases/utils").toText,
 }));
 describe("SetConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
@@ -91,7 +92,7 @@ describe("SetConfig", () => {
                 hasError: true,
                 key: MessageKey.SET_CONFIG,
                 triggerId: "trigger",
-                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
+                message: "Chat existiert nicht",
             });
         });
     });

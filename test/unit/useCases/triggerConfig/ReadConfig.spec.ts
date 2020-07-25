@@ -12,6 +12,7 @@ jest.mock("../../../../src/entities/Chats", () => {
 });
 jest.mock("../../../../src/useCases/utils", () => ({
     convertRecurrence: jest.fn().mockImplementation(x => x),
+    toText: jest.requireActual("../../../../src/useCases/utils").toText,
 }));
 describe("ReadConfig", () => {
     let mockCommunication: MockCommunicationPresenter;
@@ -104,7 +105,7 @@ describe("ReadConfig", () => {
                 hasError: true,
                 key: MessageKey.READ_CONFIG,
                 triggers: {},
-                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
+                message: "Chat existiert nicht",
             });
         });
     });

@@ -2,7 +2,7 @@ import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
-import { convertChatToPersistence } from "../utils";
+import { convertChatToPersistence, toText } from "../utils";
 
 export interface IInitInput {
     userId: string;
@@ -28,7 +28,7 @@ export class InitializeChatImpl extends InitializeChat {
                 this.communication.send(chatId, {
                     hasError: true,
                     key: MessageKey.INITIALIZE_CHAT,
-                    message: `{${error.key}}`,
+                    message: toText(error.key),
                 });
             }
             resolve();

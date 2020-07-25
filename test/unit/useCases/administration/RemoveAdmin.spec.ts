@@ -47,7 +47,7 @@ describe("RemoveAdmin", () => {
                 hasError: true,
                 key: MessageKey.REMOVE_ADMIN,
                 oldAdmin: "admin",
-                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
+                message: "Chat existiert nicht",
             });
         });
     });

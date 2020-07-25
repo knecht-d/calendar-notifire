@@ -2,7 +2,7 @@ import { Chats } from "../../entities";
 import { IChatConfigSaver, ICommunication, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
-import { convertChatToPersistence } from "../utils";
+import { convertChatToPersistence, toText } from "../utils";
 
 export interface IRemoveAdminInput {
     userId: string;
@@ -31,7 +31,7 @@ export class RemoveAdminImpl extends RemoveAdmin {
                     hasError: true,
                     key: MessageKey.REMOVE_ADMIN,
                     oldAdmin: adminId,
-                    message: `{${error.key}}`,
+                    message: toText(error.key),
                 });
             }
             resolve();

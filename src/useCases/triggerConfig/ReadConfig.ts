@@ -2,7 +2,7 @@ import { Chats } from "../../entities";
 import { ICommunication, ISerializedTrigger, ITriggerRead, MessageKey } from "../interfaces";
 import { IUseCaseLogger, logExecute } from "../logging";
 import { UseCase } from "../UseCase";
-import { convertRecurrence } from "../utils";
+import { convertRecurrence, toText } from "../utils";
 
 export interface IReadConfigInput {
     chatId: string;
@@ -43,7 +43,7 @@ export class ReadConfigImpl extends ReadConfig {
                     hasError: true,
                     key: MessageKey.READ_CONFIG,
                     triggers: {},
-                    message: `{${error.key}}`,
+                    message: toText(error.key),
                 });
             }
             resolve();

@@ -41,7 +41,7 @@ describe("InitializeChat", () => {
             expect(mockCommunication.send).toHaveBeenCalledWith("chat", {
                 hasError: true,
                 key: MessageKey.INITIALIZE_CHAT,
-                message: `{${EntityErrorCode.CHAT_ALREADY_EXISTING}}`,
+                message: "Chat existiert bereits",
             });
         });
     });

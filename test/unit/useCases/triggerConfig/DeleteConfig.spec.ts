@@ -66,7 +66,7 @@ describe("InitializeChat", () => {
                 hasError: true,
                 key: MessageKey.DELETE_CONFIG,
                 triggerId: "trigger",
-                message: `{${EntityErrorCode.CHAT_NOT_EXISTING}}`,
+                message: "Chat existiert nicht",
             });
         });
     });
