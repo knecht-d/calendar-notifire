@@ -1,28 +1,57 @@
 # calendar-nortifire
 
-The goal of this project is to notify users about upcoming calendar events using a telegram-bot.
+Use a telegram-bot to notify users about upcoming calendar events.
 
-## Usage
+> **Note:** : Currently the language of the bot is German only. Support for other languages will be added in the future.
 
-### Initial setup (as usual)
+## How to use?
 
-```
-> git clone git@github.com:deeKay93/calendar-notifire.git
-> cd calendar-notifire
-> npm install
-```
+1. Install Node (at least version 14 for propert localisation support)
+    > Due to localisation this project requires Node version 14
+2. Clone the project and install the dependencies
+    ```
+    > git clone git@github.com:deeKay93/calendar-notifire.git
+    > cd calendar-notifire
+    > npm install
+    ```
+3. Copy `data/setup.example.json` to `data/setup.json`
+   and enter
+    - `telegram`: The Telegram-token (see [Telegram-Bots](https://core.telegram.org/bots))
+    - `calendarURL`: The URL to the calendar in iCal-format
+    - `chatConfig`: The file where the configuration should be stored (can be kept as default)
+    - `logLevel`: The desired log level. (Select one from the list)
+4. Build the project using `npm run build` (or start it directly using `npm run start`)
+5. (Re)start it using `node build/index.js`
+6. Start using the bot (See [Bot-Commands](#bot-commands))
+
+> **Note:** The time settings will be executed in the lokal timezone of the server!
+
+## Bot-Commands
+
+-   `/start` - Initialize the chat in the bot (required before first use)
+-   `/set [reminder]` - Start setting up a new reminder
+    -   e.g. `/set New Reminder` sets up the trigger "New Reminder"
+-   `/read` - Get the current settings
+-   `/delete [reminder]` - Delete the settings for a reminder
+-   `/addAdmin [userID]` - Add a new user to the administrators (for group chats)
+    -   e.g. `/addAdmin 08154711`)
+-   `/removeAdmin [userID]` - Remove an admin from the administrators
+-   `/info` - Print IDs of the current user and the current chat. (For debugging and for the adding/removing administrators)
+
+## Development
 
 ### npm-Commands
 
-Run with `npm run ...`
+The most important npm-commands are:
 
--   `test` Run the tests including coverage
--   `build` Format the code and build the project
--   `start:dev` Start the project with a file watcher
--   `start` Build and start the project
--   `check` Perform tslint check
--   `pretty` Format the code
--   `precommit` Format, check staged files, and run tests (runs automatically before commiting)
+-   `build`: Build the project
+-   `start`: Build and run the project
+-   `test`: Run tests
+-   `cover`: run tests with coverage
+
+They can be executed with `npm run <command>` (e.g. `npm run test`).
+
+For other command see [package.json](package.json).
 
 ## Naming
 
@@ -30,4 +59,4 @@ The name is a combination of calendar, notifier and fire.
 The origin of the name are:
 
 -   the (future) capabilities of this project --> To notifiy about up coming calendar-events
--   _fire_, because the idea comes from my volunteer fire department
+-   _fire_, because the idea comes from a volunteer fire department
