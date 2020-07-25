@@ -65,7 +65,12 @@ export class TelegramChat extends AbstractChat<{ botToken: string }> {
                         await editMessage("Moment ...");
                         await this.communication!.set(chatId, user, triggerId, config);
                     })
-                    .catch(error => this.logger.error("TelegramChat", error));
+                    .catch(error =>
+                        this.wrapInTryCatch(async () => {
+                            await editMessage("Ein unerwarteter Fehler ist aufgetreten");
+                            this.logger.error("TelegramChat", error);
+                        }),
+                    );
             });
         });
 

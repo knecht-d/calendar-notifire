@@ -132,21 +132,19 @@ describe("FrameConfigBuilder", () => {
             });
             expect(builder.getConfig()).toEqual(result);
         });
-        it("should request month, day, hour and minute as a default", async () => {
+        it("shoud throw an Error for other granularities default", async () => {
             const config = {};
             const builder = new FrameConfigBuilder(43, mockEditMessage);
             const interval = setInterval(() => builder.currentResolver(""), 10);
 
-            const result = await builder.requestConfig(config);
+            expect.assertions(1);
+            try {
+                await builder.requestConfig(config);
+            } catch (error) {
+                expect(error).toEqual(new Error("Unexpected Recurrence Type"));
+            }
 
             clearInterval(interval);
-            expect(result).toEqual({
-                month: true,
-                day: true,
-                hour: true,
-                minute: true,
-            });
-            expect(builder.getConfig()).toEqual(result);
         });
     });
 });

@@ -52,11 +52,7 @@ export class FrameConfigBuilder {
                 await this.requestSelection(MinuteSelection);
                 break;
             default:
-                await this.requestSelection(MonthSelection);
-                await this.requestSelection(DaySelection);
-                await this.requestSelection(HourSelection);
-                await this.requestSelection(MinuteSelection);
-                break;
+                throw new Error("Unexpected Recurrence Type");
         }
 
         delete FrameConfigBuilder.ALL_BUILDER[this.messageId];
