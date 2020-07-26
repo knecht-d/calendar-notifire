@@ -21,10 +21,10 @@ Use a telegram-bot to notify users about upcoming calendar events.
     - `chatConfig`: The file where the configuration should be stored (can be kept as default)
     - `logLevel`: The desired log level. (Select one from the list)
 4. Build the project using `npm run build` (or start it directly using `npm run start`)
-5. (Re)start it using `node build/index.js`
+5. (Re)start it using `npm run start:prod`
 6. Start using the bot (See [Bot-Commands](#bot-commands))
 
-> **Note:** The time settings will be executed in the lokal timezone of the server!
+> **Note:** The time settings will be executed using the local timezone of the server!
 
 ## Bot-Commands
 
@@ -46,6 +46,8 @@ The most important npm-commands are:
 
 -   `build`: Build the project
 -   `start`: Build and run the project
+-   `start:prod`: Run the built project
+-   `start:dev`: Run the ts-code directly
 -   `test`: Run tests
 -   `cover`: run tests with coverage
 
