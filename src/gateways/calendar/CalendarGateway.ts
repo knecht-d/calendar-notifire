@@ -31,8 +31,8 @@ export class CalendarGateway extends GateWay<ICalendarGatewayDependencies> imple
         } else {
             this.logger.debug("CalendarGateway", "using getEvents of connector");
             eventsFromSource = await this.dependencies!.calendarConnector.getEvents();
-            eventsFromSource = eventsFromSource.filter(event => event.start >= from && event.start <= to);
         }
+        eventsFromSource = eventsFromSource.filter(event => event.start >= from && event.start <= to);
         const events: IEvent[] = eventsFromSource
             .sort((a, b) => a.start.getTime() - b.start.getTime())
             .map(event => ({

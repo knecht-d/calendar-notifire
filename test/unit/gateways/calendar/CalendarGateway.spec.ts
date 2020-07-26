@@ -99,6 +99,35 @@ describe("CalendarGateway", () => {
             const filteredEvents = await gateway.getEventsBetween(from, to);
             expect(filteredEvents).toEqual([events[1], events[2]]);
         });
+        it("should filter the events based on the start date even for getEventsBetween", async () => {
+            const events = [
+                {
+                    start: new Date(2020, 4, 1, 12, 0),
+                    end: new Date(2020, 4, 2, 12, 0),
+                    title: "Event1",
+                },
+                {
+                    start: new Date(2020, 4, 2, 12, 0),
+                    end: new Date(2020, 4, 3, 12, 0),
+                    title: "Event2",
+                },
+                {
+                    start: new Date(2020, 4, 3, 12, 0),
+                    end: new Date(2020, 4, 4, 12, 0),
+                    title: "Event3",
+                },
+            ];
+            const mockConnector = {
+                getEvents: jest.fn(() => Promise.resolve(events)),
+                getEventsBetween: jest.fn(() => Promise.resolve(events)),
+            };
+            const gateway = new CalendarGateway(mockLogger);
+            gateway.init({ calendarConnector: mockConnector });
+            const from = new Date(2020, 4, 2, 13, 0);
+            const to = new Date(2020, 4, 4, 0, 0);
+            const filteredEvents = await gateway.getEventsBetween(from, to);
+            expect(filteredEvents).toEqual([events[2]]);
+        });
         it("should filter the events preciely to the minute", async () => {
             const newEvent = (hour: number, minute: number) => ({
                 start: new Date(2020, 4, 1, hour, minute),
