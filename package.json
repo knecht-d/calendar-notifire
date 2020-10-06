@@ -22,8 +22,7 @@
     "lint": "eslint -c .eslintrc.js --ext .ts .",
     "check": "npm run fences && npm run lint",
     "pretty": "pretty-quick",
-    "precommit": "pretty-quick --staged && lint-staged && npm run fences",
-    "prepush": "npm run build:check && npm run cover"
+    "precommit": "pretty-quick --staged && lint-staged && npm run fences"
   },
   "repository": {
     "type": "git",
@@ -75,8 +74,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run precommit",
-      "pre-push": "npm run prepush"
+      "pre-commit": "npm run precommit"
     }
   },
   "lint-staged": {
