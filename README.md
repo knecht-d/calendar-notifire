@@ -1,4 +1,4 @@
-# calendar-nortifire
+# calendar-notifire
 
 Use a telegram-bot to notify users about upcoming calendar events.
 
