@@ -1,5 +1,7 @@
 # calendar-notifire
 
+[![codecov](https://codecov.io/gh/knecht-d/calendar-notifire/branch/master/graph/badge.svg?token=7GO8TABD0A)](undefined)
+
 Use a telegram-bot to notify users about upcoming calendar events.
 
 > **Note:** : Currently the language of the bot is German only. Support for other languages will be added in the future.
