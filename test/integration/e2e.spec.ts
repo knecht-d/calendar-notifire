@@ -1,3 +1,4 @@
+import MockDate from "mockdate";
 import { Builder } from "../../src/creation";
 import { EntityError, EntityErrorCode } from "../../src/entities/EntityError";
 import { ILogger, Logger, LogLevels } from "../../src/external";
@@ -47,6 +48,7 @@ describe("End to end test", () => {
     });
     beforeEach(() => {
         jest.clearAllMocks();
+        MockDate.set(new Date(2020, 6, 10, 0, 12, 13, 14));
         timer.getNextExecution.mockImplementation((id: string) => {
             const defaultValues: { [id: string]: Date } = {
                 "chat1|trigger1": new Date(2020, 7, 15, 17, 45),
