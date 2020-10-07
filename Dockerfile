@@ -15,4 +15,4 @@ ENV TZ=Europe/Berlin
 WORKDIR /usr/src/app
 COPY --from=BUILD_IMAGE /usr/src/app/build ./build
 COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
-CMD ["npm", "run", "start:prod" ]
+CMD ["node", "build/index.js"]
