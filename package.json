@@ -1,6 +1,6 @@
 {
   "name": "calendar-notifire",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "In future this will be a package to notifi channels like a telegram-bot in case of calendar events",
   "main": "index.ts",
   "scripts": {
