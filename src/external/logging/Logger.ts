@@ -36,9 +36,16 @@ export class Logger implements ILogger {
                         pattern: "[%d] [%p] %m",
                     },
                 },
+                out: {
+                    type: "stdout",
+                    layout: {
+                        type: "pattern",
+                        pattern: "[%d] [%p] %m",
+                    },
+                },
             },
             categories: {
-                default: { appenders: ["date"], level: "debug" },
+                default: { appenders: ["out", "date"], level: "debug" },
             },
         });
         this.logger = getLogger();
