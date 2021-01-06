@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/deeKay93/calendar-notifire#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cron": "^1.8.2",
     "ical-expander": "^3.1.0",
     "log4js": "^6.3.0",
