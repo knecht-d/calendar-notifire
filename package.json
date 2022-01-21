@@ -44,7 +44,7 @@
     "axios": "^0.19.2",
     "cron": "^1.8.2",
     "ical-expander": "^3.1.0",
-    "log4js": "^6.3.0",
+    "log4js": "^6.4.0",
     "telegraf": "^3.38.0"
   },
   "devDependencies": {
